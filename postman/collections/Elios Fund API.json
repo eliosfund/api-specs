@@ -1,30 +1,709 @@
 {
 	"info": {
-		"_postman_id": "4f9a7e8f-d62c-45ca-87b5-b9233d9329cd",
+		"_postman_id": "9f02104e-f0af-40f9-883b-8191732f7275",
 		"name": "Elios Fund API",
-		"description": "For support, please visit https://portal.support.eliosfund.com",
+		"description": "The Elios Fund API provides a robust interface for partners to integrate and access the most powerful financing options in Solar today.\n\nContact Support:\n Name: Elios Fund Engineering\n Email: engineering@eliosfund.com",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "38011021-4f9a7e8f-d62c-45ca-87b5-b9233d9329cd"
+		"_uid": "38011021-9f02104e-f0af-40f9-883b-8191732f7275"
 	},
 	"item": [
 		{
-			"name": "projects",
+			"name": "Dealers",
 			"item": [
 				{
-					"name": "{projectId}",
-					"item": [
+					"name": "Get all dealers",
+					"id": "d170786e-2db0-472c-8d60-4bbf80f1b0a0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dealers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealers"
+							]
+						},
+						"description": "Returns all available dealers."
+					},
+					"response": [
 						{
-							"name": "Get a project",
-							"id": "7bf51658-3b19-43fe-b18c-946e0172c241",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
+							"id": "b35e04a3-1cb4-4dc5-89e1-90b2c1b244f9",
+							"name": "All dealers assigned to your account.",
+							"originalRequest": {
 								"method": "GET",
 								"header": [
 									{
 										"key": "Accept",
 										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"value\": \"reference #/components/schemas/DealerCollection not found in the OpenAPI spec\"\n}"
+						},
+						{
+							"id": "4008a534-8e1a-4159-a0e4-8cc356eff9ee",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						},
+						{
+							"id": "8ea1979e-6c65-4586-9d26-3cf0120393fe",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						},
+						{
+							"id": "c136c316-56a5-4fe4-bdc4-4b7f49bb086e",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get a dealer",
+					"id": "10539cbd-785a-4ed3-9bb2-128d5eb49531",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dealers/:dealerId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealers",
+								":dealerId"
+							],
+							"variable": [
+								{
+									"key": "dealerId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the dealer."
+								}
+							]
+						},
+						"description": "Returns all available information about a single dealer."
+					},
+					"response": [
+						{
+							"id": "1a5cf4ca-c799-4eb2-b0d6-bf67daceaa6e",
+							"name": "The dealers corresponding to the provided `dealerId`.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers/:dealerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers",
+										":dealerId"
+									],
+									"variable": [
+										{
+											"key": "dealerId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": \"http://o.piflXuD73yosmPQ6eoZlOjvZ32eDUSllQ.CdSAPcI\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<string>\",\n  \"installers\": [\n    \"http://faFrBpQlAoFsAQkDDvMlKPUqpTNhVYFfh.zcEmoxuXnVOfGOmYxkzCPI0Xn3rPX0OrMRRcsDmN+JghI6zHFldRG.JVena-bfy5SO\",\n    \"http://jgnDfzZdOUHKgHcwhaGQBK.hhcxZnPxaBDjeIDFLgxYTJJO\"\n  ]\n}"
+						},
+						{
+							"id": "5e04a487-6062-4bfe-9ab5-54d8b7cd6746",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers/:dealerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers",
+										":dealerId"
+									],
+									"variable": [
+										{
+											"key": "dealerId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						},
+						{
+							"id": "41c6960c-399b-4037-87d1-0821410c6f26",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers/:dealerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers",
+										":dealerId"
+									],
+									"variable": [
+										{
+											"key": "dealerId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						},
+						{
+							"id": "b04d4938-4f7d-490e-896e-d40180453850",
+							"name": "The requested resource was not found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers/:dealerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers",
+										":dealerId"
+									],
+									"variable": [
+										{
+											"key": "dealerId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						},
+						{
+							"id": "1bb14908-1325-4779-b204-83cda0338c05",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/dealers/:dealerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealers",
+										":dealerId"
+									],
+									"variable": [
+										{
+											"key": "dealerId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"quis dolore\"\n}"
+						}
+					]
+				}
+			],
+			"id": "38ac5547-4f11-4f32-a98f-f6b8ee405375"
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Get all projects",
+					"id": "56e40d26-d0e1-48e3-9378-6538889bf2e9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/projects",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"projects"
+							]
+						},
+						"description": "Returns all available projects."
+					},
+					"response": [
+						{
+							"id": "a3576d55-a0dc-4430-9401-457cff3bf87d",
+							"name": "All projects assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "c51272ba-c832-407d-94f4-75bf7a307691"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@context\": \"<string>\",\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"status\": \"on_hold\",\n      \"phase\": \"design\",\n      \"address\": \"<uri>\",\n      \"@id\": \"<uri>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"applicationStatus\": \"approved\",\n      \"packagePrice\": \"<number>\",\n      \"panelCount\": \"<number>\",\n      \"panelWatts\": \"<number>\",\n      \"systemSize\": \"<number>\",\n      \"systemProduction\": \"<number>\",\n      \"proposalLink\": \"<string>\",\n      \"amountFinanced\": \"<number>\",\n      \"downPayment\": \"<number>\",\n      \"introductoryTerm\": \"<number>\",\n      \"introductoryPayment\": \"<number>\",\n      \"federalRebate\": \"<number>\",\n      \"stateRebase\": \"<number>\",\n      \"utilityRebate\": \"<number>\",\n      \"loanProductName\": \"<string>\",\n      \"loanDealerFee\": \"<number>\",\n      \"loanApr\": \"<number>\",\n      \"loanTerm\": \"<number>\",\n      \"contractRate\": \"<number>\",\n      \"basePpw\": \"<number>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"customer\": \"<uri>\",\n      \"dealer\": \"<uri>\",\n      \"distributor\": \"<uri>\",\n      \"installer\": \"<uri>\",\n      \"user\": \"<uri>\",\n      \"actionItems\": [\n        \"<uri>\",\n        \"<uri>\"\n      ],\n      \"attachments\": [\n        \"<uri>\",\n        \"<uri>\"\n      ],\n      \"comments\": [\n        \"<uri>\",\n        \"<uri>\"\n      ]\n    },\n    {\n      \"status\": \"new\",\n      \"phase\": \"install\",\n      \"address\": \"<uri>\",\n      \"@id\": \"<uri>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"applicationStatus\": \"none\",\n      \"packagePrice\": \"<number>\",\n      \"panelCount\": \"<number>\",\n      \"panelWatts\": \"<number>\",\n      \"systemSize\": \"<number>\",\n      \"systemProduction\": \"<number>\",\n      \"proposalLink\": \"<string>\",\n      \"amountFinanced\": \"<number>\",\n      \"downPayment\": \"<number>\",\n      \"introductoryTerm\": \"<number>\",\n      \"introductoryPayment\": \"<number>\",\n      \"federalRebate\": \"<number>\",\n      \"stateRebase\": \"<number>\",\n      \"utilityRebate\": \"<number>\",\n      \"loanProductName\": \"<string>\",\n      \"loanDealerFee\": \"<number>\",\n      \"loanApr\": \"<number>\",\n      \"loanTerm\": \"<number>\",\n      \"contractRate\": \"<number>\",\n      \"basePpw\": \"<number>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"customer\": \"<uri>\",\n      \"dealer\": \"<uri>\",\n      \"distributor\": \"<uri>\",\n      \"installer\": \"<uri>\",\n      \"user\": \"<uri>\",\n      \"actionItems\": [\n        \"<uri>\",\n        \"<uri>\"\n      ],\n      \"attachments\": [\n        \"<uri>\",\n        \"<uri>\"\n      ],\n      \"comments\": [\n        \"<uri>\",\n        \"<uri>\"\n      ]\n    }\n  ],\n  \"search\": {\n    \"@type\": \"<string>\",\n    \"template\": \"<string>\",\n    \"variableRepresentation\": \"<string>\",\n    \"mapping\": [\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      },\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      }\n    ]\n  },\n  \"view\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"first\": \"<string>\",\n    \"last\": \"<string>\",\n    \"next\": \"<string>\"\n  }\n}"
+						},
+						{
+							"id": "005bf22f-75f2-4d8f-8b59-771078c0b8bb",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "c526598c-69e6-4c39-ab67-4a75250d35c6"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						},
+						{
+							"id": "3df5d526-7aa2-4040-8a5f-de2a45dfb269",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "030b813e-c1e5-4caf-a004-bfd85de62d1c"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						},
+						{
+							"id": "9aa09391-353b-44a4-9de9-3fbe7e47f194",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "84f0a440-22d2-4953-9715-e373d53e50e5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get a project",
+					"id": "0888944d-8531-4706-86ef-7d3926a173b2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/projects/:projectId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"projects",
+								":projectId"
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the project. This can be the Project ID or Proposal ID."
+								}
+							]
+						},
+						"description": "Returns all available information about a single project."
+					},
+					"response": [
+						{
+							"id": "451c74cb-2bc6-4910-b421-eb8cd2594d3b",
+							"name": "The project corresponding to the provided `projectId`.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
 									}
 								],
 								"url": {
@@ -38,460 +717,255 @@
 									],
 									"variable": [
 										{
-											"key": "projectId",
-											"value": "<string>",
-											"description": "(Required) The unique identifier of the project."
+											"key": "projectId"
 										}
 									]
 								}
 							},
-							"response": [
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
 								{
-									"id": "b72946b3-e018-4a9f-8c0b-d27169a36adf",
-									"name": "The project corresponding to the provided `projectId`.",
-									"originalRequest": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "Accept",
-												"value": "application/ld+json"
-											},
-											{
-												"description": "Added as a part of security scheme: apikey",
-												"key": "Bearer",
-												"value": "<API Key>"
-											}
-										],
-										"url": {
-											"raw": "{{baseUrl}}/projects/:projectId",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"projects",
-												":projectId"
-											],
-											"variable": [
-												{
-													"key": "projectId"
-												}
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Content-Type",
-											"value": "application/ld+json"
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"status\": \"complete\",\n  \"phase\": \"install_qa\",\n  \"address\": \"<uri>\",\n  \"id\": \"<integer>\",\n  \"proposalId\": \"<string>\",\n  \"applicationStatus\": \"cancelled\",\n  \"packagePrice\": \"<number>\",\n  \"panelCount\": \"<number>\",\n  \"panelWatts\": \"<number>\",\n  \"systemSize\": \"<number>\",\n  \"systemProduction\": \"<number>\",\n  \"proposalLink\": \"<string>\",\n  \"amountFinanced\": \"<number>\",\n  \"downPayment\": \"<number>\",\n  \"introductoryTerm\": \"<number>\",\n  \"introductoryPayment\": \"<number>\",\n  \"federalRebate\": \"<number>\",\n  \"stateRebase\": \"<number>\",\n  \"utilityRebate\": \"<number>\",\n  \"loanProductName\": \"<string>\",\n  \"loanDealerFee\": \"<number>\",\n  \"loanApr\": \"<number>\",\n  \"loanTerm\": \"<number>\",\n  \"contractRate\": \"<number>\",\n  \"basePpw\": \"<number>\",\n  \"proposalDate\": \"<date>\",\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\",\n  \"customer\": \"<uri>\",\n  \"dealer\": \"<uri>\",\n  \"distributor\": \"<uri>\",\n  \"installer\": \"<uri>\",\n  \"user\": \"<uri>\",\n  \"actionItems\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"attachments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"comments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ]\n}"
-								},
-								{
-									"id": "680a9c23-6f4c-4400-908e-b0de8d9b506a",
-									"name": "No spacecraft found for the provided `spacecraftId`",
-									"originalRequest": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "Accept",
-												"value": "application/ld+json"
-											},
-											{
-												"description": "Added as a part of security scheme: apikey",
-												"key": "Bearer",
-												"value": "<API Key>"
-											}
-										],
-										"url": {
-											"raw": "{{baseUrl}}/projects/:projectId",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"projects",
-												":projectId"
-											],
-											"variable": [
-												{
-													"key": "projectId"
-												}
-											]
-										}
-									},
-									"status": "Not Found",
-									"code": 404,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Content-Type",
-											"value": "application/ld+json",
-											"uuid": "8347d542-a914-44d9-acb6-4dcb05de49ff"
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"message\": \"<string>\"\n}"
-								},
-								{
-									"id": "80689fd7-eab4-46c4-86a8-43ba30139ddc",
-									"name": "Unexpected error",
-									"originalRequest": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "Accept",
-												"value": "application/ld+json"
-											},
-											{
-												"description": "Added as a part of security scheme: apikey",
-												"key": "Bearer",
-												"value": "<API Key>"
-											}
-										],
-										"url": {
-											"raw": "{{baseUrl}}/projects/:projectId",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"projects",
-												":projectId"
-											],
-											"variable": [
-												{
-													"key": "projectId"
-												}
-											]
-										}
-									},
-									"status": "Internal Server Error",
-									"code": 500,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Content-Type",
-											"value": "application/ld+json",
-											"uuid": "16e975ce-4339-45dc-af8b-988c566bbd97"
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"message\": \"<string>\"\n}"
-								},
-								{
-									"id": "9b4bc0f3-eb4f-4441-9418-9a8dcb42fc3d",
-									"name": "There was no API key provided with the request or the API key was invalid.",
-									"originalRequest": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "Accept",
-												"value": "application/ld+json"
-											},
-											{
-												"description": "Added as a part of security scheme: bearer",
-												"key": "Authorization",
-												"value": "Bearer <token>"
-											}
-										],
-										"url": {
-											"raw": "{{baseUrl}}/projects/:projectId",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"projects",
-												":projectId"
-											],
-											"variable": [
-												{
-													"key": "projectId"
-												}
-											]
-										}
-									},
-									"status": "Unauthorized",
-									"code": 401,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Content-Type",
-											"value": "application/ld+json"
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"message\": \"in nulla fugiat ut\"\n}"
-								},
-								{
-									"id": "2a1d2be9-e1c4-41dd-b912-7fd3257f25e6",
-									"name": "The API key provided does not contain the proper scopes for the current request.",
-									"originalRequest": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "Accept",
-												"value": "application/ld+json"
-											},
-											{
-												"description": "Added as a part of security scheme: bearer",
-												"key": "Authorization",
-												"value": "Bearer <token>"
-											}
-										],
-										"url": {
-											"raw": "{{baseUrl}}/projects/:projectId",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"projects",
-												":projectId"
-											],
-											"variable": [
-												{
-													"key": "projectId"
-												}
-											]
-										}
-									},
-									"status": "Forbidden",
-									"code": 403,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Content-Type",
-											"value": "application/ld+json"
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"message\": \"in nulla fugiat ut\"\n}"
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "03b69529-b08f-443c-ab0a-6e0bff3e06f9"
 								}
-							]
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"cancelled\",\n  \"phase\": \"ntp_review\",\n  \"address\": \"<uri>\",\n  \"@id\": \"<uri>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"proposalId\": \"<string>\",\n  \"applicationStatus\": \"onhold\",\n  \"packagePrice\": \"<number>\",\n  \"panelCount\": \"<number>\",\n  \"panelWatts\": \"<number>\",\n  \"systemSize\": \"<number>\",\n  \"systemProduction\": \"<number>\",\n  \"proposalLink\": \"<string>\",\n  \"amountFinanced\": \"<number>\",\n  \"downPayment\": \"<number>\",\n  \"introductoryTerm\": \"<number>\",\n  \"introductoryPayment\": \"<number>\",\n  \"federalRebate\": \"<number>\",\n  \"stateRebase\": \"<number>\",\n  \"utilityRebate\": \"<number>\",\n  \"loanProductName\": \"<string>\",\n  \"loanDealerFee\": \"<number>\",\n  \"loanApr\": \"<number>\",\n  \"loanTerm\": \"<number>\",\n  \"contractRate\": \"<number>\",\n  \"basePpw\": \"<number>\",\n  \"proposalDate\": \"<date>\",\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\",\n  \"customer\": \"<uri>\",\n  \"dealer\": \"<uri>\",\n  \"distributor\": \"<uri>\",\n  \"installer\": \"<uri>\",\n  \"user\": \"<uri>\",\n  \"actionItems\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"attachments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"comments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ]\n}"
+						},
+						{
+							"id": "8a117101-84c7-4c01-9705-cd7e0aa51001",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects/:projectId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects",
+										":projectId"
+									],
+									"variable": [
+										{
+											"key": "projectId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "577d8258-bedd-4340-9bd7-d4b0d324d679"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						},
+						{
+							"id": "0e9f2e9b-f413-430f-9f16-43c3fb4fd3b9",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects/:projectId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects",
+										":projectId"
+									],
+									"variable": [
+										{
+											"key": "projectId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "06465108-2913-424b-9516-5b84be10bdb8"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						},
+						{
+							"id": "2d99b80a-9978-4941-9a45-a40079e41190",
+							"name": "The requested resource was not found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects/:projectId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects",
+										":projectId"
+									],
+									"variable": [
+										{
+											"key": "projectId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "aa8c8abd-e21c-45e2-a2e2-81cc157c03f0"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
+						},
+						{
+							"id": "a49bb170-7153-4961-8780-96e534f5b81d",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects/:projectId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects",
+										":projectId"
+									],
+									"variable": [
+										{
+											"key": "projectId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json",
+									"uuid": "31c7ae36-6e99-4bfa-8358-6c228e6b4251"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"<string>\"\n}"
 						}
-					],
-					"id": "2819e716-fb06-4c52-ada3-4b89ebba3ad2"
+					]
 				}
 			],
-			"id": "75c7aa9c-f5b5-4e13-9685-96369971ead4"
-		},
-		{
-			"name": "Get all projects",
-			"id": "89d6579b-20d7-443a-ac1b-03a7340f15e7",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/ld+json"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/projects",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"projects"
-					]
-				},
-				"description": "Returns all available projects."
-			},
-			"response": [
-				{
-					"id": "1e721bf2-7d79-4622-b3ef-34fe9b88c4f0",
-					"name": "All projects assigned to your account.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/projects",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"projects"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"status\": \"in_progress\",\n  \"phase\": \"commissioning\",\n  \"address\": \"http://kcRSpblZcVlMGYxxnWAPxATLUoe.yfoZowEM6d0fchUE2obulGc\",\n  \"id\": -11892550,\n  \"proposalId\": \"Excepteur sint ad minim\",\n  \"applicationStatus\": \"declined\",\n  \"packagePrice\": 98819726.83478963,\n  \"panelCount\": 90051335.1674374,\n  \"panelWatts\": 11916018.000349343,\n  \"systemSize\": 36413648.36490616,\n  \"systemProduction\": 61867078.31189117,\n  \"proposalLink\": \"non\",\n  \"amountFinanced\": 33031479.40259072,\n  \"downPayment\": 40771626.52628425,\n  \"introductoryTerm\": 91402084.43929788,\n  \"introductoryPayment\": -32909786.467610672,\n  \"federalRebate\": 28714073.959188774,\n  \"stateRebase\": -34677334.18474803,\n  \"utilityRebate\": 68923948.55781192,\n  \"loanProductName\": \"sed nostr\",\n  \"loanDealerFee\": -59895093.812019914,\n  \"loanApr\": 30982953.26966846,\n  \"loanTerm\": 65983983.34746736,\n  \"contractRate\": 675112.4053460807,\n  \"basePpw\": 12810695.524118602,\n  \"proposalDate\": \"1961-09-26\",\n  \"createdAt\": \"2011-02-13T23:13:26.328Z\",\n  \"updatedAt\": \"1996-11-04T10:46:29.244Z\",\n  \"customer\": \"https://HTEwYAVPizsRdLVZZoRUCIaUWzhb.oobzEevp,PJFy2c\",\n  \"dealer\": \"https://eQIAysZCjMTY.ikgjtWOhdLkpeyuPK5ejFrLAfi3p2e,v6hblaP4qE.dZzInLmRXvpDYVtPZWjblOeh5W.-GjSO9BNvsL6\",\n  \"distributor\": \"http://MvZAbYiSOGKjHTvmHDUWUvMzfmEy.emcrJyRuR6WEV1ldgbHJY0MxCe+BuVsgKKBTtn2VQqk.3xjiKuBaULqrHEpzBXOMszdN4W\",\n  \"installer\": \"http://ztGKvnGcSLHQPWwfsNAGKBwcRiwodGAl.qrkoFFCA8eg8.B.La1u46pArPheSBwCdppq5z7,QNRVi4vbRU3g,i\",\n  \"user\": \"https://acQOGbvQatsMCcdfXfHKrogR.swhsL0J134MlI1BdFtVRmyeEX,Jh\",\n  \"actionItems\": [\n    \"https://MXskwAmoGHYcL.ywzA-6OiQNon.oWa1j\",\n    \"https://XeBanBZxoIWANNxzNl.yfbSODIgP+Z43-43nS2Y2pXBmXnQnTMkKhikBbm9P6lV6iIIu2OTs\"\n  ],\n  \"attachments\": [\n    \"http://yDwZibPXvkeeEQZIVtxEnItJlqonD.fupiYw1LaVZr+-NVqpOe2IlIlil1VcwmZeWwUq7LyrsCJ\",\n    \"http://FoXeyNEZVlwlnMGJvkMCHfpUMctIpqho.iqmpaw.vqSlWedvAlualBd.U3dvKGXrlHJv8jkKHzT\"\n  ],\n  \"comments\": [\n    \"http://XEkz.ebDmT5A-k+fln2eSr4q+i1iWNApC01GUFnWewAZdBBnhRm,MXiv72CA9DwB8qZm\",\n    \"http://fIwoEVbJEEmPEmbktJJEBZodlbl.tiZUkrzvveVUjssEL2gEJ0AjBLj87u\"\n  ]\n}"
-				},
-				{
-					"id": "6417480d-1026-4746-802c-42aff0ad0716",
-					"name": "There was no API key provided with the request or the API key was invalid.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/projects",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"projects"
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"in nulla fugiat ut\"\n}"
-				},
-				{
-					"id": "a6d867df-c8e1-4015-8163-06c24e80193f",
-					"name": "The API key provided does not contain the proper scopes for the current request.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/projects",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"projects"
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"in nulla fugiat ut\"\n}"
-				},
-				{
-					"id": "daa2d82f-7822-4af5-917f-f55b1ad2e57c",
-					"name": "There was an unexpected server error.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/projects",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"projects"
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"in nulla fugiat ut\"\n}"
-				}
-			]
+			"id": "dfdfd19e-5b51-436c-aaf7-b5a71098ecc8"
 		}
 	],
 	"auth": {
-		"type": "apikey",
-		"apikey": [
+		"type": "bearer",
+		"bearer": [
 			{
-				"key": "key",
-				"value": "Bearer",
-				"type": "string"
-			},
-			{
-				"key": "value",
-				"value": "{{apiKey}}",
-				"type": "string"
-			},
-			{
-				"key": "in",
-				"value": "header",
+				"key": "token",
+				"value": "{{bearerToken}}",
 				"type": "string"
 			}
 		]
 	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3432b550-7699-4b21-829d-5ce468ef3cb6",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2e5590a0-ff8a-45da-8725-866e8a8f866a",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
-			"id": "520db3f9-674b-4947-868a-c3b1ff7c1009",
+			"id": "468d9c81-0df3-4dbe-9c48-485662424c84",
 			"key": "baseUrl",
 			"value": "https://api.eliosfund.com",
+			"type": "string"
+		},
+		{
+			"id": "95290efa-34de-4e33-a934-bb06592ece54",
+			"key": "bearerToken",
+			"value": "",
 			"type": "string"
 		}
 	]

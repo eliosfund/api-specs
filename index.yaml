@@ -2,7 +2,7 @@ openapi: '3.0.0'
 info:
   version: '1.0.0'
   title: 'Elios Fund API'
-  description: The Elios Fund API provides a robust interface for partners to integrate and access the most powerful financing options in Solar today.
+  description: The Elios Fund API provides a robust interface for partners to integrate and access the most powerful financing options in solar today.
   contact:
     name: Elios Fund Engineering
     url: https://portal.support.eliosfund.com
@@ -19,6 +19,87 @@ servers:
     description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
+  /dealers:
+    get:
+      summary: Get all dealers
+      description: Returns all available dealers.
+      security:
+        - ApiKey:
+          - view:dealers
+        - OAuth:
+          - view:dealers
+      responses:
+        200:
+          description: All dealers assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DealerCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dealers/{dealerId}:
+    parameters:
+      - name: dealerId
+        description: The unique identifier of the dealer.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/DealerId'
+    get:
+      summary: Get a dealer
+      description: Returns all available information about a single dealer.
+      security:
+        - ApiKey:
+          - view:dealers
+        - OAuth:
+          - view:dealers
+      responses:
+        200:
+          description: The dealers corresponding to the provided `dealerId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Dealer'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'              
   /projects:
     get:
       summary: Get all projects
@@ -112,6 +193,17 @@ components:
       type: string
       format: uri
       example: '/addresses/1'
+    ApplicationStatus:
+      description: The customer qualification application status.
+      type: string
+      enum:
+        - open
+        - submitted
+        - onhold
+        - approved
+        - declined
+        - none
+        - cancelled  
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
@@ -127,6 +219,33 @@ components:
       type: string
       format: uri
       example: '/comments/1'
+    Dealer:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/DealerIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Dealer
+        id:
+          $ref: '#/components/schemas/DealerId'
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: url
+        installers:
+          type: array
+          description: An array of installers the dealer is approved to work with.
+          items:
+            $ref: '#/components/schemas/InstallerIri' 
+    DealerId:
+      description: The unique identifier of a dealer.
+      type: integer      
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
@@ -142,70 +261,8 @@ components:
       type: string
       format: uri
       example: '/installers/1'
-    ProjectIri:
-      description: The unique JSON-LD IRI reference to the project.
-      type: string
-      format: uri
-      example: '/projects/1'  
-    UserIri:
-      description: The unique JSON-LD IRI reference to the user.
-      type: string
-      format: uri
-      example: '/users/1'
-    ApplicationStatus:
-      description: The customer qualification application status.
-      type: string
-      enum:
-        - open
-        - submitted
-        - onhold
-        - approved
-        - declined
-        - none
-        - cancelled
-    ProjectId:
-      description: The unique identifier of a project.
-      type: integer
-    ProjectProposalId:
-      description: A second unique identifier of a project.
-      type: string
-    ProjectPhase:
-      description: The current project phase.
-      type: string
-      enum:
-        - commissioning
-        - customer_survey
-        - design
-        - final_payment
-        - first_payment
-        - initial_review
-        - inspection
-        - install
-        - install_qa
-        - interconnection
-        - ntp_review
-        - ntp_submission
-        - permitting
-        - procurement
-        - pto
-        - rebates
-        - sale
-        - site_survey
-    ProjectStatus:
-      description: The current project status.
-      type: string
-      enum:
-        - new
-        - cancelled
-        - in_progress
-        - on_hold
-        - complete
     Project:
       type: object
-      required:
-        - status
-        - phase
-        - address
       properties:
         "@id":
           $ref: '#/components/schemas/ProjectIri'
@@ -301,7 +358,49 @@ components:
         comments:
           type: array
           items:
-            $ref: '#/components/schemas/CommentIri'
+            $ref: '#/components/schemas/CommentIri'  
+    ProjectId:
+      description: The unique identifier of a project.
+      type: integer
+    ProjectIri:
+      description: The unique JSON-LD IRI reference to the project.
+      type: string
+      format: uri
+      example: '/projects/1'    
+    ProjectPhase:
+      description: The current project phase.
+      type: string
+      enum:
+        - commissioning
+        - customer_survey
+        - design
+        - final_payment
+        - first_payment
+        - initial_review
+        - inspection
+        - install
+        - install_qa
+        - interconnection
+        - ntp_review
+        - ntp_submission
+        - permitting
+        - procurement
+        - pto
+        - rebates
+        - sale
+        - site_survey
+    ProjectProposalId:
+      description: A second unique identifier of a project.
+      type: string   
+    ProjectStatus:
+      description: The current project status.
+      type: string
+      enum:
+        - new
+        - cancelled
+        - in_progress
+        - on_hold
+        - complete
     ProjectCollection:
       allOf:
         - $ref: '#/components/schemas/HydraCollectionMetadata'
@@ -353,6 +452,11 @@ components:
                     - { "@type": "IriTemplateMapping", "variable": "updatedAt", "property": "updated_at" }
             view:
                 $ref: '#/components/schemas/HydraView'
+    UserIri:
+      description: The unique JSON-LD IRI reference to the user.
+      type: string
+      format: uri
+      example: '/users/1'            
     HydraCollectionMetadata:
       type: object
       properties:
