@@ -2,22 +2,39 @@ openapi: '3.0.0'
 info:
   version: '1.0.0'
   title: 'Elios Fund API'
-  description: For support, please visit https://portal.support.eliosfund.com
+  description: The Elios Fund API provides a robust interface for partners to integrate and access the most powerful financing options in Solar today.
+  contact:
+    name: Elios Fund Engineering
+    url: https://portal.support.eliosfund.com
+    email: engineering@eliosfund.com
+
+externalDocs:
+  url: https://partners.eliosfund.com
+  description: Manage your Elios Fund API keys and OAuth 2.0 clients.
 
 servers:
   - url: https://api.eliosfund.com
+    description: All requests should be directed to the production environment.
+  - url: https://api.staging.eliosfund.com
+    description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
   /projects/{projectId}:
     parameters:
       - name: projectId
-        description: The unique identifier of the project.
+        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ProjectId'
     get:
       summary: Get a project
+      description: Returns all available information about a single project.
+      security:
+        - ApiKey:
+          - "view:projects"
+        - OAuth:
+          - "view:projects"
       responses:
         200:
           description: The project corresponding to the provided `projectId`.
@@ -25,14 +42,26 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Project'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
         404:
-          description: No spacecraft found for the provided `spacecraftId`
+          description: The requested resource was not found.
           content:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         500:
-          description: Unexpected error
+          description: There was an unexpected server error.
           content:
             application/ld+json:
               schema:
@@ -97,7 +126,7 @@ components:
         - cancelled
     ProjectId:
       description: The unique identifier of a project.
-      type: string
+      type: integer
     ProjectProposalId:
       description: A second uniquery identifier of a project.
       type: string
@@ -238,8 +267,22 @@ components:
           type: string
   securitySchemes:
     ApiKey:
-      type: apiKey
-      in: header
-      name: Bearer
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+    OAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://partners.eliosfund.com/oauth/authorize
+          tokenUrl: https://partners.eliosfund.com/oauth/token
+          scopes:
+            "view:action:items": Can view action items
+            "view:addresses": Can view addresses
+            "view:attachments": Can view attachments
+            "view:projects": Can view projects
+        clientCredentials:
+          tokenUrl: https://partners.eliosfund.com/oauth/token
 security:
   - ApiKey: []
+  - OAuth: []
