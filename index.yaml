@@ -244,10 +244,15 @@ components:
           items:
             $ref: '#/components/schemas/InstallerIri' 
     DealerCollection:
+      type: object
       allOf:
         - $ref: '#/components/schemas/HydraCollectionMetadata'
         - type: object
           properties:
+            "@context":
+              example: "/contexts/Dealer"
+            "@id":
+              example: "/dealers"
             totalItems:
               type: integer
               description: The total number of dealers.
@@ -258,7 +263,22 @@ components:
               items:
                 $ref: '#/components/schemas/Dealer'
             view:
-                $ref: '#/components/schemas/HydraView'         
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/dealers?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/dealers?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/dealers?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/dealers?page=2"
     DealerId:
       description: The unique identifier of a dealer.
       type: integer      
@@ -376,10 +396,15 @@ components:
           items:
             $ref: '#/components/schemas/CommentIri'  
     ProjectCollection:
+      type: object
       allOf:
         - $ref: '#/components/schemas/HydraCollectionMetadata'
         - type: object
           properties:
+            "@context":
+              example: "/contexts/Project"
+            "@id":
+              example: "/projects"
             totalItems:
               type: integer
               description: The total number of projects.
@@ -389,6 +414,23 @@ components:
               description: A list of projects.
               items:
                 $ref: '#/components/schemas/Project'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/projects?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/projects?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/projects?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/projects?page=2"
             search:
               type: object
               description: Search parameters for filtering the project collection.
@@ -424,8 +466,6 @@ components:
                     - { "@type": "IriTemplateMapping", "variable": "customer", "property": "customer" }
                     - { "@type": "IriTemplateMapping", "variable": "createdAt", "property": "created_at" }
                     - { "@type": "IriTemplateMapping", "variable": "updatedAt", "property": "updated_at" }
-            view:
-                $ref: '#/components/schemas/HydraView'  
     ProjectId:
       description: The unique identifier of a project.
       type: integer            
@@ -479,22 +519,21 @@ components:
         "@context":
           type: string
           description: The JSON-LD context.
-          example: "/contexts/Project"
         "@id":
           type: string
           description: The JSON-LD unique IRI for the collection.
-          example: "/projects"
         "@type":
           type: string
           description: The JSON-LD type of the collection.
-          example: "Collection"
+        example:
+          type: string
+          description: The JSON-LD example for the collection.
     HydraView:
       type: object
       properties:
         "@id":
           type: string
           description: The identifier of the paginated view.
-          example: "/projects?page=1"
         "@type":
           type: string
           description: The JSON-LD type of the view.
@@ -502,15 +541,12 @@ components:
         first:
           type: string
           description: The first page of the collection.
-          example: "/projects?page=1"
         last:
           type: string
           description: The last page of the collection.
-          example: "/projects?page=5"
         next:
           type: string
           description: The next page of the collection (if available).
-          example: "/projects?page=2"
     Error:
       type: object
       required:
