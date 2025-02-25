@@ -1,0 +1,245 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Elios Fund API'
+  description: For support, please visit https://portal.support.eliosfund.com
+
+servers:
+  - url: https://api.eliosfund.com
+
+paths:
+  /projects/{projectId}:
+    parameters:
+      - name: projectId
+        description: The unique identifier of the project.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ProjectId'
+    get:
+      summary: Get a project
+      responses:
+        200:
+          description: The project corresponding to the provided `projectId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        404:
+          description: No spacecraft found for the provided `spacecraftId`
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ActionItemIri:
+      description: The IRI reference to the action item.
+      type: string
+      format: uri
+      example: '/action-items/1'
+    AddressIri:
+      description: The IRI reference to the address.
+      type: string
+      format: uri
+      example: '/addresses/1'
+    AttachmentIri:
+      description: The IRI reference to the attachment.
+      type: string
+      format: uri
+      example: '/attachments/1'
+    CustomerIri:
+      description: The IRI reference to the customer.
+      type: string
+      format: uri
+      example: '/customers/1'
+    CommentIri:
+      description: The IRI reference to the comment.
+      type: string
+      format: uri
+      example: '/comments/1'
+    DealerIri:
+      description: The IRI reference to the dealer.
+      type: string
+      format: uri
+      example: '/dealers/1'
+    DistributorIri:
+      description: The IRI reference to the distributor.
+      type: string
+      format: uri
+      example: '/distributors/1'
+    InstallerIri:
+      description: The IRI reference to the instsaller.
+      type: string
+      format: uri
+      example: '/installers/1'
+    UserIri:
+      description: The IRI reference to the user.
+      type: string
+      format: uri
+      example: '/users/1'
+    ApplicationStatus:
+      description: The customer qualification application status.
+      type: string
+      enum:
+        - open
+        - submitted
+        - onhold
+        - approved
+        - declined
+        - none
+        - cancelled
+    ProjectId:
+      description: The unique identifier of a project.
+      type: string
+    ProjectProposalId:
+      description: A second uniquery identifier of a project.
+      type: string
+    ProjectPhase:
+      description: The current project phase.
+      type: string
+      enum:
+        - commissioning
+        - customer_survey
+        - design
+        - final_payment
+        - first_payment
+        - initial_review
+        - inspection
+        - install
+        - install_qa
+        - interconnection
+        - ntp_review
+        - ntp_submission
+        - permitting
+        - procurement
+        - pto
+        - rebates
+        - sale
+        - site_survey
+    ProjectStatus:
+      description: The current project status.
+      type: string
+      enum:
+        - new
+        - cancelled
+        - in_progress
+        - on_hold
+        - complete
+    Project:
+      type: object
+      required:
+        - status
+        - phase
+        - address
+      properties:
+        id:
+          $ref: '#/components/schemas/ProjectId'
+        proposalId:
+          $ref: '#/components/schemas/ProjectProposalId'  
+        status:
+          $ref: '#/components/schemas/ProjectStatus'  
+        phase:
+          $ref: '#/components/schemas/ProjectPhase'
+        applicationStatus:
+          $ref: '#/components/schemas/ApplicationStatus'
+        packagePrice:
+          description: The total contract price.
+          type: number
+        panelCount:
+          description: The number of solar panels involved in the system.
+          type: number
+        panelWatts:
+          description: The wattage of an individual panel.
+          type: number
+        systemSize:
+          description: The size of the system in kW.
+          type: number
+        systemProduction:
+          description: The yearly system energy production in kWh.
+          type: number
+        proposalLink:
+          description: The link to the project proposal.
+          type: string
+        amountFinanced:
+          description: The amount financed by the customer.
+          type: number
+        downPayment:
+          description: The down payment required.
+          type: number
+        introductoryTerm:
+          type: number
+        introductoryPayment:
+          type: number
+        federalRebate:
+          type: number
+        stateRebase:
+          type: number
+        utilityRebate:
+          type: number
+        loanProductName:
+          type: string
+        loanDealerFee:
+          type: number
+        loanApr:
+          type: number
+        loanTerm:
+          type: number
+        contractRate:
+          type: number
+        basePpw:
+          type: number
+        proposalDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        address:
+          $ref: '#/components/schemas/AddressIri'
+        customer:
+          $ref: '#/components/schemas/CustomerIri'
+        dealer:
+          $ref: '#/components/schemas/DealerIri'
+        distributor:
+          $ref: '#/components/schemas/DistributorIri'
+        installer:
+          $ref: '#/components/schemas/InstallerIri'
+        user:
+          $ref: '#/components/schemas/UserIri'
+        actionItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionItemIri'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentIri'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentIri'
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Bearer
+security:
+  - ApiKey: []

@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "4f9a7e8f-d62c-45ca-87b5-b9233d9329cd",
+		"name": "Elios Fund API",
+		"description": "For support, please visit https://portal.support.eliosfund.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "38011021-4f9a7e8f-d62c-45ca-87b5-b9233d9329cd"
+	},
+	"item": [
+		{
+			"name": "projects",
+			"item": [
+				{
+					"name": "{projectId}",
+					"item": [
+						{
+							"name": "Get a project",
+							"id": "7bf51658-3b19-43fe-b18c-946e0172c241",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/projects/:projectId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"projects",
+										":projectId"
+									],
+									"variable": [
+										{
+											"key": "projectId",
+											"value": "<string>",
+											"description": "(Required) The unique identifier of the project."
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "b72946b3-e018-4a9f-8c0b-d27169a36adf",
+									"name": "The project corresponding to the provided `projectId`.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											},
+											{
+												"description": "Added as a part of security scheme: apikey",
+												"key": "Bearer",
+												"value": "<API Key>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/projects/:projectId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"projects",
+												":projectId"
+											],
+											"variable": [
+												{
+													"key": "projectId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/ld+json",
+											"uuid": "381cb66c-e206-4dc7-b8cb-66fa466a955c"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"status\": \"complete\",\n  \"phase\": \"install_qa\",\n  \"address\": \"<uri>\",\n  \"id\": \"<string>\",\n  \"proposalId\": \"<string>\",\n  \"applicationStatus\": \"cancelled\",\n  \"packagePrice\": \"<number>\",\n  \"panelCount\": \"<number>\",\n  \"panelWatts\": \"<number>\",\n  \"systemSize\": \"<number>\",\n  \"systemProduction\": \"<number>\",\n  \"proposalLink\": \"<string>\",\n  \"amountFinanced\": \"<number>\",\n  \"downPayment\": \"<number>\",\n  \"introductoryTerm\": \"<number>\",\n  \"introductoryPayment\": \"<number>\",\n  \"federalRebate\": \"<number>\",\n  \"stateRebase\": \"<number>\",\n  \"utilityRebate\": \"<number>\",\n  \"loanProductName\": \"<string>\",\n  \"loanDealerFee\": \"<number>\",\n  \"loanApr\": \"<number>\",\n  \"loanTerm\": \"<number>\",\n  \"contractRate\": \"<number>\",\n  \"basePpw\": \"<number>\",\n  \"proposalDate\": \"<date>\",\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\",\n  \"customer\": \"<uri>\",\n  \"dealer\": \"<uri>\",\n  \"distributor\": \"<uri>\",\n  \"installer\": \"<uri>\",\n  \"user\": \"<uri>\",\n  \"actionItems\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"attachments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ],\n  \"comments\": [\n    \"<uri>\",\n    \"<uri>\"\n  ]\n}"
+								},
+								{
+									"id": "680a9c23-6f4c-4400-908e-b0de8d9b506a",
+									"name": "No spacecraft found for the provided `spacecraftId`",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											},
+											{
+												"description": "Added as a part of security scheme: apikey",
+												"key": "Bearer",
+												"value": "<API Key>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/projects/:projectId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"projects",
+												":projectId"
+											],
+											"variable": [
+												{
+													"key": "projectId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/ld+json",
+											"uuid": "8347d542-a914-44d9-acb6-4dcb05de49ff"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"<string>\"\n}"
+								},
+								{
+									"id": "80689fd7-eab4-46c4-86a8-43ba30139ddc",
+									"name": "Unexpected error",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											},
+											{
+												"description": "Added as a part of security scheme: apikey",
+												"key": "Bearer",
+												"value": "<API Key>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/projects/:projectId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"projects",
+												":projectId"
+											],
+											"variable": [
+												{
+													"key": "projectId"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/ld+json",
+											"uuid": "16e975ce-4339-45dc-af8b-988c566bbd97"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"<string>\"\n}"
+								}
+							]
+						}
+					],
+					"id": "2819e716-fb06-4c52-ada3-4b89ebba3ad2"
+				}
+			],
+			"id": "75c7aa9c-f5b5-4e13-9685-96369971ead4"
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{apiKey}}",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"id": "520db3f9-674b-4947-868a-c3b1ff7c1009",
+			"key": "baseUrl",
+			"value": "https://api.eliosfund.com"
+		}
+	]
+}
