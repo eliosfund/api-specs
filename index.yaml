@@ -19,6 +19,40 @@ servers:
     description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
+  /projects:
+    get:
+      summary: Get all projects
+      description: Returns all available projects.
+      security:
+        - ApiKey:
+          - view:projects
+        - OAuth:
+          - view:projects
+      responses:
+        200:
+          description: All projects assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProjectCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /projects/{projectId}:
     parameters:
       - name: projectId
@@ -32,9 +66,9 @@ paths:
       description: Returns all available information about a single project.
       security:
         - ApiKey:
-          - "view:projects"
+          - view:projects
         - OAuth:
-          - "view:projects"
+          - view:projects
       responses:
         200:
           description: The project corresponding to the provided `projectId`.
@@ -257,6 +291,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CommentIri'
+    ProjectCollection:
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            totalItems:
+              type: integer
+              description: The total number of projects.
+              example: 5
+            member:
+              type: array
+              description: A list of projects.
+              items:
+                $ref: '#/components/schemas/Project'
+    HydraCollectionMetadata:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/Project"
+        "@id":
+          type: string
+          description: The unique identifier for the collection.
+          example: "/projects"
+        "@type":
+          type: string
+          description: The JSON-LD type of the collection.
+          example: "Collection"
     Error:
       type: object
       required:
@@ -276,13 +339,31 @@ components:
         authorizationCode:
           authorizationUrl: https://partners.eliosfund.com/oauth/authorize
           tokenUrl: https://partners.eliosfund.com/oauth/token
+          refreshUrl: https://partners.eliosfund.com/oauth/refresh
           scopes:
-            "view:action:items": Can view action items
-            "view:addresses": Can view addresses
-            "view:attachments": Can view attachments
-            "view:projects": Can view projects
+            view:action:items: Can view action items
+            view:addresses: Can view addresses
+            view:attachments: Can view attachments
+            view:comments: Can view comments
+            view:dealers: Can view dealers
+            view:distributors: Can view distributors
+            view:installers: Can view installers
+            view:partners: Can view partners
+            view:projects: Can view projects
+            view:users: Can view users
         clientCredentials:
           tokenUrl: https://partners.eliosfund.com/oauth/token
+          scopes:
+            view:action:items: Can view action items
+            view:addresses: Can view addresses
+            view:attachments: Can view attachments
+            view:comments: Can view comments
+            view:dealers: Can view dealers
+            view:distributors: Can view distributors
+            view:installers: Can view installers
+            view:partners: Can view partners
+            view:projects: Can view projects
+            view:users: Can view users
 security:
   - ApiKey: []
   - OAuth: []
