@@ -470,6 +470,1262 @@
 			"id": "38ac5547-4f11-4f32-a98f-f6b8ee405375"
 		},
 		{
+			"name": "Distributors",
+			"item": [
+				{
+					"name": "Get all distributors",
+					"id": "d23e05a8-075c-4f65-a64f-6c529f2f5e16",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/distributors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributors"
+							]
+						},
+						"description": "Returns all available distributors."
+					},
+					"response": [
+						{
+							"id": "bf1fbd0f-a914-402d-abe2-899a4307bdff",
+							"name": "All distributors assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@context\": \"fugiat ad\",\n  \"@id\": \"dolore officia eu dolor\",\n  \"@type\": \"ut\",\n  \"example\": \"laboris velit fugiat dolor\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"https://jYgeekTIBQjmHDZmLMXLJ.roM0Em0Itr+b8\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"http://eqpVcFNptAsifqxcYdVrpfExOR.dikMmtmhXwMGkdP7D39Us+np,lpWMLxQekFyOqx0Vjzx8vOCt\",\n        \"https://QyuGzLNnUmYzLD.huHibeKfuwf6oGYvOcS8pjXWvV0jsZBSMP9SotAw\"\n      ],\n      \"installers\": [\n        \"http://qZCXNLbyzVWnnQRHubzV.ypesDv,CnvAFkQI0zVpNqbOZr+8mXH5rrZbfh2mIVtdvan.CbA6JfXZycKxJe\",\n        \"https://lkRoQPGNYFS.ubskAsxDbgUM7FGo-GU5ZYisgQovfj,kbeWj,V2GtjJMv55zYFhOn13O1SiT3CIRfmk\"\n      ]\n    },\n    {\n      \"@id\": \"http://bb.cmEw1obPbMxpWtWj2zuaVCeN58B9ovuKnGkSRtFuqa0LHKzGIUVyRq15FrpE2QHQbUGBaEG,S2Vsa\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"http://XGDLslGZCuYDZWWlyEHjhotwDENMGjH.wlmxO0tkuQByUB2j8gmHF+bkIrhwGhXS.v-ajWkIq-kva07u96\",\n        \"https://JFEdpPLubUVSMyRuqLwdNmcqnLDCGPWEr.aieMlp1KhEI4VkznRpecHAJJbuhXKSiDCrYmAaKX2\"\n      ],\n      \"installers\": [\n        \"http://PBrAOMycrrZYLKKW.tlFge5N.pBqrfka\",\n        \"http://OEmVSZx.ccscxDomnmC+2lyXVxCjszkd98VrbqhCQYNiw.,OFNOAQzbjfk2kgxPHQQ4\"\n      ]\n    }\n  ],\n  \"view\": {\n    \"@id\": \"ut ut\",\n    \"@type\": \"anim\",\n    \"first\": \"qui ut\",\n    \"last\": \"in nostrud\",\n    \"next\": \"sit eiusmod\"\n  }\n}"
+						},
+						{
+							"id": "132c6d14-5144-4c85-86e7-6a4fc0fad7ef",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "596ba82c-1635-4538-9b04-8ad5530dc26a",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "06c78be8-4ff9-4dcd-96c3-8c1057061bf6",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get a distributor",
+					"id": "ec73902a-69d4-4330-b325-c742ffc5600b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/distributors/:distributorId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributors",
+								":distributorId"
+							],
+							"variable": [
+								{
+									"key": "distributorId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the distributor."
+								}
+							]
+						},
+						"description": "Returns all available information about a single distributor."
+					},
+					"response": [
+						{
+							"id": "384bcc29-7f74-4964-8be8-323460001ea6",
+							"name": "The distributor corresponding to the provided `distributorId`.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors/:distributorId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors",
+										":distributorId"
+									],
+									"variable": [
+										{
+											"key": "distributorId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": \"https://gAvZDerBCKPoUuB.agCReaj7ejPiwI+YMLOBJXyHlGr9UlU\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<string>\",\n  \"dealers\": [\n    \"https://ukqANLmMiMRHJM.wncRTZKfXwvlfjzfB3erTxGqe7OWKUL3uIGfeQpSjwkUsbD48y0p4GdlrA6cc7AjGCaF.4\",\n    \"http://XQvFJaTz.dwmhZu1pegHn5b+GjFC9bWZ0jDMbUKlb5uM,z7ysH17ruurNOfoUf-b\"\n  ],\n  \"installers\": [\n    \"https://HDebozhLfpGRQHUpYKS.yhjlfEJ.qDI.U6VYAv3GZ3+jlMsL9X3AxzcyC0Zyh,1Y84ixnLb\",\n    \"http://CEGEJtYgoFhzZA.xoohL2LeIIjoBODAGjvhdKlccl4MrltghtNSVG.v866SXUiWMr,jOB0EJGc9zdZMUg4\"\n  ]\n}"
+						},
+						{
+							"id": "90cba8d3-3d75-4ea2-af45-9bb7d68f589e",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors/:distributorId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors",
+										":distributorId"
+									],
+									"variable": [
+										{
+											"key": "distributorId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "9625e012-f5ab-4f52-9b1e-d973c62dbf20",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors/:distributorId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors",
+										":distributorId"
+									],
+									"variable": [
+										{
+											"key": "distributorId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "ee4238d6-0868-4a41-85df-3864c820cf4b",
+							"name": "The requested resource was not found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors/:distributorId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors",
+										":distributorId"
+									],
+									"variable": [
+										{
+											"key": "distributorId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "6f6ec560-f978-49e1-af1a-9b58184397b4",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/distributors/:distributorId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"distributors",
+										":distributorId"
+									],
+									"variable": [
+										{
+											"key": "distributorId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						}
+					]
+				}
+			],
+			"id": "92d3751f-a7b9-4592-8542-c4997f1020cd"
+		},
+		{
+			"name": "Installers",
+			"item": [
+				{
+					"name": "Get all installers",
+					"id": "2fd1a305-b761-4ad6-b8e7-9ad6cc4a2a87",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/installers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"installers"
+							]
+						},
+						"description": "Returns all available installers."
+					},
+					"response": [
+						{
+							"id": "ab2842f0-7c14-4649-b918-f943b50b844d",
+							"name": "All installers assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@context\": \"dolore labore in irure\",\n  \"@id\": \"in et est\",\n  \"@type\": \"dolore ullamco consectetur culpa fugiat\",\n  \"example\": \"cillum ex\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"https://vAjFCSROGvnWJdZTHNs.cxpmuisYGtkeB+2SfcZRdXwIsYz1MW-fsyFW4GOZ\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"http://ptaELBT.plTXyaOZnSe.8\",\n        \"https://emOggCLkmsxIoqvzfENtTx.wxwLIOIjuOrSfMaGhTKAowaIPqU5ba\"\n      ]\n    },\n    {\n      \"@id\": \"http://s.ueyeI05EeMWjMvxAy72x.FCI5c.Tn-Qm43QndU+ho,UrrAN43YHv.iiB,vsCc-sMmoGcyOAVto\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"https://lVHBcTVvCYWGXveUNrDNdUOanUlK.rfdJboDRvbodKSu3YU2QX6O4BOtYU51LhAGQHRHO8x7HBj0x9qulYQoZPvKG.x66-B,fnnkq\",\n        \"http://HvPZWbJfMSlwxiAsEeS.wklnOebZ+DVxBID\"\n      ]\n    }\n  ],\n  \"view\": {\n    \"@id\": \"esse amet\",\n    \"@type\": \"occaecat elit aliquip fu\",\n    \"first\": \"sint tempor\",\n    \"last\": \"ut reprehenderit fugiat mollit\",\n    \"next\": \"anim non\"\n  }\n}"
+						},
+						{
+							"id": "462d039b-0c31-459c-ad6b-e604b2e45313",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						},
+						{
+							"id": "205924e8-e1ca-426a-944e-cc54bf00530b",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						},
+						{
+							"id": "3f5ea56a-2fd8-4640-ab28-096ab85c8728",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get an installer",
+					"id": "4390ae45-0ce4-4af1-af64-fc6d69f85330",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/installers/:installerId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"installers",
+								":installerId"
+							],
+							"variable": [
+								{
+									"key": "installerId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the installer."
+								}
+							]
+						},
+						"description": "Returns all available information about a single installer."
+					},
+					"response": [
+						{
+							"id": "09e0f887-f485-4136-98a7-857969acd04e",
+							"name": "The installer corresponding to the provided `installerId`.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers/:installerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers",
+										":installerId"
+									],
+									"variable": [
+										{
+											"key": "installerId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": \"http://PKgnmgmxfibZPLds.msyjc0Cg,2f4kt5NsCjWXbgsPJnJokAWPZiT7VmlVLuYkeWq8TY\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<string>\",\n  \"dealers\": [\n    \"http://MnHSuuxaElAJeYlW.pmpjaBrsTsAz-iPqB5BgbmHINw8pHlWAdIY4Y3p,ve1,3PPNMVmvMcC0UqzTGDUfWVa9\",\n    \"https://VNWmwlzoEbhieHLPsQZp.onkpOtEdClTHM,TsWqtuR4xxDGC,Vcm7SSZl4pPLxoIqBV9Tr,dgSSgNNeHOa\"\n  ]\n}"
+						},
+						{
+							"id": "0c4d9f2d-980f-42f6-bb2a-01a0b970fac3",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers/:installerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers",
+										":installerId"
+									],
+									"variable": [
+										{
+											"key": "installerId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						},
+						{
+							"id": "f87d406d-f812-4d9b-a10d-d2ad7a3516bc",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers/:installerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers",
+										":installerId"
+									],
+									"variable": [
+										{
+											"key": "installerId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						},
+						{
+							"id": "8f817bb0-b21d-4192-a966-a4f583d2e322",
+							"name": "The requested resource was not found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers/:installerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers",
+										":installerId"
+									],
+									"variable": [
+										{
+											"key": "installerId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						},
+						{
+							"id": "c0bb6e2b-0a82-4936-87f6-496fc289a19e",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/installers/:installerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"installers",
+										":installerId"
+									],
+									"variable": [
+										{
+											"key": "installerId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"ad\"\n}"
+						}
+					]
+				}
+			],
+			"id": "3dc969a0-54a1-4e2e-a4cf-2235efa4aa8a"
+		},
+		{
+			"name": "Partners",
+			"item": [
+				{
+					"name": "Get all partners",
+					"id": "da1a960d-88d5-450d-9cdc-076422afcb1e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/partners",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"partners"
+							]
+						},
+						"description": "Returns all available partners."
+					},
+					"response": [
+						{
+							"id": "d9cbb412-3ec4-410b-be0f-51b1e63914f6",
+							"name": "All partners assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@context\": \"ea nulla ut\",\n  \"@id\": \"culpa enim\",\n  \"@type\": \"n\",\n  \"example\": \"c\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"<uri>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"https://PqHkXCvJmoJVSbOopUtnXMBDNhddj.lcxbhe3c18AEqApGu.-UHwEcUhnrM8zlzPh8OpeOSORnTy8zH3B.V\",\n        \"http://ZYzvZNbQpc.uamf6IHSxDNQkkC5ZgIGtr9DyK1D0Dojx,AKED+7Y\"\n      ],\n      \"distributors\": [\n        \"https://qDsHWtDlpKdnljAGH.frBJIW,T3lFl97yt\",\n        \"http://twiBgLBIczVtaRGwRjHRUdwhHSAMOQgwQ.bzHPZpmYDexaUMWH5lhI7ihTWvQVc08XuN\"\n      ],\n      \"installers\": [\n        \"https://bbEtzwQAKIBbVfBGwQMuARVGa.afzdDkI0o2C4-wvE7Y8f6iZx7knM8P5\",\n        \"http://qzXyptYSanQSnaMIpZgWYeMW.samG-KqqvwMUPFnfbxvpGYH.jaSy8uNVC6kdcNGB93L5niLRXt3eaBq5yxg\"\n      ]\n    },\n    {\n      \"@id\": \"<uri>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"https://BwDaFXNGIKUCwVVQmkeb.vcaiMhWHGQPtgAzof5AwTXecraB+pHg.nMpMbl6qjwqDKHOlWCPVN-FM4t2mx.Epx9Dvv+kBhEYKW6,sE\",\n        \"http://PJqjKCHSNktoFLTSpC.lfhxxU.t8OjOhhZu1yGgiwK1wGigmMhOW8OiXsWdFcHJPoBvAb9k8Sve\"\n      ],\n      \"distributors\": [\n        \"http://YcmKxuVjTJTrIxEcWhpIPch.aeriS,OFDC9nU7jT6E4u\",\n        \"http://xdLoktIoJIxJx.ypdoeJjf9R.uQ-BaZ9ozdD\"\n      ],\n      \"installers\": [\n        \"http://xnPmFrVeDPwOIUGj.amhtzwTR-7wGuNTljHqC6MMIpHCUXDrKiKakEF9FJImKYOgmfDaoIiBBA1U5FM,,wf\",\n        \"http://utFwUKchzJDpWXClzzbRKxbBiPpF.kofqu6ghjjqfoORP7QPKaO+IEV.C8q1jxO2yQF3IaqwGeBETGNXxq+6Ls16dbAjktCYbkY\"\n      ]\n    }\n  ],\n  \"view\": {\n    \"@id\": \"mollit ut minim fugiat\",\n    \"@type\": \"commodo nisi laborum eu\",\n    \"first\": \"non ad laboris\",\n    \"last\": \"magna officia eiusmod dolor\",\n    \"next\": \"anim aliqua nostrud\"\n  }\n}"
+						},
+						{
+							"id": "2d4c813a-4d3e-485c-b10e-eb077ef469c2",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "3dc42ba4-d0fc-4710-b5e8-8b4e1dfe16da",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "5e898279-9611-4e60-a9f8-324036af1947",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get a partner",
+					"id": "6a06d774-9b61-47da-87a2-4ff1b725129b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/partners/:partnerId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"partners",
+								":partnerId"
+							],
+							"variable": [
+								{
+									"key": "partnerId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the partner."
+								}
+							]
+						},
+						"description": "Returns all available information about a single partner."
+					},
+					"response": [
+						{
+							"id": "ab095491-c794-4b21-9181-9bdc9e7cff0b",
+							"name": "The partner corresponding to the provided `partnerId`.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners/:partnerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners",
+										":partnerId"
+									],
+									"variable": [
+										{
+											"key": "partnerId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": \"<uri>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<string>\",\n  \"dealers\": [\n    \"http://arircTXW.uxasm9NEoVVRyQWuEy2BzlXmgif+xdab7u\",\n    \"http://A.ujw44kMo--LkDlqUTEpCMlNPhUEuXNbSjW7fAybtPBqbxCI5Yp8CAqEMYWjxKTY\"\n  ],\n  \"distributors\": [\n    \"http://zDdrPsjTbTclRtjErNs.fxyg7gxB4gezbqXkS1r,ZJCHgOKqqrqRadFgxIPAncMv9Wl,mB9mX-3wcF\",\n    \"http://WbKvmpB.fyxhNnXzWAJNHvnWglav2mezCtAZtEalqqPj8SuZ7LrzRoto0406oQaN.+tt5pIPOCWLdHBy41e0IJGko\"\n  ],\n  \"installers\": [\n    \"https://OrrQTlIfqYNoxSeiH.edbgKnaih1FtU-ZPm5E\",\n    \"https://Kz.krvni.SdrG9\"\n  ]\n}"
+						},
+						{
+							"id": "a0ae3ecb-38f5-411a-a3b7-b8e4a37837f5",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners/:partnerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners",
+										":partnerId"
+									],
+									"variable": [
+										{
+											"key": "partnerId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "7ad37a3a-55f4-4bdd-a8e1-43dc58630d48",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners/:partnerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners",
+										":partnerId"
+									],
+									"variable": [
+										{
+											"key": "partnerId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "21d4a233-df94-44d6-b0dd-5a1d8d763db7",
+							"name": "The requested resource was not found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners/:partnerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners",
+										":partnerId"
+									],
+									"variable": [
+										{
+											"key": "partnerId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						},
+						{
+							"id": "5a8a0e34-de5d-40d1-80f6-b1fb5c87f7cb",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/partners/:partnerId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"partners",
+										":partnerId"
+									],
+									"variable": [
+										{
+											"key": "partnerId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"minim ex ipsum nulla\"\n}"
+						}
+					]
+				}
+			],
+			"id": "34166a67-00c5-425e-aa34-45e77cdec8fc"
+		},
+		{
 			"name": "Projects",
 			"item": [
 				{
@@ -919,462 +2175,6 @@
 				}
 			],
 			"id": "dfdfd19e-5b51-436c-aaf7-b5a71098ecc8"
-		},
-		{
-			"name": "Get all installers",
-			"id": "2fd1a305-b761-4ad6-b8e7-9ad6cc4a2a87",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/ld+json"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/installers",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"installers"
-					]
-				},
-				"description": "Returns all available installers."
-			},
-			"response": [
-				{
-					"id": "ab2842f0-7c14-4649-b918-f943b50b844d",
-					"name": "All installers assigned to your account.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"@context\": \"dolore labore in irure\",\n  \"@id\": \"in et est\",\n  \"@type\": \"dolore ullamco consectetur culpa fugiat\",\n  \"example\": \"cillum ex\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"https://vAjFCSROGvnWJdZTHNs.cxpmuisYGtkeB+2SfcZRdXwIsYz1MW-fsyFW4GOZ\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"http://ptaELBT.plTXyaOZnSe.8\",\n        \"https://emOggCLkmsxIoqvzfENtTx.wxwLIOIjuOrSfMaGhTKAowaIPqU5ba\"\n      ]\n    },\n    {\n      \"@id\": \"http://s.ueyeI05EeMWjMvxAy72x.FCI5c.Tn-Qm43QndU+ho,UrrAN43YHv.iiB,vsCc-sMmoGcyOAVto\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"email\": \"<email>\",\n      \"website\": \"<string>\",\n      \"dealers\": [\n        \"https://lVHBcTVvCYWGXveUNrDNdUOanUlK.rfdJboDRvbodKSu3YU2QX6O4BOtYU51LhAGQHRHO8x7HBj0x9qulYQoZPvKG.x66-B,fnnkq\",\n        \"http://HvPZWbJfMSlwxiAsEeS.wklnOebZ+DVxBID\"\n      ]\n    }\n  ],\n  \"view\": {\n    \"@id\": \"esse amet\",\n    \"@type\": \"occaecat elit aliquip fu\",\n    \"first\": \"sint tempor\",\n    \"last\": \"ut reprehenderit fugiat mollit\",\n    \"next\": \"anim non\"\n  }\n}"
-				},
-				{
-					"id": "462d039b-0c31-459c-ad6b-e604b2e45313",
-					"name": "There was no API key provided with the request or the API key was invalid.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers"
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				},
-				{
-					"id": "205924e8-e1ca-426a-944e-cc54bf00530b",
-					"name": "The API key provided does not contain the proper scopes for the current request.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers"
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				},
-				{
-					"id": "3f5ea56a-2fd8-4640-ab28-096ab85c8728",
-					"name": "There was an unexpected server error.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers"
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				}
-			]
-		},
-		{
-			"name": "Get an installer",
-			"id": "4390ae45-0ce4-4af1-af64-fc6d69f85330",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/ld+json"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/installers/:installerId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"installers",
-						":installerId"
-					],
-					"variable": [
-						{
-							"key": "installerId",
-							"value": "<integer>",
-							"description": "(Required) The unique identifier of the installer."
-						}
-					]
-				},
-				"description": "Returns all available information about a single installer."
-			},
-			"response": [
-				{
-					"id": "09e0f887-f485-4136-98a7-857969acd04e",
-					"name": "The installer corresponding to the provided `installerId`.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers/:installerId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers",
-								":installerId"
-							],
-							"variable": [
-								{
-									"key": "installerId"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"@id\": \"http://PKgnmgmxfibZPLds.msyjc0Cg,2f4kt5NsCjWXbgsPJnJokAWPZiT7VmlVLuYkeWq8TY\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<string>\",\n  \"dealers\": [\n    \"http://MnHSuuxaElAJeYlW.pmpjaBrsTsAz-iPqB5BgbmHINw8pHlWAdIY4Y3p,ve1,3PPNMVmvMcC0UqzTGDUfWVa9\",\n    \"https://VNWmwlzoEbhieHLPsQZp.onkpOtEdClTHM,TsWqtuR4xxDGC,Vcm7SSZl4pPLxoIqBV9Tr,dgSSgNNeHOa\"\n  ]\n}"
-				},
-				{
-					"id": "0c4d9f2d-980f-42f6-bb2a-01a0b970fac3",
-					"name": "There was no API key provided with the request or the API key was invalid.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers/:installerId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers",
-								":installerId"
-							],
-							"variable": [
-								{
-									"key": "installerId"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				},
-				{
-					"id": "f87d406d-f812-4d9b-a10d-d2ad7a3516bc",
-					"name": "The API key provided does not contain the proper scopes for the current request.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers/:installerId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers",
-								":installerId"
-							],
-							"variable": [
-								{
-									"key": "installerId"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				},
-				{
-					"id": "8f817bb0-b21d-4192-a966-a4f583d2e322",
-					"name": "The requested resource was not found.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers/:installerId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers",
-								":installerId"
-							],
-							"variable": [
-								{
-									"key": "installerId"
-								}
-							]
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				},
-				{
-					"id": "c0bb6e2b-0a82-4936-87f6-496fc289a19e",
-					"name": "There was an unexpected server error.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/ld+json"
-							},
-							{
-								"description": "Added as a part of security scheme: bearer",
-								"key": "Authorization",
-								"value": "Bearer <token>"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/installers/:installerId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"installers",
-								":installerId"
-							],
-							"variable": [
-								{
-									"key": "installerId"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/ld+json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"message\": \"ad\"\n}"
-				}
-			]
 		}
 	],
 	"auth": {
