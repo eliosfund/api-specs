@@ -243,6 +243,22 @@ components:
           description: An array of installers the dealer is approved to work with.
           items:
             $ref: '#/components/schemas/InstallerIri' 
+    DealerCollection:
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            totalItems:
+              type: integer
+              description: The total number of dealers.
+              example: 5
+            member:
+              type: array
+              description: A list of dealers.
+              items:
+                $ref: '#/components/schemas/Dealer'
+            view:
+                $ref: '#/components/schemas/HydraView'         
     DealerId:
       description: The unique identifier of a dealer.
       type: integer      
@@ -359,48 +375,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CommentIri'  
-    ProjectId:
-      description: The unique identifier of a project.
-      type: integer
-    ProjectIri:
-      description: The unique JSON-LD IRI reference to the project.
-      type: string
-      format: uri
-      example: '/projects/1'    
-    ProjectPhase:
-      description: The current project phase.
-      type: string
-      enum:
-        - commissioning
-        - customer_survey
-        - design
-        - final_payment
-        - first_payment
-        - initial_review
-        - inspection
-        - install
-        - install_qa
-        - interconnection
-        - ntp_review
-        - ntp_submission
-        - permitting
-        - procurement
-        - pto
-        - rebates
-        - sale
-        - site_survey
-    ProjectProposalId:
-      description: A second unique identifier of a project.
-      type: string   
-    ProjectStatus:
-      description: The current project status.
-      type: string
-      enum:
-        - new
-        - cancelled
-        - in_progress
-        - on_hold
-        - complete
     ProjectCollection:
       allOf:
         - $ref: '#/components/schemas/HydraCollectionMetadata'
@@ -451,7 +425,49 @@ components:
                     - { "@type": "IriTemplateMapping", "variable": "createdAt", "property": "created_at" }
                     - { "@type": "IriTemplateMapping", "variable": "updatedAt", "property": "updated_at" }
             view:
-                $ref: '#/components/schemas/HydraView'
+                $ref: '#/components/schemas/HydraView'  
+    ProjectId:
+      description: The unique identifier of a project.
+      type: integer            
+    ProjectIri:
+      description: The unique JSON-LD IRI reference to the project.
+      type: string
+      format: uri
+      example: '/projects/1'    
+    ProjectPhase:
+      description: The current project phase.
+      type: string
+      enum:
+        - commissioning
+        - customer_survey
+        - design
+        - final_payment
+        - first_payment
+        - initial_review
+        - inspection
+        - install
+        - install_qa
+        - interconnection
+        - ntp_review
+        - ntp_submission
+        - permitting
+        - procurement
+        - pto
+        - rebates
+        - sale
+        - site_survey
+    ProjectProposalId:
+      description: A second unique identifier of a project.
+      type: string   
+    ProjectStatus:
+      description: The current project status.
+      type: string
+      enum:
+        - new
+        - cancelled
+        - in_progress
+        - on_hold
+        - complete
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
