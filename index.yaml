@@ -103,47 +103,52 @@ paths:
 components:
   schemas:
     ActionItemIri:
-      description: The IRI reference to the action item.
+      description: The unique JSON-LD IRI reference to the action item.
       type: string
       format: uri
       example: '/action-items/1'
     AddressIri:
-      description: The IRI reference to the address.
+      description: The unique JSON-LD IRI reference to the address.
       type: string
       format: uri
       example: '/addresses/1'
     AttachmentIri:
-      description: The IRI reference to the attachment.
+      description: The unique JSON-LD IRI reference to the attachment.
       type: string
       format: uri
       example: '/attachments/1'
     CustomerIri:
-      description: The IRI reference to the customer.
+      description: The unique JSON-LD IRI reference to the customer.
       type: string
       format: uri
       example: '/customers/1'
     CommentIri:
-      description: The IRI reference to the comment.
+      description: The unique JSON-LD IRI reference to the comment.
       type: string
       format: uri
       example: '/comments/1'
     DealerIri:
-      description: The IRI reference to the dealer.
+      description: The unique JSON-LD IRI reference to the dealer.
       type: string
       format: uri
       example: '/dealers/1'
     DistributorIri:
-      description: The IRI reference to the distributor.
+      description: The unique JSON-LD IRI reference to the distributor.
       type: string
       format: uri
       example: '/distributors/1'
     InstallerIri:
-      description: The IRI reference to the instsaller.
+      description: The unique JSON-LD IRI reference to the instsaller.
       type: string
       format: uri
       example: '/installers/1'
+    ProjectIri:
+      description: The unique JSON-LD IRI reference to the project.
+      type: string
+      format: uri
+      example: '/projects/1'  
     UserIri:
-      description: The IRI reference to the user.
+      description: The unique JSON-LD IRI reference to the user.
       type: string
       format: uri
       example: '/users/1'
@@ -162,7 +167,7 @@ components:
       description: The unique identifier of a project.
       type: integer
     ProjectProposalId:
-      description: A second uniquery identifier of a project.
+      description: A second unique identifier of a project.
       type: string
     ProjectPhase:
       description: The current project phase.
@@ -202,6 +207,12 @@ components:
         - phase
         - address
       properties:
+        "@id":
+          $ref: '#/components/schemas/ProjectIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Project
         id:
           $ref: '#/components/schemas/ProjectId'
         proposalId:
@@ -314,7 +325,7 @@ components:
           example: "/contexts/Project"
         "@id":
           type: string
-          description: The unique identifier for the collection.
+          description: The JSON-LD unique IRI for the collection.
           example: "/projects"
         "@type":
           type: string
