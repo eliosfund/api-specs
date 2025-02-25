@@ -316,6 +316,42 @@ components:
               description: A list of projects.
               items:
                 $ref: '#/components/schemas/Project'
+            search:
+              type: object
+              description: Search parameters for filtering the project collection.
+              properties:
+                "@type":
+                  type: string
+                  example: "IriTemplate"
+                template:
+                  type: string
+                  example: "/projects{?proposalId,status,phase,dealer,installer,user,customer,createdAt,updatedAt}"
+                variableRepresentation:
+                  type: string
+                  example: "BasicRepresentation"
+                mapping:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      "@type":
+                        type: string
+                        example: "IriTemplateMapping"
+                      variable:
+                        type: string
+                      property:
+                        type: string
+                  example:
+                    - { "@type": "IriTemplateMapping", "variable": "proposalId", "property": "proposal_id" }
+                    - { "@type": "IriTemplateMapping", "variable": "status", "property": "status" }
+                    - { "@type": "IriTemplateMapping", "variable": "phase", "property": "phase" }
+                    - { "@type": "IriTemplateMapping", "variable": "dealer", "property": "dealer" }
+                    - { "@type": "IriTemplateMapping", "variable": "installer", "property": "installer" }
+                    - { "@type": "IriTemplateMapping", "variable": "user", "property": "user" }
+                    - { "@type": "IriTemplateMapping", "variable": "customer", "property": "customer" }
+                    - { "@type": "IriTemplateMapping", "variable": "createdAt", "property": "created_at" }
+                    - { "@type": "IriTemplateMapping", "variable": "updatedAt", "property": "updated_at" }
+        - $ref: '#/components/schemas/HydraView'
     HydraCollectionMetadata:
       type: object
       properties:
@@ -331,6 +367,29 @@ components:
           type: string
           description: The JSON-LD type of the collection.
           example: "Collection"
+    HydraView:
+      type: object
+      properties:
+        "@id":
+          type: string
+          description: The identifier of the paginated view.
+          example: "/projects?page=1"
+        "@type":
+          type: string
+          description: The JSON-LD type of the view.
+          example: "PartialCollectionView"
+        first:
+          type: string
+          description: The first page of the collection.
+          example: "/projects?page=1"
+        last:
+          type: string
+          description: The last page of the collection.
+          example: "/projects?page=5"
+        next:
+          type: string
+          description: The next page of the collection (if available).
+          example: "/projects?page=2"
     Error:
       type: object
       required:
