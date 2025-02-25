@@ -100,6 +100,168 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'              
+  /distributors:
+    get:
+      summary: Get all distributors
+      description: Returns all available distributors.
+      security:
+        - ApiKey:
+          - view:distributors
+        - OAuth:
+          - view:distributors
+      responses:
+        200:
+          description: All distributors assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DistributorCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /distributors/{distributorId}:
+    parameters:
+      - name: distributorId
+        description: The unique identifier of the distributor.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/DistributorId'
+    get:
+      summary: Get a distributor
+      description: Returns all available information about a single distributor.
+      security:
+        - ApiKey:
+          - view:distributors
+        - OAuth:
+          - view:distributors
+      responses:
+        200:
+          description: The distributor corresponding to the provided `distributorId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Distributor'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /installers:
+    get:
+      summary: Get all installers
+      description: Returns all available installers.
+      security:
+        - ApiKey:
+          - view:installers
+        - OAuth:
+          - view:installers
+      responses:
+        200:
+          description: All installers assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/InstallerCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /installers/{installerId}:
+    parameters:
+      - name: installerId
+        description: The unique identifier of the installer.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/InstallerId'
+    get:
+      summary: Get an installer
+      description: Returns all available information about a single installer.
+      security:
+        - ApiKey:
+          - view:installers
+        - OAuth:
+          - view:installers
+      responses:
+        200:
+          description: The installer corresponding to the provided `installerId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Installer'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /projects:
     get:
       summary: Get all projects
@@ -157,6 +319,87 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Project'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /partners:
+    get:
+      summary: Get all partners
+      description: Returns all available partners.
+      security:
+        - ApiKey:
+          - view:partners
+        - OAuth:
+          - view:partners
+      responses:
+        200:
+          description: All partners assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/PartnerCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /partners/{partnerId}:
+    parameters:
+      - name: partnerId
+        description: The unique identifier of the partner.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/PartnerId'
+    get:
+      summary: Get a partner
+      description: Returns all available information about a single partner.
+      security:
+        - ApiKey:
+          - view:partners
+        - OAuth:
+          - view:partners
+      responses:
+        200:
+          description: The partner corresponding to the provided `partnerId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Partner'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -287,13 +530,134 @@ components:
       type: string
       format: uri
       example: '/dealers/1'
+    Distributor:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/DistributorIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Distributor
+        id:
+          $ref: '#/components/schemas/DistributorId'
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: url
+    DistributorCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Distributor"
+            "@id":
+              example: "/distributors"
+            totalItems:
+              type: integer
+              description: The total number of distributors.
+              example: 5
+            member:
+              type: array
+              description: A list of distributors.
+              items:
+                $ref: '#/components/schemas/Distributor'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/distributors?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/distributors?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/distributors?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/distributors?page=2"
+    DistributorId:
+      description: The unique identifier of a distributor.
+      type: integer
     DistributorIri:
       description: The unique JSON-LD IRI reference to the distributor.
       type: string
       format: uri
       example: '/distributors/1'
+    Installer:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/InstallerIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Installer
+        id:
+          $ref: '#/components/schemas/InstallerId'
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: url
+        dealers:
+          type: array
+          description: An array of dealers the installer is approved to work with.
+          items:
+            $ref: '#/components/schemas/DealerIri'
+    InstallerCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Installer"
+            "@id":
+              example: "/installers"
+            totalItems:
+              type: integer
+              description: The total number of installers.
+              example: 5
+            member:
+              type: array
+              description: A list of installers.
+              items:
+                $ref: '#/components/schemas/Installer'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/installers?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/installers?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/installers?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/installers?page=2"
+    InstallerId:
+      description: The unique identifier of an installer.
+      type: integer
     InstallerIri:
-      description: The unique JSON-LD IRI reference to the instsaller.
+      description: The unique JSON-LD IRI reference to the installer.
       type: string
       format: uri
       example: '/installers/1'
@@ -555,42 +919,120 @@ components:
         message:
           description: A human readable error message
           type: string
-  securitySchemes:
-    ApiKey:
-      type: http
-      scheme: Bearer
-      bearerFormat: JWT
-    OAuth:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: https://partners.eliosfund.com/oauth/authorize
-          tokenUrl: https://partners.eliosfund.com/oauth/token
-          refreshUrl: https://partners.eliosfund.com/oauth/refresh
-          scopes:
-            view:action:items: Can view action items
-            view:addresses: Can view addresses
-            view:attachments: Can view attachments
-            view:comments: Can view comments
-            view:dealers: Can view dealers
-            view:distributors: Can view distributors
-            view:installers: Can view installers
-            view:partners: Can view partners
-            view:projects: Can view projects
-            view:users: Can view users
-        clientCredentials:
-          tokenUrl: https://partners.eliosfund.com/oauth/token
-          scopes:
-            view:action:items: Can view action items
-            view:addresses: Can view addresses
-            view:attachments: Can view attachments
-            view:comments: Can view comments
-            view:dealers: Can view dealers
-            view:distributors: Can view distributors
-            view:installers: Can view installers
-            view:partners: Can view partners
-            view:projects: Can view projects
-            view:users: Can view users
+    Partner:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/PartnerIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Partner
+        id:
+          $ref: '#/components/schemas/PartnerId'
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: url
+        dealers:
+          type: array
+          description: An array of dealers the partner works with.
+          items:
+            $ref: '#/components/schemas/DealerIri'
+        distributors:
+          type: array
+          description: An array of distributors the partner works with.
+          items:
+            $ref: '#/components/schemas/DistributorIri'
+        installers:
+          type: array
+          description: An array of installers the partner works with.
+          items:
+            $ref: '#/components/schemas/InstallerIri'
+    PartnerCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Partner"
+            "@id":
+              example: "/partners"
+            totalItems:
+              type: integer
+              description: The total number of partners.
+              example: 5
+            member:
+              type: array
+              description: A list of partners.
+              items:
+                $ref: '#/components/schemas/Partner'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/partners?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/partners?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/partners?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/partners?page=2"
+    PartnerId:
+      description: The unique identifier of a partner.
+      type: integer
+    PartnerIri:
+      description: The unique JSON-LD IRI reference to the partner.
+      type: string
+      format: uri
+      example: '/partners/1'
+securitySchemes:
+  ApiKey:
+    type: http
+    scheme: Bearer
+    bearerFormat: JWT
+  OAuth:
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://partners.eliosfund.com/oauth/authorize
+        tokenUrl: https://partners.eliosfund.com/oauth/token
+        refreshUrl: https://partners.eliosfund.com/oauth/refresh
+        scopes:
+          view:action:items: Can view action items
+          view:addresses: Can view addresses
+          view:attachments: Can view attachments
+          view:comments: Can view comments
+          view:dealers: Can view dealers
+          view:distributors: Can view distributors
+          view:installers: Can view installers
+          view:partners: Can view partners
+          view:projects: Can view projects
+          view:users: Can view users
+      clientCredentials:
+        tokenUrl: https://partners.eliosfund.com/oauth/token
+        scopes:
+          view:action:items: Can view action items
+          view:addresses: Can view addresses
+          view:attachments: Can view attachments
+          view:comments: Can view comments
+          view:dealers: Can view dealers
+          view:distributors: Can view distributors
+          view:installers: Can view installers
+          view:partners: Can view partners
+          view:projects: Can view projects
+          view:users: Can view users
 security:
   - ApiKey: []
   - OAuth: []
