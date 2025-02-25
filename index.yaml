@@ -429,12 +429,12 @@ components:
     ActionItemIri:
       description: The unique JSON-LD IRI reference to the action item.
       type: string
-      format: uri
+      format: iri-reference
       example: '/action-items/1'
     AddressIri:
       description: The unique JSON-LD IRI reference to the address.
       type: string
-      format: uri
+      format: iri-reference
       example: '/addresses/1'
     ApplicationStatus:
       description: The customer qualification application status.
@@ -450,17 +450,17 @@ components:
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
-      format: uri
+      format: iri-reference
       example: '/attachments/1'
     CustomerIri:
       description: The unique JSON-LD IRI reference to the customer.
       type: string
-      format: uri
+      format: iri-reference
       example: '/customers/1'
     CommentIri:
       description: The unique JSON-LD IRI reference to the comment.
       type: string
-      format: uri
+      format: iri-reference
       example: '/comments/1'
     Dealer:
       type: object
@@ -480,7 +480,7 @@ components:
           format: email
         website:
           type: string
-          format: url
+          format: uri
         installers:
           type: array
           description: An array of installers the dealer is approved to work with.
@@ -528,7 +528,7 @@ components:
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
-      format: uri
+      format: iri-reference
       example: '/dealers/1'
     Distributor:
       type: object
@@ -548,7 +548,17 @@ components:
           format: email
         website:
           type: string
-          format: url
+          format: uri
+        dealers:
+          type: array
+          description: An array of dealers the distributor works with.
+          items:
+            $ref: '#/components/schemas/DealerIri'
+        installers:
+          type: array
+          description: An array of installers the distributor works with.
+          items:
+            $ref: '#/components/schemas/InstallerIri'
     DistributorCollection:
       type: object
       allOf:
@@ -591,7 +601,7 @@ components:
     DistributorIri:
       description: The unique JSON-LD IRI reference to the distributor.
       type: string
-      format: uri
+      format: iri-reference
       example: '/distributors/1'
     Installer:
       type: object
@@ -611,7 +621,7 @@ components:
           format: email
         website:
           type: string
-          format: url
+          format: iri-reference
         dealers:
           type: array
           description: An array of dealers the installer is approved to work with.
@@ -659,7 +669,7 @@ components:
     InstallerIri:
       description: The unique JSON-LD IRI reference to the installer.
       type: string
-      format: uri
+      format: iri-reference
       example: '/installers/1'
     Project:
       type: object
@@ -836,7 +846,7 @@ components:
     ProjectIri:
       description: The unique JSON-LD IRI reference to the project.
       type: string
-      format: uri
+      format: iri-reference
       example: '/projects/1'    
     ProjectPhase:
       description: The current project phase.
@@ -875,7 +885,7 @@ components:
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
-      format: uri
+      format: iri-reference
       example: '/users/1'            
     HydraCollectionMetadata:
       type: object
@@ -937,7 +947,7 @@ components:
           format: email
         website:
           type: string
-          format: url
+          format: uri
         dealers:
           type: array
           description: An array of dealers the partner works with.
@@ -995,44 +1005,44 @@ components:
     PartnerIri:
       description: The unique JSON-LD IRI reference to the partner.
       type: string
-      format: uri
+      format: iri-reference
       example: '/partners/1'
-securitySchemes:
-  ApiKey:
-    type: http
-    scheme: Bearer
-    bearerFormat: JWT
-  OAuth:
-    type: oauth2
-    flows:
-      authorizationCode:
-        authorizationUrl: https://partners.eliosfund.com/oauth/authorize
-        tokenUrl: https://partners.eliosfund.com/oauth/token
-        refreshUrl: https://partners.eliosfund.com/oauth/refresh
-        scopes:
-          view:action:items: Can view action items
-          view:addresses: Can view addresses
-          view:attachments: Can view attachments
-          view:comments: Can view comments
-          view:dealers: Can view dealers
-          view:distributors: Can view distributors
-          view:installers: Can view installers
-          view:partners: Can view partners
-          view:projects: Can view projects
-          view:users: Can view users
-      clientCredentials:
-        tokenUrl: https://partners.eliosfund.com/oauth/token
-        scopes:
-          view:action:items: Can view action items
-          view:addresses: Can view addresses
-          view:attachments: Can view attachments
-          view:comments: Can view comments
-          view:dealers: Can view dealers
-          view:distributors: Can view distributors
-          view:installers: Can view installers
-          view:partners: Can view partners
-          view:projects: Can view projects
-          view:users: Can view users
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+    OAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://partners.eliosfund.com/oauth/authorize
+          tokenUrl: https://partners.eliosfund.com/oauth/token
+          refreshUrl: https://partners.eliosfund.com/oauth/refresh
+          scopes:
+            view:action:items: Can view action items
+            view:addresses: Can view addresses
+            view:attachments: Can view attachments
+            view:comments: Can view comments
+            view:dealers: Can view dealers
+            view:distributors: Can view distributors
+            view:installers: Can view installers
+            view:partners: Can view partners
+            view:projects: Can view projects
+            view:users: Can view users
+        clientCredentials:
+          tokenUrl: https://partners.eliosfund.com/oauth/token
+          scopes:
+            view:action:items: Can view action items
+            view:addresses: Can view addresses
+            view:attachments: Can view attachments
+            view:comments: Can view comments
+            view:dealers: Can view dealers
+            view:distributors: Can view distributors
+            view:installers: Can view installers
+            view:partners: Can view partners
+            view:projects: Can view projects
+            view:users: Can view users
 security:
   - ApiKey: []
   - OAuth: []
