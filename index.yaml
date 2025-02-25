@@ -549,16 +549,6 @@ components:
         website:
           type: string
           format: uri
-        dealers:
-          type: array
-          description: An array of dealers the distributor works with.
-          items:
-            $ref: '#/components/schemas/DealerIri'
-        installers:
-          type: array
-          description: An array of installers the distributor works with.
-          items:
-            $ref: '#/components/schemas/InstallerIri'
     DistributorCollection:
       type: object
       allOf:
@@ -927,7 +917,7 @@ components:
         - message
       properties:
         message:
-          description: A human readable error message
+          description: A human readable error message.
           type: string
     Partner:
       type: object
@@ -948,21 +938,6 @@ components:
         website:
           type: string
           format: uri
-        dealers:
-          type: array
-          description: An array of dealers the partner works with.
-          items:
-            $ref: '#/components/schemas/DealerIri'
-        distributors:
-          type: array
-          description: An array of distributors the partner works with.
-          items:
-            $ref: '#/components/schemas/DistributorIri'
-        installers:
-          type: array
-          description: An array of installers the partner works with.
-          items:
-            $ref: '#/components/schemas/InstallerIri'
     PartnerCollection:
       type: object
       allOf:
