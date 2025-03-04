@@ -424,6 +424,40 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /webhooks:
+    get:
+      summary: Get all webhooks
+      description: Returns all available webhooks.
+      security:
+        - ApiKey:
+          - manage:webhooks
+        - OAuth:
+          - manage:webhooks
+      responses:
+        200:
+          description: All webhooks assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/WebhookCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     ActionItemIri:
@@ -593,6 +627,55 @@ components:
       type: string
       format: iri-reference
       example: '/distributors/1'
+    Error:
+      type: object
+      properties:
+        type:
+          description: The IRI reference.
+          type: string
+          format: iri-reference
+          example: '/errors/401'
+        title:
+          description: A human readable error message.
+          type: string 
+        status:
+          description: The HTTP status code.
+          type: integer
+        detail:
+          description: More detailed error information.
+          type: string
+    HydraCollectionMetadata:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+        "@id":
+          type: string
+          description: The JSON-LD unique IRI for the collection.
+        "@type":
+          type: string
+          description: The JSON-LD type of the collection.
+          example: Collection
+    HydraView:
+      type: object
+      properties:
+        "@id":
+          type: string
+          description: The identifier of the paginated view.
+        "@type":
+          type: string
+          description: The JSON-LD type of the view.
+          example: "PartialCollectionView"
+        first:
+          type: string
+          description: The first page of the collection.
+        last:
+          type: string
+          description: The last page of the collection.
+        next:
+          type: string
+          description: The next page of the collection (if available).
     Installer:
       type: object
       properties:
@@ -661,6 +744,69 @@ components:
       type: string
       format: iri-reference
       example: '/installers/1'
+    Partner:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/PartnerIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Partner
+        id:
+          $ref: '#/components/schemas/PartnerId'
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: uri
+    PartnerCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Partner"
+            "@id":
+              example: "/partners"
+            totalItems:
+              type: integer
+              description: The total number of partners.
+              example: 5
+            member:
+              type: array
+              description: A list of partners.
+              items:
+                $ref: '#/components/schemas/Partner'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/partners?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/partners?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/partners?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/partners?page=2"
+    PartnerId:
+      description: The unique identifier of a partner.
+      type: integer
+    PartnerIri:
+      description: The unique JSON-LD IRI reference to the partner.
+      type: string
+      format: iri-reference
+      example: '/partners/1'
     Project:
       type: object
       properties:
@@ -876,87 +1022,71 @@ components:
       description: The unique JSON-LD IRI reference to the user.
       type: string
       format: iri-reference
-      example: '/users/1'            
-    HydraCollectionMetadata:
-      type: object
-      properties:
-        "@context":
-          type: string
-          description: The JSON-LD context.
-        "@id":
-          type: string
-          description: The JSON-LD unique IRI for the collection.
-        "@type":
-          type: string
-          description: The JSON-LD type of the collection.
-        example:
-          type: string
-          description: The JSON-LD example for the collection.
-    HydraView:
+      example: '/users/1'
+    Webhook:
       type: object
       properties:
         "@id":
-          type: string
-          description: The identifier of the paginated view.
-        "@type":
-          type: string
-          description: The JSON-LD type of the view.
-          example: "PartialCollectionView"
-        first:
-          type: string
-          description: The first page of the collection.
-        last:
-          type: string
-          description: The last page of the collection.
-        next:
-          type: string
-          description: The next page of the collection (if available).
-    Error:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          description: A human readable error message.
-          type: string
-    Partner:
-      type: object
-      properties:
-        "@id":
-          $ref: '#/components/schemas/PartnerIri'
+          $ref: '#/components/schemas/WebhookIri'
         "@type":
           type: string
           description: The JSON-LD resource type.
-          example: Partner
+          example: Webhook
         id:
-          $ref: '#/components/schemas/PartnerId'
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        website:
+          $ref: '#/components/schemas/WebhookId'
+        url:
+          description: The URL the webhook request will be sent to.
           type: string
           format: uri
-    PartnerCollection:
+        enabled:
+          description: Whether or not the webhook is enabled.
+          type: boolean
+          default: true
+        method:
+          description: The HTTP method that will be used.
+          type: string
+          enum:
+            - get
+            - post
+        events:
+          description: The events that will trigger the webhook to send.
+          type: array
+          items: 
+            $ref: '#/components/schemas/WebhookEvent'
+    WebhookEvent:
+      description: The type of event that triggers the webhook.
+      type: string
+      enum:
+        - application.created
+        - application.updated
+        - application.deleted
+        - project.created
+        - project.updated
+        - project.deleted
+        - project.phase.updated
+        - project.status.updated
+        - user.created
+        - user.updated
+        - user.deleted
+    WebhookCollection:
       type: object
       allOf:
         - $ref: '#/components/schemas/HydraCollectionMetadata'
         - type: object
           properties:
             "@context":
-              example: "/contexts/Partner"
+              example: "/contexts/Webhook"
             "@id":
-              example: "/partners"
+              example: "/webhooks"
             totalItems:
               type: integer
-              description: The total number of partners.
+              description: The total number of webhooks.
               example: 5
             member:
               type: array
-              description: A list of partners.
+              description: A list of webhooks.
               items:
-                $ref: '#/components/schemas/Partner'
+                $ref: '#/components/schemas/Webhook'
             view:
               allOf:
                 - $ref: '#/components/schemas/HydraView'
@@ -964,24 +1094,24 @@ components:
                   properties:
                     "@id":
                       description: The identifier of the paginated view.
-                      example: "/partners?page=1"
+                      example: "/webhooks?page=1"
                     first:
                       description: The first page of the collection.
-                      example: "/partners?page=1"
+                      example: "/webhooks?page=1"
                     last:
                       description: The last page of the collection.
-                      example: "/partners?page=5"
+                      example: "/webhooks?page=5"
                     next:
                       description: The next page of the collection (if available).
-                      example: "/partners?page=2"
-    PartnerId:
-      description: The unique identifier of a partner.
+                      example: "/webhooks?page=2"
+    WebhookId:
+      description: The unique identifier of a webhook.
       type: integer
-    PartnerIri:
-      description: The unique JSON-LD IRI reference to the partner.
+    WebhookIri:
+      description: The unique JSON-LD IRI reference to the webhook.
       type: string
       format: iri-reference
-      example: '/partners/1'
+      example: '/webhooks/1'
   securitySchemes:
     ApiKey:
       type: apiKey
@@ -995,6 +1125,7 @@ components:
           tokenUrl: https://partners.eliosfund.com/oauth/token
           refreshUrl: https://partners.eliosfund.com/oauth/refresh
           scopes:
+            manage:webhooks: Can manage webhooks
             view:action:items: Can view action items
             view:addresses: Can view addresses
             view:attachments: Can view attachments
@@ -1008,6 +1139,7 @@ components:
         clientCredentials:
           tokenUrl: https://partners.eliosfund.com/oauth/token
           scopes:
+            manage:webhooks: Can manage webhooks
             view:action:items: Can view action items
             view:addresses: Can view addresses
             view:attachments: Can view attachments

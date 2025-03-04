@@ -2175,6 +2175,212 @@
 				}
 			],
 			"id": "dfdfd19e-5b51-436c-aaf7-b5a71098ecc8"
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Get all webhooks",
+					"id": "9dce75c1-0159-441b-870f-63cc4a1ad61c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{apiKey}}",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/webhooks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"webhooks"
+							]
+						},
+						"description": "Returns all available webhooks."
+					},
+					"response": [
+						{
+							"id": "a85180e9-727b-423e-b4df-be527860c7f0",
+							"name": "All webhooks assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/webhooks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"webhooks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@context\": \"deserunt Duis incididunt\",\n  \"@id\": \"esse ipsum veniam adipisicing\",\n  \"@type\": \"qui\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"url\": \"<uri>\",\n      \"enabled\": true,\n      \"method\": \"get\",\n      \"events\": [\n        \"application.updated\",\n        \"project.deleted\"\n      ]\n    },\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"url\": \"<uri>\",\n      \"enabled\": true,\n      \"method\": \"get\",\n      \"events\": [\n        \"project.updated\",\n        \"project.phase.updated\"\n      ]\n    }\n  ],\n  \"view\": {\n    \"@id\": \"dolor deserunt aliquip re\",\n    \"@type\": \"irure qui\",\n    \"first\": \"sit Ut in ad irure\",\n    \"last\": \"minim incididunt\",\n    \"next\": \"est et mollit in ut\"\n  }\n}"
+						},
+						{
+							"id": "d1aba262-d1e4-4cab-8c7f-7c728c782901",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/webhooks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"webhooks"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"aliquip sit pariatur elit ullamco\",\n  \"title\": \"mollit in sunt\",\n  \"status\": 14703204,\n  \"detail\": \"labore sed enim in\"\n}"
+						},
+						{
+							"id": "36771b1f-99a4-4530-94b3-86a49c62a351",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/webhooks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"webhooks"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"aliquip sit pariatur elit ullamco\",\n  \"title\": \"mollit in sunt\",\n  \"status\": 14703204,\n  \"detail\": \"labore sed enim in\"\n}"
+						},
+						{
+							"id": "596f4ce9-a417-4992-b13e-76a8fab9cd1e",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/webhooks",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"webhooks"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"aliquip sit pariatur elit ullamco\",\n  \"title\": \"mollit in sunt\",\n  \"status\": 14703204,\n  \"detail\": \"labore sed enim in\"\n}"
+						}
+					]
+				}
+			],
+			"id": "04974219-50d4-42dd-86df-215a40a1dfa7"
 		}
 	],
 	"auth": {
