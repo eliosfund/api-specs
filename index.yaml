@@ -15,10 +15,93 @@ externalDocs:
 servers:
   - url: https://api.eliosfund.com
     description: All requests should be directed to the production environment.
+  - url: https://api.uat.eliosfund.com
+    description: For access to the UAT environment, please contact Elios Fund support.
   - url: https://api.staging.eliosfund.com
     description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
+  /applications:
+    get:
+      summary: Get all qualification applications
+      description: Returns all available qualification applications.
+      security:
+        - ApiKey:
+          - view:applications
+        - OAuth:
+          - view:applications
+      responses:
+        200:
+          description: All qualification applications assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /applications/{applicationId}:
+    parameters:
+      - name: applicationId
+        description: The unique identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ApplicationId'
+    get:
+      summary: Get a qualification application
+      description: Returns all available information about a single qualification application.
+      security:
+        - ApiKey:
+          - view:applications
+        - OAuth:
+          - view:applications
+      responses:
+        200:
+          description: The requested qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /dealers:
     get:
       summary: Get all dealers
@@ -465,11 +548,127 @@ components:
       type: string
       format: iri-reference
       example: '/action-items/1'
+    Address:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/AddressIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Address
+        id:
+          $ref: '#/components/schemas/AddressId'
+    AddressId:
+      description: The unique identifier of an address.
+      type: integer 
     AddressIri:
       description: The unique JSON-LD IRI reference to the address.
       type: string
       format: iri-reference
       example: '/addresses/1'
+    Application:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        primaryApplicant:
+          $ref: '#/components/schemas/ApplicationApplicant'
+          required: true
+        coApplicant:
+          $ref: '#/components/schemas/ApplicationApplicant'
+          required: false
+          nullable: true
+    ApplicationAddress:
+      type: object
+      properties:
+        streetNumber:
+          type: string
+          format: numeric
+          required: true
+        streetName:
+          type: string
+          required: true
+        city:
+          type: string
+          required: true
+          minimum: 3
+          maximum: 60
+        state:
+          type: string
+          required: true
+          minimum: 2
+          maximum: 2
+        postCode:
+          type: string
+          format: numeric
+          required: true
+          minimum: 5
+          maximum: 5
+        country:
+          type: string
+          format: numeric
+          required: true
+          minimum: 3
+          maximum: 3
+    ApplicationApplicant:
+      description: The demographics of a qualification applicant.
+      type: object
+      properties:
+        firstName:
+          type: string
+          required: true
+        middleName:
+          type: string
+          required: false
+          nullable: true
+        lastName:
+          type: string
+          required: true
+        email:
+          type: string
+          format: email
+          required: true
+        dateOfBirth:
+          type: string
+          format: date
+          required: true
+        ssn:
+          type: string
+          format: numeric
+          required: true
+          minimum: 4
+          maximum: 4
+        mobilePhone:
+          type: string
+          format: tel
+          required: true
+        homePhone:
+          type: string
+          format: tel
+          required: false
+          nullable: true
+        currentAddress:
+          $ref: '#/components/schemas/ApplicationAddress'
+          required: true
+        previousAddress:
+          $ref: '#/components/schemas/ApplicationAddress'
+          required: false
+          nullable: true
+    ApplicationId:
+      description: The unique identifier of a qualification application.
+      type: integer      
+    ApplicationIri:
+      description: The unique JSON-LD IRI reference to the qualification application.
+      type: string
+      format: iri-reference
+      example: '/applications/1'
     ApplicationStatus:
       description: The customer qualification application status.
       type: string

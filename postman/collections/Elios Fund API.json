@@ -8,6 +8,488 @@
 	},
 	"item": [
 		{
+			"name": "Applications",
+			"item": [
+				{
+					"name": "Get all qualification applications",
+					"id": "4730ddfe-4fd5-40bc-9414-01b422ce2125",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{apiKey}}",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/applications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"applications"
+							]
+						},
+						"description": "Returns all available qualification applications."
+					},
+					"response": [
+						{
+							"id": "1e65ca20-28a5-485b-a5b3-3e77fcfbf436",
+							"name": "All qualification applications assigned to your account.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"value\": \"reference #/components/schemas/ApplicationCollection not found in the OpenAPI spec\"\n}"
+						},
+						{
+							"id": "b55d47ff-38e6-48e0-8f93-a7e40b04e3cf",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						},
+						{
+							"id": "8dda693f-ae89-4754-bb71-a531d5e88646",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						},
+						{
+							"id": "7e0531d9-5046-41e3-adde-3a16725d1bf0",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get a qualification application",
+					"id": "3cf3e74c-f0e3-4b0d-ade2-b372c978a0b6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{apiKey}}",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/applications/:applicationId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"applications",
+								":applicationId"
+							],
+							"variable": [
+								{
+									"key": "applicationId",
+									"value": "<integer>",
+									"description": "(Required) The unique identifier of the qualification application."
+								}
+							]
+						},
+						"description": "Returns all available information about a single qualification application."
+					},
+					"response": [
+						{
+							"id": "dca2674a-c5f3-4837-a434-cbadfa63a50a",
+							"name": "The requested qualification application.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications/:applicationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications",
+										":applicationId"
+									],
+									"variable": [
+										{
+											"key": "applicationId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<uri>\"\n}"
+						},
+						{
+							"id": "4d9d79b4-4214-4e46-af0e-1cfa3ab5f794",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications/:applicationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications",
+										":applicationId"
+									],
+									"variable": [
+										{
+											"key": "applicationId"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						},
+						{
+							"id": "8cfe06a7-ce54-44c8-8727-969ad537c675",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications/:applicationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications",
+										":applicationId"
+									],
+									"variable": [
+										{
+											"key": "applicationId"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						},
+						{
+							"id": "9a7b3285-67d6-473f-ba96-9e1bdf2be6c8",
+							"name": "The requested application could not be found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications/:applicationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications",
+										":applicationId"
+									],
+									"variable": [
+										{
+											"key": "applicationId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						},
+						{
+							"id": "5fe922d8-ec76-41f0-8b15-97dcaa89ed30",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/applications/:applicationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications",
+										":applicationId"
+									],
+									"variable": [
+										{
+											"key": "applicationId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
+						}
+					]
+				}
+			],
+			"id": "ea22f8a0-efc4-4e3d-aa8a-26b675d28d75"
+		},
+		{
 			"name": "Dealers",
 			"item": [
 				{
