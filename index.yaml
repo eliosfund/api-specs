@@ -55,6 +55,50 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a qualification application
+      description: Start a new qualification application.
+      security:
+        - ApiKey:
+          - create:applications
+        - OAuth:
+          - create:applications
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCreate"
+      responses:
+        201:
+          description: The new qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'     
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'      
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'                
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications/{applicationId}:
     parameters:
       - name: applicationId
@@ -569,6 +613,8 @@ components:
       example: '/addresses/1'
     Application:
       type: object
+      allOf:
+          - $ref: '#/components/schemas/ApplicationDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
@@ -580,41 +626,63 @@ components:
           $ref: '#/components/schemas/ApplicationId'
         primaryApplicant:
           $ref: '#/components/schemas/ApplicationApplicant'
-          required: true
         coApplicant:
           $ref: '#/components/schemas/ApplicationApplicant'
-          required: false
-          nullable: true
+        creditReportTier:
+          description: The highest credit report tier between both applicants.
+          type: string
+          enum:
+            - declined
+            - diamond
+            - platinum
+            - gold
+            - silver
+            - bronze
+            - mercury
+        status:
+          $ref: '#/components/schemas/ApplicationStatus'
+        team:
+          type: object
+          description: The team handling the proposed project.
+          properties:
+            dealer:
+              description: The dealer handling the qualification application.
+              $ref: '#/components/schemas/Dealer'
+            installer:
+              description: The installer handling the qualification application.
+              $ref: '#/components/schemas/Installer'
+            user:
+              description: The sales rep handling the qualification application.
+              $ref: '#/components/schemas/SalesRep'
+        externalIdentifiers:
+          type: array
+          description: A list of external identifiers for the qualification application.
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
     ApplicationAddress:
       type: object
       properties:
         streetNumber:
           type: string
           format: numeric
-          required: true
         streetName:
           type: string
-          required: true
         city:
           type: string
-          required: true
           minimum: 3
           maximum: 60
         state:
           type: string
-          required: true
           minimum: 2
           maximum: 2
         postCode:
           type: string
           format: numeric
-          required: true
           minimum: 5
           maximum: 5
         country:
           type: string
           format: numeric
-          required: true
           minimum: 3
           maximum: 3
     ApplicationApplicant:
@@ -622,45 +690,140 @@ components:
       type: object
       properties:
         firstName:
+          description: The first name of the applicant.
           type: string
-          required: true
         middleName:
+          description: An optional middle name of the applicant.
           type: string
-          required: false
           nullable: true
         lastName:
+          description: The last name of the applicant.
           type: string
-          required: true
         email:
+          description: The email of the applicant.
           type: string
           format: email
-          required: true
         dateOfBirth:
+          description: The date of birth of the applicant.
           type: string
           format: date
-          required: true
         ssn:
+          description: The last 4 digits of the applicant\'s social secutiy number.'
           type: string
           format: numeric
-          required: true
           minimum: 4
           maximum: 4
         mobilePhone:
+          description: The mobile phone number of the applicant.
           type: string
           format: tel
-          required: true
         homePhone:
+          description: An optional home phone number of the applicant.
           type: string
           format: tel
-          required: false
           nullable: true
         currentAddress:
+          description: The current home address of the applicant.
           $ref: '#/components/schemas/ApplicationAddress'
-          required: true
         previousAddress:
+          description: If the applicant has not lived at their current address for more than two years, their previous home address.
           $ref: '#/components/schemas/ApplicationAddress'
-          required: false
           nullable: true
+    ApplicationCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Application"
+            "@id":
+              example: "/applications"
+            totalItems:
+              type: integer
+              description: The total number of qualification applications.
+              example: 5
+            member:
+              type: array
+              description: A list of qualification applications.
+              items:
+                $ref: '#/components/schemas/Application'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/applications?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/applications?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/applications?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/applications?page=2"
+    ApplicationCreate:
+      type: object        
+      allOf:
+          - $ref: '#/components/schemas/ApplicationDetails'
+          - type: object
+            required:
+              - primaryApplicant
+              - agreementType
+              - productType
+              - userId
+              - dealerId
+              - installerId
+              - consent1
+              - consent2
+              - consent3
+            properties:
+              primaryApplicant:
+                $ref: "#/components/schemas/ApplicationApplicant"
+              userId:
+                description: The ID of the sales rep.
+                type: integer
+              dealerId:
+                description: The ID of the dealer.
+                type: integer
+              installerId:
+                description: The ID of the installer.
+                type: integer
+              consent1:
+                description: Whether or not the customer agrees to the first consent.
+                type: boolean
+              consent2:
+                description: Whether or not the customer agrees to the second consent.
+                type: boolean
+              consent3:
+                description: Whether or not the customer agrees to the third consent.
+                type: boolean
+              externalId:
+                $ref: "#/components/schemas/ExternalIdentifierCreate"
+    ApplicationDetails:
+      type: object
+      properties:
+        referenceId:
+          description: An optional application reference ID such as the proposal ID.
+          type: string
+          nullable: true
+        agreementType:
+          description: The agreement type being used.
+          type: string
+          enum:
+            - ppa
+            - lease
+            - loan
+        productType:
+          description: The type of product that is being qualified.
+          type: string
+          enum:
+            - solar
+            - solar_storage
+            - storage
     ApplicationId:
       description: The unique identifier of a qualification application.
       type: integer      
@@ -842,7 +1005,25 @@ components:
           type: integer
         detail:
           description: More detailed error information.
+          type: string  
+    ExternalIdentifier:
+      type: object
+      properties:
+        key:
           type: string
+          description: The key of the external identifier.
+        value:
+          type: string
+          description: The value of the external identifier.
+    ExternalIdentifierCreate:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/ExternalIdentifier'
+          - type: object
+            required:
+              - key
+              - value
     HydraCollectionMetadata:
       type: object
       properties:
@@ -1217,6 +1398,29 @@ components:
         - in_progress
         - on_hold
         - complete
+    SalesRep:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/UserIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: User
+        id:
+          $ref: '#/components/schemas/UserId'
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+    UserId:
+      description: The unique identifier of a user.
+      type: integer 
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
@@ -1327,6 +1531,8 @@ components:
             manage:webhooks: Can manage webhooks
             view:action:items: Can view action items
             view:addresses: Can view addresses
+            create:applications: Cab create a qualification application
+            view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
             view:dealers: Can view dealers
@@ -1341,6 +1547,8 @@ components:
             manage:webhooks: Can manage webhooks
             view:action:items: Can view action items
             view:addresses: Can view addresses
+            create:applications: Cab create a qualification application
+            view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
             view:dealers: Can view dealers

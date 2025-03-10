@@ -306,7 +306,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<uri>\"\n}"
+							"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"website\": \"<uri>\",\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"agreementType\": \"ppa\",\n    \"productType\": \"storage\",\n    \"userId\": \"<integer>\",\n    \"dealerId\": \"<integer>\",\n    \"installerId\": \"<integer>\",\n    \"consent1\": \"<boolean>\",\n    \"consent2\": \"<boolean>\",\n    \"consent3\": \"<boolean>\",\n    \"middleName\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"referenceId\": \"<string>\"\n  }\n}"
 						},
 						{
 							"id": "4d9d79b4-4214-4e46-af0e-1cfa3ab5f794",
