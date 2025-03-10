@@ -146,6 +146,112 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /applications/{applicationId}/qualify:
+    parameters:
+      - name: applicationId
+        description: The unique identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ApplicationId'
+    get:
+      summary: Qualify an application
+      description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` status in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined`.
+      security:
+        - ApiKey:
+          - qualify:applications
+        - OAuth:
+          - qualify:applications
+      responses:
+        200:
+          description: The requested qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationQualify'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'   
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /applications/{applicationId}/submit:
+    parameters:
+      - name: applicationId
+        description: The unique identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ApplicationId'
+    put:
+      summary: Submit a qualification application
+      description: Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state. This is necessary before a qualification check can run.
+      security:
+        - ApiKey:
+          - update:applications
+        - OAuth:
+          - update:applications
+      responses:
+        200:
+          description: The submitted qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSubmit'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'   
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /dealers:
     get:
       summary: Get all dealers
@@ -708,7 +814,7 @@ components:
           type: string
           format: date
         ssn:
-          description: The last 4 digits of the applicant\'s social secutiy number.'
+          description: The last 4 digits of the applicant\'s social security number.
           type: string
           format: numeric
           minimum: 4
@@ -783,6 +889,8 @@ components:
             properties:
               primaryApplicant:
                 $ref: "#/components/schemas/ApplicationApplicant"
+              coApplicant:
+                $ref: "#/components/schemas/ApplicationApplicant"
               userId:
                 description: The ID of the sales rep.
                 type: integer
@@ -842,7 +950,35 @@ components:
         - approved
         - declined
         - none
-        - cancelled  
+        - cancelled
+        - in_progress
+    ApplicationSubmit:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+    ApplicationQualify:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+          default: in_progress
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
@@ -1531,7 +1667,8 @@ components:
             manage:webhooks: Can manage webhooks
             view:action:items: Can view action items
             view:addresses: Can view addresses
-            create:applications: Cab create a qualification application
+            create:applications: Can create a qualification application
+            qualify:applications: Can submit an application for qualification
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
@@ -1548,6 +1685,7 @@ components:
             view:action:items: Can view action items
             view:addresses: Can view addresses
             create:applications: Cab create a qualification application
+            qualify:applications: Can submit an application for qualification
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments

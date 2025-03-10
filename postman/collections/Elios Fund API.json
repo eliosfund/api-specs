@@ -485,6 +485,328 @@
 							"body": "{\n  \"type\": \"consequat eiusmod id non\",\n  \"title\": \"nisi enim fugiat quis ut\",\n  \"status\": 56410592,\n  \"detail\": \"adipisicing culpa\"\n}"
 						}
 					]
+				},
+				{
+					"name": "Create a qualification application",
+					"id": "c9f0f856-0e4b-4736-bea3-3d73c11dd9de",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{apiKey}}",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/ld+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"applications"
+							]
+						},
+						"description": "Start a new qualification application."
+					},
+					"response": [
+						{
+							"id": "56dd2108-1cf4-4170-8ffc-e18533c7b410",
+							"name": "The new qualification application.",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/ld+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"@id\": {},\n  \"@type\": \"dolore ea aute dol\",\n  \"id\": {},\n  \"primaryApplicant\": {},\n  \"coApplicant\": {},\n  \"creditReportTier\": \"silver\",\n  \"status\": {},\n  \"team\": {\n    \"dealer\": {\n      \"description\": \"The dealer handling the qualification application.\"\n    },\n    \"installer\": {\n      \"description\": \"The installer handling the qualification application.\"\n    },\n    \"user\": {\n      \"description\": \"The sales rep handling the qualification application.\"\n    }\n  },\n  \"referenceId\": \"sed\",\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\"\n}"
+						},
+						{
+							"id": "f9d8f56c-f3e9-4245-8471-a28f9bd9b685",
+							"name": "There was no API key provided with the request or the API key was invalid.",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/ld+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"mollit qui\",\n  \"title\": \"dolor\",\n  \"status\": -74631244,\n  \"detail\": \"ut commodo\"\n}"
+						},
+						{
+							"id": "ec4bd321-c832-4e56-912c-30021fba59b1",
+							"name": "The API key provided does not contain the proper scopes for the current request.",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/ld+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"mollit qui\",\n  \"title\": \"dolor\",\n  \"status\": -74631244,\n  \"detail\": \"ut commodo\"\n}"
+						},
+						{
+							"id": "b791d7f2-9e14-4a80-982f-acb751a6c19a",
+							"name": "There was a validation error with the payload sent.",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/ld+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"mollit qui\",\n  \"title\": \"dolor\",\n  \"status\": -74631244,\n  \"detail\": \"ut commodo\"\n}"
+						},
+						{
+							"id": "28ad8a91-19fd-4bf5-a466-b0a4b61efc4d",
+							"name": "There was an unexpected server error.",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/ld+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/ld+json"
+									},
+									{
+										"description": "Added as a part of security scheme: apikey",
+										"key": "Authorization",
+										"value": "<API Key>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"primaryApplicant\": {\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\",\n    \"dateOfBirth\": \"<date>\",\n    \"ssn\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"currentAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"previousAddress\": {\n      \"streetNumber\": \"<string>\",\n      \"streetName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"postCode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"agreementType\": \"ppa\",\n  \"productType\": \"solar\",\n  \"userId\": \"<integer>\",\n  \"dealerId\": \"<integer>\",\n  \"installerId\": \"<integer>\",\n  \"consent1\": \"<boolean>\",\n  \"consent2\": \"<boolean>\",\n  \"consent3\": \"<boolean>\",\n  \"referenceId\": \"incididunt labore dolor\",\n  \"externalId\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/applications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"applications"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/ld+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"type\": \"mollit qui\",\n  \"title\": \"dolor\",\n  \"status\": -74631244,\n  \"detail\": \"ut commodo\"\n}"
+						}
+					]
 				}
 			],
 			"id": "ea22f8a0-efc4-4e3d-aa8a-26b675d28d75"
