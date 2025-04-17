@@ -27,9 +27,9 @@ paths:
       description: Returns all available qualification applications.
       security:
         - ApiKey:
-          - view:applications
+            - view:applications
         - OAuth:
-          - view:applications
+            - view:applications
       responses:
         200:
           description: All qualification applications assigned to your account.
@@ -42,13 +42,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -60,9 +60,9 @@ paths:
       description: Start a new qualification application.
       security:
         - ApiKey:
-          - create:applications
+            - create:applications
         - OAuth:
-          - create:applications
+            - create:applications
       requestBody:
         content:
           application/ld+json:
@@ -80,19 +80,19 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'      
+                $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'                
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -112,9 +112,9 @@ paths:
       description: Returns all available information about a single qualification application.
       security:
         - ApiKey:
-          - view:applications
+            - view:applications
         - OAuth:
-          - view:applications
+            - view:applications
       responses:
         200:
           description: The requested qualification application.
@@ -159,9 +159,9 @@ paths:
       description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` status in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined`.
       security:
         - ApiKey:
-          - qualify:applications
+            - qualify:applications
         - OAuth:
-          - qualify:applications
+            - qualify:applications
       responses:
         200:
           description: The requested qualification application.
@@ -192,7 +192,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'   
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -212,9 +212,9 @@ paths:
       description: Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state. This is necessary before a qualification check can run.
       security:
         - ApiKey:
-          - update:applications
+            - update:applications
         - OAuth:
-          - update:applications
+            - update:applications
       responses:
         200:
           description: The submitted qualification application.
@@ -245,7 +245,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'   
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -258,9 +258,9 @@ paths:
       description: Returns all available dealers.
       security:
         - ApiKey:
-          - view:dealers
+            - view:dealers
         - OAuth:
-          - view:dealers
+            - view:dealers
       responses:
         200:
           description: All dealers assigned to your account.
@@ -273,13 +273,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -299,9 +299,9 @@ paths:
       description: Returns all available information about a single dealer.
       security:
         - ApiKey:
-          - view:dealers
+            - view:dealers
         - OAuth:
-          - view:dealers
+            - view:dealers
       responses:
         200:
           description: The dealers corresponding to the provided `dealerId`.
@@ -314,13 +314,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
           content:
@@ -332,16 +332,16 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'              
+                $ref: '#/components/schemas/Error'
   /distributors:
     get:
       summary: Get all distributors
       description: Returns all available distributors.
       security:
         - ApiKey:
-          - view:distributors
+            - view:distributors
         - OAuth:
-          - view:distributors
+            - view:distributors
       responses:
         200:
           description: All distributors assigned to your account.
@@ -354,13 +354,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -380,9 +380,9 @@ paths:
       description: Returns all available information about a single distributor.
       security:
         - ApiKey:
-          - view:distributors
+            - view:distributors
         - OAuth:
-          - view:distributors
+            - view:distributors
       responses:
         200:
           description: The distributor corresponding to the provided `distributorId`.
@@ -395,13 +395,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
           content:
@@ -420,9 +420,9 @@ paths:
       description: Returns all available installers.
       security:
         - ApiKey:
-          - view:installers
+            - view:installers
         - OAuth:
-          - view:installers
+            - view:installers
       responses:
         200:
           description: All installers assigned to your account.
@@ -435,13 +435,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -461,9 +461,9 @@ paths:
       description: Returns all available information about a single installer.
       security:
         - ApiKey:
-          - view:installers
+            - view:installers
         - OAuth:
-          - view:installers
+            - view:installers
       responses:
         200:
           description: The installer corresponding to the provided `installerId`.
@@ -476,15 +476,185 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/avl:
+    get:
+      summary: Get all products
+      description: Returns all available product options.
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: All available products.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/avl/batteries:
+    get:
+      summary: Get all battery products
+      description: Returns all available battery options.
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: All battery products.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/avl/inverters:
+    get:
+      summary: Get all inverter products
+      description: Returns all available inverter options.
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: All inverter products.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/avl/modules:
+    get:
+      summary: Get all module products
+      description: Returns all available module options.
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: All module products.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/avl/racking:
+    get:
+      summary: Get all racking products
+      description: Returns all available racking options.
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: All racking products.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
@@ -501,9 +671,9 @@ paths:
       description: Returns all available projects.
       security:
         - ApiKey:
-          - view:projects
+            - view:projects
         - OAuth:
-          - view:projects
+            - view:projects
       responses:
         200:
           description: All projects assigned to your account.
@@ -516,13 +686,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -542,9 +712,9 @@ paths:
       description: Returns all available information about a single project.
       security:
         - ApiKey:
-          - view:projects
+            - view:projects
         - OAuth:
-          - view:projects
+            - view:projects
       responses:
         200:
           description: The project corresponding to the provided `projectId`.
@@ -557,13 +727,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
           content:
@@ -582,9 +752,9 @@ paths:
       description: Returns all available partners.
       security:
         - ApiKey:
-          - view:partners
+            - view:partners
         - OAuth:
-          - view:partners
+            - view:partners
       responses:
         200:
           description: All partners assigned to your account.
@@ -597,13 +767,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -623,9 +793,9 @@ paths:
       description: Returns all available information about a single partner.
       security:
         - ApiKey:
-          - view:partners
+            - view:partners
         - OAuth:
-          - view:partners
+            - view:partners
       responses:
         200:
           description: The partner corresponding to the provided `partnerId`.
@@ -638,13 +808,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
           content:
@@ -663,9 +833,9 @@ paths:
       description: Returns all available webhooks.
       security:
         - ApiKey:
-          - manage:webhooks
+            - manage:webhooks
         - OAuth:
-          - manage:webhooks
+            - manage:webhooks
       responses:
         200:
           description: All webhooks assigned to your account.
@@ -678,13 +848,13 @@ paths:
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'     
+                $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/Error'            
+                $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
@@ -709,9 +879,20 @@ components:
           example: Address
         id:
           $ref: '#/components/schemas/AddressId'
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postCode:
+          type: number
+        address:
+          description: A formatted address string.
+          type: string
     AddressId:
       description: The unique identifier of an address.
-      type: integer 
+      type: integer
     AddressIri:
       description: The unique JSON-LD IRI reference to the address.
       type: string
@@ -720,7 +901,7 @@ components:
     Application:
       type: object
       allOf:
-          - $ref: '#/components/schemas/ApplicationDetails'
+        - $ref: '#/components/schemas/ApplicationDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
@@ -765,6 +946,13 @@ components:
           description: A list of external identifiers for the qualification application.
           items:
             $ref: '#/components/schemas/ExternalIdentifier'
+    ApplicationAgreementType:
+      description: The type of agreement being used.
+      type: string
+      enum:
+        - ppa
+        - lease
+        - loan
     ApplicationAddress:
       type: object
       properties:
@@ -872,45 +1060,45 @@ components:
                       description: The next page of the collection (if available).
                       example: "/applications?page=2"
     ApplicationCreate:
-      type: object        
+      type: object
       allOf:
-          - $ref: '#/components/schemas/ApplicationDetails'
-          - type: object
-            required:
-              - primaryApplicant
-              - agreementType
-              - productType
-              - userId
-              - dealerId
-              - installerId
-              - consent1
-              - consent2
-              - consent3
-            properties:
-              primaryApplicant:
-                $ref: "#/components/schemas/ApplicationApplicant"
-              coApplicant:
-                $ref: "#/components/schemas/ApplicationApplicant"
-              userId:
-                description: The ID of the sales rep.
-                type: integer
-              dealerId:
-                description: The ID of the dealer.
-                type: integer
-              installerId:
-                description: The ID of the installer.
-                type: integer
-              consent1:
-                description: Whether or not the customer agrees to the first consent.
-                type: boolean
-              consent2:
-                description: Whether or not the customer agrees to the second consent.
-                type: boolean
-              consent3:
-                description: Whether or not the customer agrees to the third consent.
-                type: boolean
-              externalId:
-                $ref: "#/components/schemas/ExternalIdentifierCreate"
+        - $ref: '#/components/schemas/ApplicationDetails'
+        - type: object
+          required:
+            - primaryApplicant
+            - agreementType
+            - productType
+            - userId
+            - dealerId
+            - installerId
+            - consent1
+            - consent2
+            - consent3
+          properties:
+            primaryApplicant:
+              $ref: "#/components/schemas/ApplicationApplicant"
+            coApplicant:
+              $ref: "#/components/schemas/ApplicationApplicant"
+            userId:
+              description: The ID of the sales rep.
+              type: integer
+            dealerId:
+              description: The ID of the dealer.
+              type: integer
+            installerId:
+              description: The ID of the installer.
+              type: integer
+            consent1:
+              description: Whether or not the customer agrees to the first consent.
+              type: boolean
+            consent2:
+              description: Whether or not the customer agrees to the second consent.
+              type: boolean
+            consent3:
+              description: Whether or not the customer agrees to the third consent.
+              type: boolean
+            externalId:
+              $ref: "#/components/schemas/ExternalIdentifierCreate"
     ApplicationDetails:
       type: object
       properties:
@@ -919,39 +1107,38 @@ components:
           type: string
           nullable: true
         agreementType:
-          description: The agreement type being used.
-          type: string
-          enum:
-            - ppa
-            - lease
-            - loan
+          $ref: '#/components/schemas/ApplicationAgreementType'
         productType:
-          description: The type of product that is being qualified.
-          type: string
-          enum:
-            - solar
-            - solar_storage
-            - storage
+          $ref: '#/components/schemas/ApplicationProductType'
     ApplicationId:
       description: The unique identifier of a qualification application.
-      type: integer      
+      type: integer
     ApplicationIri:
       description: The unique JSON-LD IRI reference to the qualification application.
       type: string
       format: iri-reference
       example: '/applications/1'
+    ApplicationProductType:
+      description: The type of product the customer is receiving.
+      type: string
+      enum:
+        - solar
+        - solar_storage
+        - solar_storage_other
+        - solar_other
+        - storage
     ApplicationStatus:
       description: The customer qualification application status.
       type: string
       enum:
         - open
+        - in_progress
         - submitted
-        - onhold
         - approved
         - declined
         - none
+        - onhold
         - cancelled
-        - in_progress
     ApplicationSubmit:
       type: object
       properties:
@@ -994,6 +1181,26 @@ components:
       type: string
       format: iri-reference
       example: '/comments/1'
+    Customer:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/UserIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: User
+        id:
+          $ref: '#/components/schemas/UserId'
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
     Dealer:
       type: object
       properties:
@@ -1006,18 +1213,16 @@ components:
         id:
           $ref: '#/components/schemas/DealerId'
         name:
+          description: The name of the dealer.
           type: string
         email:
+          description: A contact email for the dealer.
           type: string
           format: email
         website:
+          description: The dealer's website.
           type: string
           format: uri
-        installers:
-          type: array
-          description: An array of installers the dealer is approved to work with.
-          items:
-            $ref: '#/components/schemas/InstallerIri' 
     DealerCollection:
       type: object
       allOf:
@@ -1056,12 +1261,51 @@ components:
                       example: "/dealers?page=2"
     DealerId:
       description: The unique identifier of a dealer.
-      type: integer      
+      type: integer
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
       format: iri-reference
       example: '/dealers/1'
+    Design:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/DesignIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Design
+        id:
+          $ref: '#/components/schemas/DesignId'
+        name:
+          description: The name of the design.
+          type: string
+        systemSize:
+          description: The size of the system is kW.
+          type: number
+        systemOffset:
+          description: The system offset percentage.
+          type: number
+        asa:
+          description: The system annular solar access.
+          type: number
+        annualProduction:
+          description: The system production in kWh.
+          type: number
+        segments:
+          description: A list of the design segments/arrays.
+          type: array
+          items:
+            $ref: '#/components/schemas/Segment'
+    DesignId:
+      description: The unique identifier of a design.
+      type: integer
+    DesignIri:
+      description: The unique JSON-LD IRI reference to the design.
+      type: string
+      format: iri-reference
+      example: '/designs/1'
     Distributor:
       type: object
       properties:
@@ -1074,11 +1318,14 @@ components:
         id:
           $ref: '#/components/schemas/DistributorId'
         name:
+          description: The name of the distributor.
           type: string
         email:
+          description: A contact email for the distributor.
           type: string
           format: email
         website:
+          description: The distributor's website.
           type: string
           format: uri
     DistributorCollection:
@@ -1135,13 +1382,13 @@ components:
           example: '/errors/401'
         title:
           description: A human readable error message.
-          type: string 
+          type: string
         status:
           description: The HTTP status code.
           type: integer
         detail:
           description: More detailed error information.
-          type: string  
+          type: string
     ExternalIdentifier:
       type: object
       properties:
@@ -1204,18 +1451,16 @@ components:
         id:
           $ref: '#/components/schemas/InstallerId'
         name:
+          description: The name of the installer.
           type: string
         email:
+          description: A contact email for the installer.
           type: string
           format: email
         website:
+          description: The installer's website.
           type: string
           format: iri-reference
-        dealers:
-          type: array
-          description: An array of dealers the installer is approved to work with.
-          items:
-            $ref: '#/components/schemas/DealerIri'
     InstallerCollection:
       type: object
       allOf:
@@ -1260,6 +1505,28 @@ components:
       type: string
       format: iri-reference
       example: '/installers/1'
+    Manufacturer:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ManufacturerIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Manufacturer
+        id:
+          $ref: '#/components/schemas/ManufacturerId'
+        name:
+          description: The name of the manufacturer.
+          type: string
+    ManufacturerId:
+      description: The unique identifier of a manufacturer.
+      type: integer
+    ManufacturerIri:
+      description: The unique JSON-LD IRI reference to the manufacturer.
+      type: string
+      format: iri-reference
+      example: '/manufacturers/1'
     Partner:
       type: object
       properties:
@@ -1272,11 +1539,14 @@ components:
         id:
           $ref: '#/components/schemas/PartnerId'
         name:
+          description: The name of the partner.
           type: string
         email:
+          description: A contact email for the partner.
           type: string
           format: email
         website:
+          description: The partner's website.
           type: string
           format: uri
     PartnerCollection:
@@ -1323,6 +1593,113 @@ components:
       type: string
       format: iri-reference
       example: '/partners/1'
+    Product:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ProductIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Product
+        id:
+          $ref: '#/components/schemas/ProductId'
+        type:
+          description: The type of product.
+          type: string
+          enum:
+            - battery
+            - inverter 
+            - miscellaneous
+            - module
+            - other
+            - racking
+            - roofing
+        name:
+          description: The name of the product.
+          type: string
+        description:
+          description: A description of the product.
+          type: string
+        distributors:
+          description: The distributors who offer this product.
+          type: array
+          items:
+            $ref: "#/components/schemas/Distributor"
+        manufacturer:
+          description: The product manufacturer.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Manufacturer'
+    ProductCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Product"
+            "@id":
+              example: "/products"
+            totalItems:
+              type: integer
+              description: The total number of products.
+              example: 5
+            member:
+              type: array
+              description: A list of products.
+              items:
+                $ref: '#/components/schemas/Product'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/products?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/products?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/products?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/products?page=2"
+            search:
+              type: object
+              description: Search parameters for filtering the product collection.
+              properties:
+                "@type":
+                  type: string
+                  example: "IriTemplate"
+                template:
+                  type: string
+                  example: "/products/avl{?name,type}"
+                variableRepresentation:
+                  type: string
+                  example: "BasicRepresentation"
+                mapping:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      "@type":
+                        type: string
+                        example: "IriTemplateMapping"
+                      variable:
+                        type: string
+                      property:
+                        type: string
+    ProductId:
+      description: The unique identifier of a product.
+      type: integer
+    ProductIri:
+      description: The unique JSON-LD IRI reference to the product.
+      type: string
+      format: iri-reference
+      example: '/products/1'
     Project:
       type: object
       properties:
@@ -1335,60 +1712,75 @@ components:
         id:
           $ref: '#/components/schemas/ProjectId'
         proposalId:
-          $ref: '#/components/schemas/ProjectProposalId'  
+          $ref: '#/components/schemas/ProjectProposalId'
         status:
-          $ref: '#/components/schemas/ProjectStatus'  
+          $ref: '#/components/schemas/ProjectStatus'
         phase:
           $ref: '#/components/schemas/ProjectPhase'
+        milestone:
+          $ref: '#/components/schemas/ProjectMilestone'
         applicationStatus:
           $ref: '#/components/schemas/ApplicationStatus'
-        packagePrice:
-          description: The total contract price.
-          type: number
-        panelCount:
-          description: The number of solar panels involved in the system.
-          type: number
-        panelWatts:
-          description: The wattage of an individual panel.
-          type: number
-        systemSize:
-          description: The size of the system in kW.
-          type: number
-        systemProduction:
-          description: The yearly system energy production in kWh.
-          type: number
+        productType:
+          $ref: '#/components/schemas/ApplicationProductType'
+        financials:
+          type: object
+          properties:
+            agreementType:
+              $ref: '#/components/schemas/ApplicationAgreementType'
+            totalContractValue:
+              description: The total contract price.
+              type: number
+            totalAdderValue:
+              description: The total price of all adders.
+              type: number
+            amountFinanced:
+              description: The amount financed by the customer.
+              type: number
+            monthlyPayment:
+              description: The first year monthly payment.
+              type: number
+            m2PaymentAmount:
+              description: The M2 payment amount.
+              type: number
+            m3PaymentAmount:
+              description: The M3 payment amount.
+              type: number
+            downPayment:
+              description: The down payment required.
+              type: number
+            introductoryTerm:
+              description: Only applicable if the agreement type is a loan.
+              type: number
+            introductoryPayment:
+              description: Only applicable if the agreement type is a loan.
+              type: number
+            dealerFee:
+              description: Only applicable if the agreement type is a loan.
+              type: number
+            apr:
+              description: The escalator if a PPA or lease. The interest rate if a loan.
+              type: number
+            term:
+              description: The agreement term length.
+              type: number
+            contractRate:
+              description: The $/kWh price.
+              type: number
+            basePpw:
+              description: The price per watt of the PV system.
+              type: number
+            federalRebate:
+              type: number
+            stateRebase:
+              type: number
+            utilityRebate:
+              type: number
         proposalLink:
           description: The link to the project proposal.
           type: string
-        amountFinanced:
-          description: The amount financed by the customer.
-          type: number
-        downPayment:
-          description: The down payment required.
-          type: number
-        introductoryTerm:
-          type: number
-        introductoryPayment:
-          type: number
-        federalRebate:
-          type: number
-        stateRebase:
-          type: number
-        utilityRebate:
-          type: number
-        loanProductName:
-          type: string
-        loanDealerFee:
-          type: number
-        loanApr:
-          type: number
-        loanTerm:
-          type: number
-        contractRate:
-          type: number
-        basePpw:
-          type: number
         proposalDate:
+          description: The date the proposal was generated.
           type: string
           format: date
         createdAt:
@@ -1398,29 +1790,60 @@ components:
           type: string
           format: date-time
         address:
-          $ref: '#/components/schemas/AddressIri'
+          description: The project address.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Address'
+        design:
+          description: The project's current primary design.
+          type: object 
+          allOf:
+            - $ref: '#/components/schemas/Design'
         customer:
-          $ref: '#/components/schemas/CustomerIri'
+          description: The project's customer.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Customer'
         dealer:
-          $ref: '#/components/schemas/DealerIri'
+          description: The project's dealer.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Dealer'
         distributor:
-          $ref: '#/components/schemas/DistributorIri'
+          description: The project's distributor.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Distributor'
         installer:
-          $ref: '#/components/schemas/InstallerIri'
+          description: The project's distributor.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Installer'
         user:
-          $ref: '#/components/schemas/UserIri'
+          description: The project's sales rep.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/SalesRep'
         actionItems:
           type: array
+          description: The action items related to the project.
           items:
             $ref: '#/components/schemas/ActionItemIri'
         attachments:
           type: array
+          description: The attachments related to the project.
           items:
             $ref: '#/components/schemas/AttachmentIri'
         comments:
           type: array
+          description: The comments related to the project.
           items:
-            $ref: '#/components/schemas/CommentIri'  
+            $ref: '#/components/schemas/CommentIri'
+        externalIdentifiers:
+          type: array
+          description: A list of external identifiers for the project.
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
     ProjectCollection:
       type: object
       allOf:
@@ -1470,9 +1893,12 @@ components:
                     - { "@type": "IriTemplateMapping", "variable": "status", "property": "status" }
                     - { "@type": "IriTemplateMapping", "variable": "phase", "property": "phase" }
                     - { "@type": "IriTemplateMapping", "variable": "dealer", "property": "dealer" }
+                    - { "@type": "IriTemplateMapping", "variable": "distributor", "property": "distributor" }
                     - { "@type": "IriTemplateMapping", "variable": "installer", "property": "installer" }
                     - { "@type": "IriTemplateMapping", "variable": "user", "property": "user" }
                     - { "@type": "IriTemplateMapping", "variable": "customer", "property": "customer" }
+                    - { "@type": "IriTemplateMapping", "variable": "agreementType", "property": "agreementType" }
+                    - { "@type": "IriTemplateMapping", "variable": "productType", "property": "productType" }
                     - { "@type": "IriTemplateMapping", "variable": "createdAt", "property": "created_at" }
                     - { "@type": "IriTemplateMapping", "variable": "updatedAt", "property": "updated_at" }
             view:
@@ -1491,15 +1917,22 @@ components:
                       example: "/projects?page=5"
                     next:
                       description: The next page of the collection (if available).
-                      example: "/projects?page=2"        
+                      example: "/projects?page=2"
     ProjectId:
       description: The unique identifier of a project.
-      type: integer            
+      type: integer
     ProjectIri:
       description: The unique JSON-LD IRI reference to the project.
       type: string
       format: iri-reference
-      example: '/projects/1'    
+      example: '/projects/1'
+    ProjectMilestone:
+      description: The current project milestone.
+      type: string
+      enum:
+        - m1
+        - m2
+        - m3
     ProjectPhase:
       description: The current project phase.
       type: string
@@ -1514,8 +1947,7 @@ components:
         - install
         - install_qa
         - interconnection
-        - ntp_review
-        - ntp_submission
+        - ntp_approval
         - permitting
         - procurement
         - pto
@@ -1524,16 +1956,17 @@ components:
         - site_survey
     ProjectProposalId:
       description: A second unique identifier of a project.
-      type: string   
+      type: string
     ProjectStatus:
       description: The current project status.
       type: string
       enum:
         - new
-        - cancelled
         - in_progress
         - on_hold
         - complete
+        - cancelled
+        - stale
     SalesRep:
       type: object
       properties:
@@ -1554,9 +1987,51 @@ components:
         email:
           type: string
           format: email
+    Segment:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/SegmentIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Segment
+        id:
+          $ref: '#/components/schemas/SegmentId'
+        name:
+          description: The name of the segment.
+          type: string
+        arrayType:
+          description: The type of array.
+          type: string
+          enum:
+            - Fixed - Ground Mounted
+            - Fixed - Roof Mounted
+        azimuth:
+          description: The array azimuth.
+          type: number
+        tilt:
+          description: The array tilt in degrees.
+          type: number
+        shading:
+          description: The array shading.
+          type: number
+        products:
+          description: The products the array is constructed from.
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    SegmentId:
+      description: The unique identifier of a segment.
+      type: integer
+    SegmentIri:
+      description: The unique JSON-LD IRI reference to the segment.
+      type: string
+      format: iri-reference
+      example: '/segments/1'
     UserId:
       description: The unique identifier of a user.
-      type: integer 
+      type: integer
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
@@ -1590,7 +2065,7 @@ components:
         events:
           description: The events that will trigger the webhook to send.
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/WebhookEvent'
     WebhookEvent:
       description: The type of event that triggers the webhook.
