@@ -146,6 +146,59 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /applications/{applicationId}/ach:
+    parameters:
+      - name: applicationId
+        description: The unique identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ApplicationId'
+    get:
+      summary: Check ACH authorization
+      description: Checks if the ACH authorization form has been completed by the customer. Also returns a URL to complete the process if not complete.
+      security:
+        - ApiKey:
+            - view:applications
+        - OAuth:
+            - view:applications
+      responses:
+        200:
+          description: The requested qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationAch'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications/{applicationId}/qualify:
     parameters:
       - name: applicationId
@@ -946,6 +999,27 @@ components:
           description: A list of external identifiers for the qualification application.
           items:
             $ref: '#/components/schemas/ExternalIdentifier'
+    ApplicationAch:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        achAuthorizationStatus:
+          $ref: '#/components/schemas/ApplicationAchStatus'
+        achAuthorizationUrl:
+          type: string
+          format: uri
+          description: A URL to complete the customer ACH authorization process.
+    ApplicationAchStatus:
+      description: The customer qualification ACH authorization status.
+      type: string
+      enum:
+        - complete
+        - incomplete
     ApplicationAgreementType:
       description: The type of agreement being used.
       type: string
@@ -1609,7 +1683,7 @@ components:
           type: string
           enum:
             - battery
-            - inverter 
+            - inverter
             - miscellaneous
             - module
             - other
@@ -1796,7 +1870,7 @@ components:
             - $ref: '#/components/schemas/Address'
         design:
           description: The project's current primary design.
-          type: object 
+          type: object
           allOf:
             - $ref: '#/components/schemas/Design'
         customer:
