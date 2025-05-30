@@ -14,6 +14,339 @@
 					"name": "{applicationId}",
 					"item": [
 						{
+							"name": "ach",
+							"item": [
+								{
+									"name": "Check ACH authorization",
+									"id": "a305655d-b2b0-40ca-83a8-0e9725d51799",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "key",
+													"value": "Authorization",
+													"type": "string"
+												},
+												{
+													"key": "value",
+													"value": "{{apiKey}}",
+													"type": "string"
+												},
+												{
+													"key": "in",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/applications/:applicationId/ach",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"applications",
+												":applicationId",
+												"ach"
+											],
+											"variable": [
+												{
+													"key": "applicationId",
+													"value": "<integer>",
+													"description": "(Required) The unique identifier of the qualification application."
+												}
+											]
+										},
+										"description": "Checks if the ACH authorization form has been completed by the customer. Also returns a URL to complete the process if not complete."
+									},
+									"response": [
+										{
+											"id": "7a9dd8fb-8d12-4ad0-a349-394416315e20",
+											"name": "The requested qualification application.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"@id\": \"eu Lorem pariatur anim\",\n  \"@type\": \"<string>\",\n  \"achAuthorizationStatus\": \"incomplete\",\n  \"achAuthorizationUrl\": \"<uri>\"\n}"
+										},
+										{
+											"id": "be2c3387-f784-4356-a570-80a41a66e528",
+											"name": "There was no API key provided with the request or the API key was invalid.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
+										},
+										{
+											"id": "362da2b0-19aa-4cab-b306-4a4db1f12ecc",
+											"name": "The API key provided does not contain the proper scopes for the current request.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
+										},
+										{
+											"id": "7a70c9cc-3f3e-48ee-ad34-636242a4b274",
+											"name": "The requested application could not be found.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
+										},
+										{
+											"id": "2c1c3a26-30d7-4443-ac5f-03abe8e3ab51",
+											"name": "There was a validation error with the payload sent.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+											"code": 422,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
+										},
+										{
+											"id": "eef16078-69b2-47b1-9a5c-41628bdf179f",
+											"name": "There was an unexpected server error.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
+										}
+									]
+								}
+							],
+							"id": "5dffbe45-3678-4a9f-b60f-dd932648e76b"
+						},
+						{
 							"name": "qualify",
 							"item": [
 								{
@@ -351,7 +684,7 @@
 							"item": [
 								{
 									"name": "Submit a qualification application",
-									"id": "a774f109-5ecc-450d-8523-69e8ab408944",
+									"id": "7bd43c0e-3c40-4dea-af42-49f6d499dc5c",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -376,11 +709,11 @@
 												}
 											]
 										},
-										"method": "PUT",
+										"method": "PATCH",
 										"header": [
 											{
 												"key": "Accept",
-												"value": "application/ld+json"
+												"value": "application/merge-patch+json"
 											}
 										],
 										"url": {
@@ -401,18 +734,18 @@
 												}
 											]
 										},
-										"description": "Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state. This is necessary before a qualification check can run."
+										"description": "Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state and may only transition to the `submitted` state from the `open` state. This is necessary before a qualification check can run."
 									},
 									"response": [
 										{
-											"id": "bb9176c0-97bf-4c2b-88c6-484730a38d44",
+											"id": "99553dda-bcf8-434d-a5ea-bd3483d53105",
 											"name": "The submitted qualification application.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
-														"value": "application/ld+json"
+														"value": "application/merge-patch+json"
 													},
 													{
 														"description": "Added as a part of security scheme: apikey",
@@ -443,21 +776,21 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json"
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"status\": \"declined\"\n}"
+											"body": "{\n  \"@id\": \"ea repr\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"status\": \"onhold\"\n}"
 										},
 										{
-											"id": "99cce541-d011-47f0-84ce-6cdf81fe5480",
+											"id": "93630fe5-9c86-43b7-a8a2-4e247aa62fe3",
 											"name": "There was no API key provided with the request or the API key was invalid.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
-														"value": "application/ld+json"
+														"value": "application/merge-patch+json"
 													},
 													{
 														"description": "Added as a part of security scheme: apikey",
@@ -488,21 +821,21 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json"
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\"\n}"
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										},
 										{
-											"id": "bf8465ee-f209-4df1-b92f-14ee962d49d3",
+											"id": "8d8fbd14-4ad8-4a59-9af0-4b436194f2eb",
 											"name": "The API key provided does not contain the proper scopes for the current request.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
-														"value": "application/ld+json"
+														"value": "application/merge-patch+json"
 													},
 													{
 														"description": "Added as a part of security scheme: apikey",
@@ -533,17 +866,17 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json"
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\"\n}"
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										},
 										{
-											"id": "caef6594-96c6-45e6-b28f-9513cda63523",
+											"id": "6a42a6d3-2c3e-46b8-b256-55bbc546c30f",
 											"name": "The requested application could not be found.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
@@ -578,17 +911,18 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json",
+													"enabled": true
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\"\n}"
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										},
 										{
-											"id": "e1371a70-d6a6-4d9b-bda2-c670261e7f34",
+											"id": "79454065-74bf-449a-948c-968c99868c45",
 											"name": "There was a validation error with the payload sent.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
@@ -623,17 +957,18 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json",
+													"enabled": true
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\"\n}"
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										},
 										{
-											"id": "6213da7e-a149-450b-b5d0-946985dbfe35",
+											"id": "9fe5a555-b2e8-4872-bcb5-cd673a4228d2",
 											"name": "There was an unexpected server error.",
 											"originalRequest": {
-												"method": "PUT",
+												"method": "PATCH",
 												"header": [
 													{
 														"key": "Accept",
@@ -668,11 +1003,12 @@
 											"header": [
 												{
 													"key": "Content-Type",
-													"value": "application/ld+json"
+													"value": "application/merge-patch+json",
+													"enabled": true
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\"\n}"
+											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										}
 									]
 								}
@@ -5235,7 +5571,8 @@
 		{
 			"id": "d943a841-77e4-47a2-b1c0-4917d902833e",
 			"key": "baseUrl",
-			"value": "https://api.eliosfund.com"
+			"value": "https://api.eliosfund.com",
+			"type": "string"
 		}
 	]
 }

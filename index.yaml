@@ -209,7 +209,7 @@ paths:
           $ref: '#/components/schemas/ApplicationId'
     get:
       summary: Qualify an application
-      description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` status in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined`.
+      description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` state in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined` once the qualification check finishes.
       security:
         - ApiKey:
             - qualify:applications
@@ -260,9 +260,9 @@ paths:
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
-    put:
+    patch:
       summary: Submit a qualification application
-      description: Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state. This is necessary before a qualification check can run.
+      description: Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state and may only transition to the `submitted` state from the `open` state. This is necessary before a qualification check can run.
       security:
         - ApiKey:
             - update:applications
@@ -272,37 +272,37 @@ paths:
         200:
           description: The submitted qualification application.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/ApplicationSubmit'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/Error'
         404:
           description: The requested application could not be found.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
-            application/ld+json:
+            application/merge-patch+json:
               schema:
                 $ref: '#/components/schemas/Error'
   /dealers:
