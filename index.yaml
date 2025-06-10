@@ -156,7 +156,7 @@ paths:
           $ref: '#/components/schemas/ApplicationId'
     get:
       summary: Check ACH authorization
-      description: Checks if the ACH authorization form has been completed by the customer. Also returns a URL to complete the process if not complete.
+      description: Checks if the ACH authorization form has been completed by the customer. The ACH authorization can be completed using two seperate methods; either by API/Plaid or forwarding the customer to a website. Forward the customer to the `achAuthorizationUrl` to use the web version or initialize Plaid Link using the `plaidLinkToken` for the API version.
       security:
         - ApiKey:
             - view:applications
@@ -169,6 +169,56 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/ApplicationAch'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create ACH authorization
+      description: Creates a new ACH authorization for the qualification application. This method involves using Plaid Link. You may also create an ACH authorization using a website. Use the `GET /applications/{applicationId}/ach` endpoint to forward the customer to the `achAuthorizationUrl` if you prefer the web version.
+      security:
+        - ApiKey:
+            - update:applications
+        - OAuth:
+            - update:applications
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/AchAuthorizationCreate"
+      responses:
+        201:
+          description: The new ACH authorization.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AchAuthorization'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -799,6 +849,109 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /projects/{projectId}/attachments:
+    parameters:
+      - name: projectId
+        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ProjectId'
+    get:
+      summary: Get project attachments
+      description: Returns all the current project attachments.
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: The requested qualification application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AttachmentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a project attachment(s)
+      description: Adds new attachments to the project. The key of each file should be a valid `AttachmentType`.
+      security:
+        - ApiKey:
+            - update:projects
+        - OAuth:
+            - update:projects
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AttachmentCreate"
+      responses:
+        201:
+          description: The new ACH authorization.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AttachmentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /partners:
     get:
       summary: Get all partners
@@ -916,6 +1069,61 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    AchAuthorization:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/AchAuthorizationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: AchAuthorization
+        id:
+          $ref: '#/components/schemas/AchAuthorizationId'
+        fullName:
+          type: string
+          description: The customer's full name.
+        email:
+          type: string
+          format: email
+          description: The customer's email.
+        phoneNumber:
+          type: string
+          format: tel
+          description: The customer's phone number.
+        status:
+          readOnly: true
+          $ref: '#/components/schemas/ApplicationAchStatus'
+    AchAuthorizationCreate:
+      type: object
+      required:
+        - fullName
+        - email
+        - phoneNumber
+        - plaidPublicToken
+      properties:
+        fullName:
+          type: string
+          description: The customer's full name.
+        email:
+          type: string
+          format: email
+          description: The customer's email.
+        phoneNumber:
+          type: string
+          format: tel
+          description: The customer's phone number.
+        plaidPublicToken:
+          type: string
+          description: The Plaid public token.
+    AchAuthorizationId:
+      description: The unique identifier of an ACH authorization.
+      type: integer
+    AchAuthorizationIri:
+      description: The unique JSON-LD IRI reference to the ACH authorization.
+      type: string
+      format: iri-reference
+      example: '/ach-authorizations/1'      
     ActionItemIri:
       description: The unique JSON-LD IRI reference to the action item.
       type: string
@@ -1014,6 +1222,15 @@ components:
           type: string
           format: uri
           description: A URL to complete the customer ACH authorization process.
+        plaidLinkToken:
+          type: string
+          description: A token that can be used to initialize Plaid Link.
+        achAuthorizationConsentHtml:
+          type: string
+          description: A consent that should be showed to the customer prior to ACH authorization in HTML.
+        achAuthorizationConsentMarkdown:
+          type: string
+          description: A consent that should be showed to the customer prior to ACH authorization in markdown.  
     ApplicationAchStatus:
       description: The customer qualification ACH authorization status.
       type: string
@@ -1240,11 +1457,133 @@ components:
         status:
           $ref: "#/components/schemas/ApplicationStatus"
           default: in_progress
+    Attachment:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/AttachmentIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Attachment
+        id:
+          $ref: '#/components/schemas/AttachmentId'
+        name:
+          type: string
+          description: The name of the attachment.
+        type:
+          type: string
+          description: The type of attachment.
+          $ref: "#/components/schemas/AttachmentType"
+        mime:
+          type: string
+          description: The attachment mime type.
+        size:
+          type: integer
+          description: The size of the attachment in bytes.
+        url:
+          type: string
+          format: uri
+          description: A protected URL to download/view the attachment. All URLs will expire after a set amount of time.
+        source:
+          type: string
+          description: The attachment source.
+          $ref: "#/components/schemas/AttachmentSource"
+    AttachmentCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Attachment"
+            "@id":
+              example: "/attachments"
+            totalItems:
+              type: integer
+              description: The total number of attachments.
+              example: 5
+            member:
+              type: array
+              description: A list of attachments.
+              items:
+                $ref: '#/components/schemas/Attachment'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/attachments?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/attachments?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/attachments?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/attachments?page=2"
+    AttachmentCreate:
+      type: object
+      additionalProperties:
+        type: string
+        format: binary
+      description: >
+        The key of each file should be a valid `AttachmentType`. 
+        Each key represents one file to upload.
+    AttachmentId:
+      description: The unique identifier of an attachment.
+      type: integer
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
       format: iri-reference
       example: '/attachments/1'
+    AttachmentSource:
+      description: The location the attachment was provided from.
+      type: string
+      enum:
+        - api
+        - scanifly
+        - sunobi
+        - smithai
+        - manual
+    AttachmentType:
+      description: The type of attachment.
+      type: string
+      enum:
+        - ach_authorization
+        - bom
+        - contract
+        - cpuc
+        - credit_report
+        - design
+        - electrical_panel
+        - final_inspection
+        - install
+        - interconnection
+        - miscellaneous
+        - monitoring
+        - m1_verification_form
+        - m2_verification_form
+        - m3_verification_form
+        - m4_verification_form
+        - nem
+        - other
+        - permit
+        - plan_set
+        - procurement
+        - property_document
+        - pto
+        - site_survey_photo
+        - title_verification
+        - true_up
+        - ucc_filing
+        - unknown
+        - utility_bill
+        - verification_call
     CustomerIri:
       description: The unique JSON-LD IRI reference to the customer.
       type: string
@@ -1907,7 +2246,7 @@ components:
           type: array
           description: The attachments related to the project.
           items:
-            $ref: '#/components/schemas/AttachmentIri'
+            $ref: '#/components/schemas/Attachment'
         comments:
           type: array
           description: The comments related to the project.
