@@ -342,6 +342,431 @@
 											"body": "{\n  \"type\": \"velit Ut\",\n  \"title\": \"ut a\",\n  \"status\": 39348980,\n  \"detail\": \"aliquip reprehenderit\"\n}"
 										}
 									]
+								},
+								{
+									"name": "Create ACH authorization",
+									"id": "2ffccf95-7bb1-40d0-bf28-780a6ebdac76",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "key",
+													"value": "Authorization",
+													"type": "string"
+												},
+												{
+													"key": "value",
+													"value": "{{apiKey}}",
+													"type": "string"
+												},
+												{
+													"key": "in",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/ld+json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/applications/:applicationId/ach",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"applications",
+												":applicationId",
+												"ach"
+											],
+											"variable": [
+												{
+													"key": "applicationId",
+													"value": "<integer>",
+													"description": "(Required) The unique identifier of the qualification application."
+												}
+											]
+										},
+										"description": "Creates a new ACH authorization for the qualification application. This method involves using Plaid Link. You may also create an ACH authorization using a website. Use the `GET /applications/{applicationId}/ach` endpoint to forward the customer to the `achAuthorizationUrl` if you prefer the web version."
+									},
+									"response": [
+										{
+											"id": "7d1cca01-cf34-4373-b351-f77fd760e650",
+											"name": "The new ACH authorization.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"status\": \"incomplete\"\n}"
+										},
+										{
+											"id": "2b8605b8-f422-45fb-8049-5d5ee85965bc",
+											"name": "There was no API key provided with the request or the API key was invalid.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "9f848587-2695-4b44-bb03-8a5a4d8dcf44",
+											"name": "The API key provided does not contain the proper scopes for the current request.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "58a3622f-cd5b-47b6-9f77-f9f75d326787",
+											"name": "The requested application could not be found.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "86b1c79f-ad65-4607-9de1-5016a04f653b",
+											"name": "There was a validation error with the payload sent.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+											"code": 422,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "517e18ce-c9a8-4eac-bcb8-775485812d67",
+											"name": "There was an unexpected server error.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/ld+json"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phoneNumber\": \"<string>\",\n  \"plaidPublicToken\": \"<string>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/applications/:applicationId/ach",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"applications",
+														":applicationId",
+														"ach"
+													],
+													"variable": [
+														{
+															"key": "applicationId"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										}
+									]
 								}
 							],
 							"id": "5dffbe45-3678-4a9f-b60f-dd932648e76b"
@@ -4371,6 +4796,764 @@
 					"name": "{projectId}",
 					"item": [
 						{
+							"name": "attachments",
+							"item": [
+								{
+									"name": "Get project attachments",
+									"id": "d2566191-e7dd-41e4-af1c-f011ea7c0a7f",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "key",
+													"value": "Authorization",
+													"type": "string"
+												},
+												{
+													"key": "value",
+													"value": "{{apiKey}}",
+													"type": "string"
+												},
+												{
+													"key": "in",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/projects/:projectId/attachments",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"projects",
+												":projectId",
+												"attachments"
+											],
+											"variable": [
+												{
+													"key": "projectId",
+													"value": "<integer>",
+													"description": "(Required) The unique identifier of the project. This can be the Project ID or Proposal ID."
+												}
+											]
+										},
+										"description": "Returns all the current project attachments."
+									},
+									"response": [
+										{
+											"id": "bdab4fc3-3015-44ea-922a-cdbb14551244",
+											"name": "The requested qualification application.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"@context\": \"aute minim qui\",\n  \"@id\": \"id nulla\",\n  \"@type\": \"magna sint cillum aliqua\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"amet ut non\",\n      \"@type\": \"nostrud nulla exercitation sint cupidatat\",\n      \"id\": 38113794,\n      \"name\": \"e\",\n      \"type\": \"m4_verification_form\",\n      \"mime\": \"Excepteur mollit dolor\",\n      \"size\": -89014631,\n      \"url\": \"https://XVmxiHLoArvdGwgKEtdqgWtBHnsivbIw.veoRNfV3dsTrweXqTiXjI4orw+PjJlrw0wC3DEy347kXlTyb.SyISsZrCk-gwPpORTrxtSf8u\",\n      \"source\": \"api\"\n    },\n    {\n      \"@id\": \"voluptate\",\n      \"@type\": \"tempor id nulla\",\n      \"id\": -62941047,\n      \"name\": \"quis magna et tempor\",\n      \"type\": \"verification_call\",\n      \"mime\": \"magna eu\",\n      \"size\": 14756550,\n      \"url\": \"http://yWbWhhEJLpreMEVsRoH.rfcqB0op6YUcVs2yri-yQF\",\n      \"source\": \"manual\"\n    }\n  ],\n  \"view\": {\n    \"@id\": \"cupidata\",\n    \"@type\": \"ipsum\",\n    \"first\": \"id ea fugiat commodo\",\n    \"last\": \"sed nisi occaecat ea\",\n    \"next\": \"elit tempor nostrud\"\n  }\n}"
+										},
+										{
+											"id": "38949a26-98ee-48b6-a087-327412cd41f9",
+											"name": "There was no API key provided with the request or the API key was invalid.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "456cc964-2121-4628-874e-eecf24818591",
+											"name": "The API key provided does not contain the proper scopes for the current request.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "fc377b0b-1add-4fc0-8652-f65b506ca072",
+											"name": "The requested application could not be found.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "585bb5db-a094-4e29-bb5d-ae0ab3b15227",
+											"name": "There was a validation error with the payload sent.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+											"code": 422,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "c1564981-92c6-4a81-9a38-3bbcf9cce04b",
+											"name": "There was an unexpected server error.",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										}
+									]
+								},
+								{
+									"name": "Create a project attachment(s)",
+									"id": "ea086736-b034-48ec-a5e3-3006fa9854f5",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "key",
+													"value": "Authorization",
+													"type": "string"
+												},
+												{
+													"key": "value",
+													"value": "{{apiKey}}",
+													"type": "string"
+												},
+												{
+													"key": "in",
+													"value": "header",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "multipart/form-data"
+											},
+											{
+												"key": "Accept",
+												"value": "application/ld+json"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "enim9f1",
+													"value": "<binary>",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/projects/:projectId/attachments",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"projects",
+												":projectId",
+												"attachments"
+											],
+											"variable": [
+												{
+													"key": "projectId",
+													"value": "<integer>",
+													"description": "(Required) The unique identifier of the project. This can be the Project ID or Proposal ID."
+												}
+											]
+										},
+										"description": "Adds new attachments to the project. The key of each file should be a valid `AttachmentType`."
+									},
+									"response": [
+										{
+											"id": "9b0788b6-48e5-4eec-b5c1-4b9b92f5382f",
+											"name": "The new ACH authorization.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"@context\": \"aute minim qui\",\n  \"@id\": \"id nulla\",\n  \"@type\": \"magna sint cillum aliqua\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"amet ut non\",\n      \"@type\": \"nostrud nulla exercitation sint cupidatat\",\n      \"id\": 38113794,\n      \"name\": \"e\",\n      \"type\": \"m4_verification_form\",\n      \"mime\": \"Excepteur mollit dolor\",\n      \"size\": -89014631,\n      \"url\": \"https://XVmxiHLoArvdGwgKEtdqgWtBHnsivbIw.veoRNfV3dsTrweXqTiXjI4orw+PjJlrw0wC3DEy347kXlTyb.SyISsZrCk-gwPpORTrxtSf8u\",\n      \"source\": \"api\"\n    },\n    {\n      \"@id\": \"voluptate\",\n      \"@type\": \"tempor id nulla\",\n      \"id\": -62941047,\n      \"name\": \"quis magna et tempor\",\n      \"type\": \"verification_call\",\n      \"mime\": \"magna eu\",\n      \"size\": 14756550,\n      \"url\": \"http://yWbWhhEJLpreMEVsRoH.rfcqB0op6YUcVs2yri-yQF\",\n      \"source\": \"manual\"\n    }\n  ],\n  \"view\": {\n    \"@id\": \"cupidata\",\n    \"@type\": \"ipsum\",\n    \"first\": \"id ea fugiat commodo\",\n    \"last\": \"sed nisi occaecat ea\",\n    \"next\": \"elit tempor nostrud\"\n  }\n}"
+										},
+										{
+											"id": "575b4fc1-b333-4232-a71c-7690b6f8e4ff",
+											"name": "There was no API key provided with the request or the API key was invalid.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "4cb7e4a2-0ad1-4ac0-acf4-667ca467e15d",
+											"name": "The API key provided does not contain the proper scopes for the current request.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "4f56e934-9b18-4da6-a66d-ed99049b86ca",
+											"name": "The requested application could not be found.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "99c35cb4-12f0-4e46-82e8-256c8e2b3053",
+											"name": "There was a validation error with the payload sent.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+											"code": 422,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										},
+										{
+											"id": "470e7224-4c34-4013-888e-fd03b439a5ae",
+											"name": "There was an unexpected server error.",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "multipart/form-data"
+													},
+													{
+														"key": "Accept",
+														"value": "application/ld+json"
+													},
+													{
+														"description": "Added as a part of security scheme: apikey",
+														"key": "Authorization",
+														"value": "<API Key>"
+													}
+												],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "enim9f1",
+															"value": "<binary>",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{baseUrl}}/projects/:projectId/attachments",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"projects",
+														":projectId",
+														"attachments"
+													],
+													"variable": [
+														{
+															"key": "projectId"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/ld+json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"pari\",\n  \"title\": \"in sit proident amet\",\n  \"status\": -13736164,\n  \"detail\": \"minim dolore laborum\"\n}"
+										}
+									]
+								}
+							],
+							"id": "635a13ec-6ed2-4008-9de2-eaaee16eb5da"
+						},
+						{
 							"name": "Get a project",
 							"id": "8d4f99bc-d177-4ac9-bfd9-ac8e43509a10",
 							"protocolProfileBehavior": {
@@ -4466,7 +5649,7 @@
 										}
 									],
 									"cookie": [],
-									"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"proposalId\": \"<string>\",\n  \"status\": \"cancelled\",\n  \"phase\": \"customer_survey\",\n  \"milestone\": \"m2\",\n  \"applicationStatus\": \"onhold\",\n  \"productType\": \"solar_other\",\n  \"financials\": {\n    \"agreementType\": \"lease\",\n    \"totalContractValue\": \"<number>\",\n    \"totalAdderValue\": \"<number>\",\n    \"amountFinanced\": \"<number>\",\n    \"monthlyPayment\": \"<number>\",\n    \"m2PaymentAmount\": \"<number>\",\n    \"m3PaymentAmount\": \"<number>\",\n    \"downPayment\": \"<number>\",\n    \"introductoryTerm\": \"<number>\",\n    \"introductoryPayment\": \"<number>\",\n    \"dealerFee\": \"<number>\",\n    \"apr\": \"<number>\",\n    \"term\": \"<number>\",\n    \"contractRate\": \"<number>\",\n    \"basePpw\": \"<number>\",\n    \"federalRebate\": \"<number>\",\n    \"stateRebase\": \"<number>\",\n    \"utilityRebate\": \"<number>\"\n  },\n  \"proposalLink\": \"<string>\",\n  \"proposalDate\": \"<date>\",\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\",\n  \"address\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"street\": \"<string>\",\n    \"city\": \"<string>\",\n    \"state\": \"<string>\",\n    \"postCode\": \"<number>\",\n    \"address\": \"<string>\"\n  },\n  \"design\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"systemSize\": \"<number>\",\n    \"systemOffset\": \"<number>\",\n    \"asa\": \"<number>\",\n    \"annualProduction\": \"<number>\",\n    \"segments\": [\n      {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"arrayType\": \"Fixed - Ground Mounted\",\n        \"azimuth\": \"<number>\",\n        \"tilt\": \"<number>\",\n        \"shading\": \"<number>\",\n        \"products\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"battery\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"miscellaneous\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          }\n        ]\n      },\n      {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"arrayType\": \"Fixed - Ground Mounted\",\n        \"azimuth\": \"<number>\",\n        \"tilt\": \"<number>\",\n        \"shading\": \"<number>\",\n        \"products\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"miscellaneous\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"inverter\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          }\n        ]\n      }\n    ]\n  },\n  \"customer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\"\n  },\n  \"dealer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<uri>\"\n  },\n  \"distributor\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<uri>\"\n  },\n  \"installer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<string>\"\n  },\n  \"user\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\"\n  },\n  \"actionItems\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"attachments\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"comments\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"externalIdentifiers\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}"
+									"body": "{\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"id\": \"<integer>\",\n  \"proposalId\": \"<string>\",\n  \"status\": \"cancelled\",\n  \"phase\": \"customer_survey\",\n  \"milestone\": \"m2\",\n  \"applicationStatus\": \"onhold\",\n  \"productType\": \"solar_other\",\n  \"financials\": {\n    \"agreementType\": \"lease\",\n    \"totalContractValue\": \"<number>\",\n    \"totalAdderValue\": \"<number>\",\n    \"amountFinanced\": \"<number>\",\n    \"monthlyPayment\": \"<number>\",\n    \"m2PaymentAmount\": \"<number>\",\n    \"m3PaymentAmount\": \"<number>\",\n    \"downPayment\": \"<number>\",\n    \"introductoryTerm\": \"<number>\",\n    \"introductoryPayment\": \"<number>\",\n    \"dealerFee\": \"<number>\",\n    \"apr\": \"<number>\",\n    \"term\": \"<number>\",\n    \"contractRate\": \"<number>\",\n    \"basePpw\": \"<number>\",\n    \"federalRebate\": \"<number>\",\n    \"stateRebase\": \"<number>\",\n    \"utilityRebate\": \"<number>\"\n  },\n  \"proposalLink\": \"<string>\",\n  \"proposalDate\": \"<date>\",\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\",\n  \"address\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"street\": \"<string>\",\n    \"city\": \"<string>\",\n    \"state\": \"<string>\",\n    \"postCode\": \"<number>\",\n    \"address\": \"<string>\"\n  },\n  \"design\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"systemSize\": \"<number>\",\n    \"systemOffset\": \"<number>\",\n    \"asa\": \"<number>\",\n    \"annualProduction\": \"<number>\",\n    \"segments\": [\n      {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"arrayType\": \"Fixed - Ground Mounted\",\n        \"azimuth\": \"<number>\",\n        \"tilt\": \"<number>\",\n        \"shading\": \"<number>\",\n        \"products\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"battery\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"miscellaneous\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          }\n        ]\n      },\n      {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"arrayType\": \"Fixed - Ground Mounted\",\n        \"azimuth\": \"<number>\",\n        \"tilt\": \"<number>\",\n        \"shading\": \"<number>\",\n        \"products\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"miscellaneous\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"type\": \"inverter\",\n            \"name\": \"<string>\",\n            \"description\": \"<string>\",\n            \"distributors\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"name\": \"<string>\",\n                \"email\": \"<email>\",\n                \"website\": \"<uri>\"\n              }\n            ],\n            \"manufacturer\": {\n              \"@id\": \"<string>\",\n              \"@type\": \"<string>\",\n              \"id\": \"<integer>\",\n              \"name\": \"<string>\"\n            }\n          }\n        ]\n      }\n    ]\n  },\n  \"customer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\"\n  },\n  \"dealer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<uri>\"\n  },\n  \"distributor\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<uri>\"\n  },\n  \"installer\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"website\": \"<string>\"\n  },\n  \"user\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"email\": \"<email>\"\n  },\n  \"actionItems\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"attachments\": [\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"miscellaneous\",\n      \"mime\": \"<string>\",\n      \"size\": \"<integer>\",\n      \"url\": \"<uri>\",\n      \"source\": \"smithai\"\n    },\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"credit_report\",\n      \"mime\": \"<string>\",\n      \"size\": \"<integer>\",\n      \"url\": \"<uri>\",\n      \"source\": \"scanifly\"\n    }\n  ],\n  \"comments\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"externalIdentifiers\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ]\n}"
 								},
 								{
 									"id": "9542fe19-8634-4d60-b02c-7f224c08ddcc",
@@ -4731,7 +5914,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"@context\": \"<string>\",\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"status\": \"in_progress\",\n      \"phase\": \"site_survey\",\n      \"milestone\": \"m2\",\n      \"applicationStatus\": \"open\",\n      \"productType\": \"solar_storage_other\",\n      \"financials\": {\n        \"agreementType\": \"loan\",\n        \"totalContractValue\": \"<number>\",\n        \"totalAdderValue\": \"<number>\",\n        \"amountFinanced\": \"<number>\",\n        \"monthlyPayment\": \"<number>\",\n        \"m2PaymentAmount\": \"<number>\",\n        \"m3PaymentAmount\": \"<number>\",\n        \"downPayment\": \"<number>\",\n        \"introductoryTerm\": \"<number>\",\n        \"introductoryPayment\": \"<number>\",\n        \"dealerFee\": \"<number>\",\n        \"apr\": \"<number>\",\n        \"term\": \"<number>\",\n        \"contractRate\": \"<number>\",\n        \"basePpw\": \"<number>\",\n        \"federalRebate\": \"<number>\",\n        \"stateRebase\": \"<number>\",\n        \"utilityRebate\": \"<number>\"\n      },\n      \"proposalLink\": \"<string>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"address\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"street\": \"<string>\",\n        \"city\": \"<string>\",\n        \"state\": \"<string>\",\n        \"postCode\": \"<number>\",\n        \"address\": \"<string>\"\n      },\n      \"design\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"systemSize\": \"<number>\",\n        \"systemOffset\": \"<number>\",\n        \"asa\": \"<number>\",\n        \"annualProduction\": \"<number>\",\n        \"segments\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"racking\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"module\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"module\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"battery\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          }\n        ]\n      },\n      \"customer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"dealer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"distributor\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"installer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<string>\"\n      },\n      \"user\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"actionItems\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"attachments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"comments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"externalIdentifiers\": [\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"status\": \"on_hold\",\n      \"phase\": \"permitting\",\n      \"milestone\": \"m2\",\n      \"applicationStatus\": \"cancelled\",\n      \"productType\": \"solar_storage_other\",\n      \"financials\": {\n        \"agreementType\": \"loan\",\n        \"totalContractValue\": \"<number>\",\n        \"totalAdderValue\": \"<number>\",\n        \"amountFinanced\": \"<number>\",\n        \"monthlyPayment\": \"<number>\",\n        \"m2PaymentAmount\": \"<number>\",\n        \"m3PaymentAmount\": \"<number>\",\n        \"downPayment\": \"<number>\",\n        \"introductoryTerm\": \"<number>\",\n        \"introductoryPayment\": \"<number>\",\n        \"dealerFee\": \"<number>\",\n        \"apr\": \"<number>\",\n        \"term\": \"<number>\",\n        \"contractRate\": \"<number>\",\n        \"basePpw\": \"<number>\",\n        \"federalRebate\": \"<number>\",\n        \"stateRebase\": \"<number>\",\n        \"utilityRebate\": \"<number>\"\n      },\n      \"proposalLink\": \"<string>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"address\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"street\": \"<string>\",\n        \"city\": \"<string>\",\n        \"state\": \"<string>\",\n        \"postCode\": \"<number>\",\n        \"address\": \"<string>\"\n      },\n      \"design\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"systemSize\": \"<number>\",\n        \"systemOffset\": \"<number>\",\n        \"asa\": \"<number>\",\n        \"annualProduction\": \"<number>\",\n        \"segments\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Ground Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"other\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          }\n        ]\n      },\n      \"customer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"dealer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"distributor\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"installer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<string>\"\n      },\n      \"user\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"actionItems\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"attachments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"comments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"externalIdentifiers\": [\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"search\": {\n    \"@type\": \"<string>\",\n    \"template\": \"<string>\",\n    \"variableRepresentation\": \"<string>\",\n    \"mapping\": [\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      },\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      }\n    ]\n  },\n  \"view\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"first\": \"<string>\",\n    \"last\": \"<string>\",\n    \"next\": \"<string>\"\n  }\n}"
+							"body": "{\n  \"@context\": \"<string>\",\n  \"@id\": \"<string>\",\n  \"@type\": \"<string>\",\n  \"totalItems\": \"<integer>\",\n  \"member\": [\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"status\": \"in_progress\",\n      \"phase\": \"site_survey\",\n      \"milestone\": \"m2\",\n      \"applicationStatus\": \"open\",\n      \"productType\": \"solar_storage_other\",\n      \"financials\": {\n        \"agreementType\": \"loan\",\n        \"totalContractValue\": \"<number>\",\n        \"totalAdderValue\": \"<number>\",\n        \"amountFinanced\": \"<number>\",\n        \"monthlyPayment\": \"<number>\",\n        \"m2PaymentAmount\": \"<number>\",\n        \"m3PaymentAmount\": \"<number>\",\n        \"downPayment\": \"<number>\",\n        \"introductoryTerm\": \"<number>\",\n        \"introductoryPayment\": \"<number>\",\n        \"dealerFee\": \"<number>\",\n        \"apr\": \"<number>\",\n        \"term\": \"<number>\",\n        \"contractRate\": \"<number>\",\n        \"basePpw\": \"<number>\",\n        \"federalRebate\": \"<number>\",\n        \"stateRebase\": \"<number>\",\n        \"utilityRebate\": \"<number>\"\n      },\n      \"proposalLink\": \"<string>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"address\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"street\": \"<string>\",\n        \"city\": \"<string>\",\n        \"state\": \"<string>\",\n        \"postCode\": \"<number>\",\n        \"address\": \"<string>\"\n      },\n      \"design\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"systemSize\": \"<number>\",\n        \"systemOffset\": \"<number>\",\n        \"asa\": \"<number>\",\n        \"annualProduction\": \"<number>\",\n        \"segments\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"racking\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"module\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"module\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"battery\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          }\n        ]\n      },\n      \"customer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"dealer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"distributor\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"installer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<string>\"\n      },\n      \"user\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"actionItems\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"attachments\": [\n        {\n          \"@id\": \"<string>\",\n          \"@type\": \"<string>\",\n          \"id\": \"<integer>\",\n          \"name\": \"<string>\",\n          \"type\": \"m4_verification_form\",\n          \"mime\": \"<string>\",\n          \"size\": \"<integer>\",\n          \"url\": \"<uri>\",\n          \"source\": \"api\"\n        },\n        {\n          \"@id\": \"<string>\",\n          \"@type\": \"<string>\",\n          \"id\": \"<integer>\",\n          \"name\": \"<string>\",\n          \"type\": \"verification_call\",\n          \"mime\": \"<string>\",\n          \"size\": \"<integer>\",\n          \"url\": \"<uri>\",\n          \"source\": \"scanifly\"\n        }\n      ],\n      \"comments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"externalIdentifiers\": [\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"@id\": \"<string>\",\n      \"@type\": \"<string>\",\n      \"id\": \"<integer>\",\n      \"proposalId\": \"<string>\",\n      \"status\": \"on_hold\",\n      \"phase\": \"permitting\",\n      \"milestone\": \"m2\",\n      \"applicationStatus\": \"cancelled\",\n      \"productType\": \"solar_storage_other\",\n      \"financials\": {\n        \"agreementType\": \"loan\",\n        \"totalContractValue\": \"<number>\",\n        \"totalAdderValue\": \"<number>\",\n        \"amountFinanced\": \"<number>\",\n        \"monthlyPayment\": \"<number>\",\n        \"m2PaymentAmount\": \"<number>\",\n        \"m3PaymentAmount\": \"<number>\",\n        \"downPayment\": \"<number>\",\n        \"introductoryTerm\": \"<number>\",\n        \"introductoryPayment\": \"<number>\",\n        \"dealerFee\": \"<number>\",\n        \"apr\": \"<number>\",\n        \"term\": \"<number>\",\n        \"contractRate\": \"<number>\",\n        \"basePpw\": \"<number>\",\n        \"federalRebate\": \"<number>\",\n        \"stateRebase\": \"<number>\",\n        \"utilityRebate\": \"<number>\"\n      },\n      \"proposalLink\": \"<string>\",\n      \"proposalDate\": \"<date>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\",\n      \"address\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"street\": \"<string>\",\n        \"city\": \"<string>\",\n        \"state\": \"<string>\",\n        \"postCode\": \"<number>\",\n        \"address\": \"<string>\"\n      },\n      \"design\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"systemSize\": \"<number>\",\n        \"systemOffset\": \"<number>\",\n        \"asa\": \"<number>\",\n        \"annualProduction\": \"<number>\",\n        \"segments\": [\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Ground Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          },\n          {\n            \"@id\": \"<string>\",\n            \"@type\": \"<string>\",\n            \"id\": \"<integer>\",\n            \"name\": \"<string>\",\n            \"arrayType\": \"Fixed - Roof Mounted\",\n            \"azimuth\": \"<number>\",\n            \"tilt\": \"<number>\",\n            \"shading\": \"<number>\",\n            \"products\": [\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"other\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              },\n              {\n                \"@id\": \"<string>\",\n                \"@type\": \"<string>\",\n                \"id\": \"<integer>\",\n                \"type\": \"inverter\",\n                \"name\": \"<string>\",\n                \"description\": \"<string>\",\n                \"distributors\": [\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  },\n                  {\n                    \"@id\": \"<string>\",\n                    \"@type\": \"<string>\",\n                    \"id\": \"<integer>\",\n                    \"name\": \"<string>\",\n                    \"email\": \"<email>\",\n                    \"website\": \"<uri>\"\n                  }\n                ],\n                \"manufacturer\": {\n                  \"@id\": \"<string>\",\n                  \"@type\": \"<string>\",\n                  \"id\": \"<integer>\",\n                  \"name\": \"<string>\"\n                }\n              }\n            ]\n          }\n        ]\n      },\n      \"customer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"dealer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"distributor\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<uri>\"\n      },\n      \"installer\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"email\": \"<email>\",\n        \"website\": \"<string>\"\n      },\n      \"user\": {\n        \"@id\": \"<string>\",\n        \"@type\": \"<string>\",\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"email\": \"<email>\"\n      },\n      \"actionItems\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"attachments\": [\n        {\n          \"@id\": \"<string>\",\n          \"@type\": \"<string>\",\n          \"id\": \"<integer>\",\n          \"name\": \"<string>\",\n          \"type\": \"interconnection\",\n          \"mime\": \"<string>\",\n          \"size\": \"<integer>\",\n          \"url\": \"<uri>\",\n          \"source\": \"sunobi\"\n        },\n        {\n          \"@id\": \"<string>\",\n          \"@type\": \"<string>\",\n          \"id\": \"<integer>\",\n          \"name\": \"<string>\",\n          \"type\": \"contract\",\n          \"mime\": \"<string>\",\n          \"size\": \"<integer>\",\n          \"url\": \"<uri>\",\n          \"source\": \"sunobi\"\n        }\n      ],\n      \"comments\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"externalIdentifiers\": [\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"key\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"search\": {\n    \"@type\": \"<string>\",\n    \"template\": \"<string>\",\n    \"variableRepresentation\": \"<string>\",\n    \"mapping\": [\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      },\n      {\n        \"@type\": \"<string>\",\n        \"variable\": \"<string>\",\n        \"property\": \"<string>\"\n      }\n    ]\n  },\n  \"view\": {\n    \"@id\": \"<string>\",\n    \"@type\": \"<string>\",\n    \"first\": \"<string>\",\n    \"last\": \"<string>\",\n    \"next\": \"<string>\"\n  }\n}"
 						},
 						{
 							"id": "8c21dd91-eae1-4e69-a943-834e79990392",

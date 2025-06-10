@@ -2541,9 +2541,9 @@ components:
       example: '/webhooks/1'
   securitySchemes:
     ApiKey:
-      type: apiKey
-      name: Authorization
-      in: header
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
     OAuth:
       type: oauth2
       flows:
