@@ -21,6 +21,112 @@ servers:
     description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
+  /action-items/{actionItemId}/attachments:
+    parameters:
+      - name: actionItemId
+        description: The unique identifier of the action item.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/AttachmentId'
+    get:
+      summary: Get action item attachments
+      description: Returns all the current action item attachments.
+      security:
+        - ApiKey:
+            - view:attachments
+        - OAuth:
+            - view:attachments
+      responses:
+        200:
+          description: The action item attachments.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AttachmentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /action-items/{actionItemId}/comments:
+    parameters:
+      - name: actionItemId
+        description: The unique identifier of the action item.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ActionItemId'
+    get:
+      summary: Get action item comments
+      description: Returns all the current action item comments.
+      security:
+        - ApiKey:
+            - view:comments
+        - OAuth:
+            - view:comments
+      responses:
+        200:
+          description: The action item comments.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/CommentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications:
     get:
       summary: Get all qualification applications
@@ -249,6 +355,59 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /applications/{applicationId}/open:
+    parameters:
+      - name: applicationId
+        description: The unique identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ApplicationId'
+    patch:
+      summary: Open a qualification application
+      description: Reopens a qualification application. The application must be in a `submitted`, `approved`, or `declined` state in order to be reopened. The qualification application will need to be submitted once again before a qualification check can happen.
+      security:
+        - ApiKey:
+            - update:applications
+        - OAuth:
+            - update:applications
+      responses:
+        200:
+          description: The current qualification application status.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationOpen'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications/{applicationId}/qualify:
     parameters:
       - name: applicationId
@@ -258,7 +417,7 @@ paths:
         schema:
           $ref: '#/components/schemas/ApplicationId'
     get:
-      summary: Qualify an application
+      summary: Run a qualification application check
       description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` state in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined` once the qualification check finishes.
       security:
         - ApiKey:
@@ -267,7 +426,7 @@ paths:
             - qualify:applications
       responses:
         200:
-          description: The requested qualification application.
+          description: The current qualification application status.
           content:
             application/ld+json:
               schema:
@@ -320,7 +479,7 @@ paths:
             - update:applications
       responses:
         200:
-          description: The submitted qualification application.
+          description: The current qualification application status.
           content:
             application/merge-patch+json:
               schema:
@@ -353,6 +512,100 @@ paths:
           description: There was an unexpected server error.
           content:
             application/merge-patch+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /attachments/{attachmentId}:
+    parameters:
+      - name: attachmentId
+        description: The unique identifier of the attachment.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/AttachmentId'
+    get:
+      summary: Get an attachment
+      description: Returns all available information about a single attachment.
+      security:
+        - ApiKey:
+            - view:attachments
+        - OAuth:
+            - view:attachments
+      responses:
+        200:
+          description: The attachment corresponding to the provided `attachmentId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /comments/{commentId}:
+    parameters:
+      - name: commentId
+        description: The unique identifier of the comment.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/CommentId'
+    get:
+      summary: Get a comment
+      description: Returns all available information about a single comment.
+      security:
+        - ApiKey:
+            - view:comments
+        - OAuth:
+            - view:comments
+      responses:
+        200:
+          description: The comment corresponding to the provided `commentId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
   /dealers:
@@ -802,6 +1055,50 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a project
+      description: Start a new project.
+      security:
+        - ApiKey:
+            - create:projects
+        - OAuth:
+            - create:projects
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/ProjectCreate"
+      responses:
+        201:
+          description: The new project.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /projects/{projectId}:
     parameters:
       - name: projectId
@@ -849,6 +1146,59 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /projects/{projectId}/action-items:
+    parameters:
+      - name: projectId
+        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ProjectId'
+    get:
+      summary: Get project action items
+      description: Returns all the current project action items.
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: The project action items.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ActionItemCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /projects/{projectId}/attachments:
     parameters:
       - name: projectId
@@ -867,7 +1217,7 @@ paths:
             - view:projects
       responses:
         200:
-          description: The requested qualification application.
+          description: The project attachments.
           content:
             application/ld+json:
               schema:
@@ -917,11 +1267,64 @@ paths:
               $ref: "#/components/schemas/AttachmentCreate"
       responses:
         201:
-          description: The new ACH authorization.
+          description: The new attachment.
           content:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/AttachmentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/comments:
+    parameters:
+      - name: projectId
+        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ProjectId'
+    get:
+      summary: Get project comments
+      description: Returns all the current project comments.
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: The project comments.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/CommentCollection'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -1123,14 +1526,134 @@ components:
       description: The unique JSON-LD IRI reference to the ACH authorization.
       type: string
       format: iri-reference
-      example: '/ach-authorizations/1'      
+      example: '/ach-authorizations/1'
+    ActionItem:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ActionItemIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: ActionItem
+        id:
+          $ref: '#/components/schemas/ActionItemId'
+        title:
+          type: string
+          description: The title of the action item.
+        description:
+          type: string
+          description: The main action item content.
+        priority:
+          description: The action item priority.
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+            - critical
+        status:
+          description: The action item status.
+          type: string
+          enum:
+            - open
+            - in_review
+            - needs_corrections
+            - hold
+            - complete
+        dueAt:
+          description: The action item due date, if applicable.
+          type: string
+          format: date-time
+        createdAt:
+          description: The date the action item was created.
+          type: string
+          format: date-time
+        updatedAt:
+          description: The date the action item was last updated.
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentIri'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentIri'
+    ActionItemCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/ActionItem"
+            "@id":
+              example: "/action-items"
+            totalItems:
+              type: integer
+              description: The total number of action items.
+              example: 5
+            member:
+              type: array
+              description: A list of action items.
+              items:
+                $ref: '#/components/schemas/ActionItem'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/action-items?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/action-items?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/action-items?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/action-items?page=2"
+    ActionItemId:
+      description: The unique identifier of an action item.
+      type: integer
     ActionItemIri:
       description: The unique JSON-LD IRI reference to the action item.
       type: string
       format: iri-reference
       example: '/action-items/1'
+    AdderId:
+      description: The unique identifier of an adder.
+      type: integer
+    AdderIri:
+      description: The unique JSON-LD IRI reference to the adder.
+      type: string
+      format: iri-reference
+      example: '/adders/1'
+    Adder:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/AdderIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Adder
+        id:
+          $ref: '#/components/schemas/AdderId'
+        name:
+          type: string
+        quantity:
+          type: integer
+        subtotal:
+          type: number
     Address:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/AddressCreate'
       properties:
         "@id":
           $ref: '#/components/schemas/AddressIri'
@@ -1142,15 +1665,46 @@ components:
           $ref: '#/components/schemas/AddressId'
         street:
           type: string
-        city:
-          type: string
-        state:
-          type: string
-        postCode:
-          type: number
         address:
           description: A formatted address string.
           type: string
+        lat:
+          description: The address latitude coordinate.
+          type: number
+        lng:
+          description: The address longitude coordinates.
+          type: number
+    AddressCreate:
+      type: object
+      required:
+        - streetNumber
+        - streetName
+        - city
+        - state
+        - postCode
+        - country
+      properties:
+        streetNumber:
+          type: string
+        streetName:
+          type: string
+        city:
+          type: string
+          maxLength: 60
+          minLength: 3
+        state:
+          type: string
+          maxLength: 2
+          minLength: 2
+        postCode:
+          type: integer
+          maxLength: 5
+          minLength: 5
+        country:
+          type: string
+          default: USA
+          maxLength: 3
+          minLength: 3
     AddressId:
       description: The unique identifier of an address.
       type: integer
@@ -1230,7 +1784,7 @@ components:
           description: A consent that should be showed to the customer prior to ACH authorization in HTML.
         achAuthorizationConsentMarkdown:
           type: string
-          description: A consent that should be showed to the customer prior to ACH authorization in markdown.  
+          description: A consent that should be showed to the customer prior to ACH authorization in markdown.
     ApplicationAchStatus:
       description: The customer qualification ACH authorization status.
       type: string
@@ -1296,12 +1850,13 @@ components:
           description: The last 4 digits of the applicant\'s social security number.
           type: string
           format: numeric
-          minimum: 4
-          maximum: 4
+          maxLength: 4
+          minLength: 4
         mobilePhone:
           description: The mobile phone number of the applicant.
           type: string
           format: tel
+          pattern: ^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$
         homePhone:
           description: An optional home phone number of the applicant.
           type: string
@@ -1389,7 +1944,10 @@ components:
               description: Whether or not the customer agrees to the third consent.
               type: boolean
             externalId:
-              $ref: "#/components/schemas/ExternalIdentifierCreate"
+              description: Optional external identifiers to add to the application.
+              type: array
+              items:
+                $ref: "#/components/schemas/ExternalIdentifierCreate"
     ApplicationDetails:
       type: object
       properties:
@@ -1409,6 +1967,22 @@ components:
       type: string
       format: iri-reference
       example: '/applications/1'
+    ApplicationOpen:
+      type: object
+      properties:
+        "@context":
+          example: "/contexts/Application"
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+          default: open
     ApplicationProductType:
       description: The type of product the customer is receiving.
       type: string
@@ -1433,6 +2007,8 @@ components:
     ApplicationSubmit:
       type: object
       properties:
+        "@context":
+          example: "/contexts/Application"
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
         "@type":
@@ -1446,6 +2022,8 @@ components:
     ApplicationQualify:
       type: object
       properties:
+        "@context":
+          example: "/contexts/Application"
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
         "@type":
@@ -1531,7 +2109,7 @@ components:
         type: string
         format: binary
       description: >
-        The key of each file should be a valid `AttachmentType`. 
+        The key of each file should be a valid `AttachmentType`.
         Each key represents one file to upload.
     AttachmentId:
       description: The unique identifier of an attachment.
@@ -1584,18 +2162,78 @@ components:
         - unknown
         - utility_bill
         - verification_call
-    CustomerIri:
-      description: The unique JSON-LD IRI reference to the customer.
-      type: string
-      format: iri-reference
-      example: '/customers/1'
+    Comment:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/CommentIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Comment
+        id:
+          $ref: '#/components/schemas/CommentId'
+        comment:
+          description: The main comment content.
+          type: string
+        user:
+          description: The comment's author.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Customer'
+    CommentCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Comment"
+            "@id":
+              example: "/comments"
+            totalItems:
+              type: integer
+              description: The total number of comments.
+              example: 5
+            member:
+              type: array
+              description: A list of comments.
+              items:
+                $ref: '#/components/schemas/Comment'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/comments?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/comments?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/comments?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/comments?page=2"
+    CommentId:
+      description: The unique identifier of a comment.
+      type: integer
     CommentIri:
       description: The unique JSON-LD IRI reference to the comment.
       type: string
       format: iri-reference
       example: '/comments/1'
+    CustomerIri:
+      description: The unique JSON-LD IRI reference to the customer.
+      type: string
+      format: iri-reference
+      example: '/customers/1'
     Customer:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/UserDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/UserIri'
@@ -1606,16 +2244,12 @@ components:
         id:
           $ref: '#/components/schemas/UserId'
         name:
+          description: The user's full name.
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          format: email
     Dealer:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/DealerDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/DealerIri'
@@ -1625,15 +2259,12 @@ components:
           example: Dealer
         id:
           $ref: '#/components/schemas/DealerId'
-        name:
-          description: The name of the dealer.
-          type: string
-        email:
-          description: A contact email for the dealer.
-          type: string
-          format: email
         website:
           description: The dealer's website.
+          type: string
+          format: uri
+        logoUrl:
+          description: The dealer's logo.
           type: string
           format: uri
     DealerCollection:
@@ -1672,6 +2303,29 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/dealers?page=2"
+    DealerCreate:
+      type: object
+      required:
+        - name
+        - email
+      allOf:
+        - $ref: '#/components/schemas/DealerDetails'
+      properties:
+        externalId:
+          description: Optional external identifiers to add to the dealer.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
+    DealerDetails:
+      type: object
+      properties:
+        name:
+          description: The name of the dealer.
+          type: string
+        email:
+          description: A contact email for the dealer.
+          type: string
+          format: email
     DealerId:
       description: The unique identifier of a dealer.
       type: integer
@@ -1706,6 +2360,9 @@ components:
         annualProduction:
           description: The system production in kWh.
           type: number
+        isPrimary:
+          description: Whether or not this design is the primary design.
+          type: boolean
         segments:
           description: A list of the design segments/arrays.
           type: array
@@ -1721,6 +2378,8 @@ components:
       example: '/designs/1'
     Distributor:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/DistributorDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/DistributorIri'
@@ -1730,15 +2389,12 @@ components:
           example: Distributor
         id:
           $ref: '#/components/schemas/DistributorId'
-        name:
-          description: The name of the distributor.
-          type: string
-        email:
-          description: A contact email for the distributor.
-          type: string
-          format: email
         website:
           description: The distributor's website.
+          type: string
+          format: uri
+        logoUrl:
+          description: The distributor's logo.
           type: string
           format: uri
     DistributorCollection:
@@ -1777,6 +2433,29 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/distributors?page=2"
+    DistributorCreate:
+      type: object
+      required:
+        - name
+        - email
+      allOf:
+        - $ref: '#/components/schemas/DistributorDetails'
+      properties:
+        externalId:
+          description: Optional external identifiers to add to the distributor.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
+    DistributorDetails:
+      type: object
+      properties:
+        name:
+          description: The name of the distributor.
+          type: string
+        email:
+          description: A contact email for the distributor.
+          type: string
+          format: email
     DistributorId:
       description: The unique identifier of a distributor.
       type: integer
@@ -1802,7 +2481,30 @@ components:
         detail:
           description: More detailed error information.
           type: string
+    ExternalIdentifierId:
+      description: The unique identifier of an external identifier.
+      type: integer
     ExternalIdentifier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ExternalIdentifierDetails'
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ExternalIdentifierIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: ExternalIdentifier
+        id:
+          $ref: '#/components/schemas/ExternalIdentifierId'
+    ExternalIdentifierCreate:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ExternalIdentifierDetails'
+      required:
+        - key
+        - value
+    ExternalIdentifierDetails:
       type: object
       properties:
         key:
@@ -1811,15 +2513,11 @@ components:
         value:
           type: string
           description: The value of the external identifier.
-    ExternalIdentifierCreate:
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/ExternalIdentifier'
-          - type: object
-            required:
-              - key
-              - value
+    ExternalIdentifierIri:
+      description: The unique JSON-LD IRI reference to the external identifier.
+      type: string
+      format: iri-reference
+      example: '/external-identifiers/1'
     HydraCollectionMetadata:
       type: object
       properties:
@@ -1854,6 +2552,8 @@ components:
           description: The next page of the collection (if available).
     Installer:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/InstallerDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/InstallerIri'
@@ -1863,17 +2563,14 @@ components:
           example: Installer
         id:
           $ref: '#/components/schemas/InstallerId'
-        name:
-          description: The name of the installer.
-          type: string
-        email:
-          description: A contact email for the installer.
-          type: string
-          format: email
         website:
           description: The installer's website.
           type: string
-          format: iri-reference
+          format: uri
+        logoUrl:
+          description: The installer's logo.
+          type: string
+          format: uri
     InstallerCollection:
       type: object
       allOf:
@@ -1910,6 +2607,29 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/installers?page=2"
+    InstallerCreate:
+      type: object
+      required:
+        - name
+        - email
+      allOf:
+        - $ref: '#/components/schemas/InstallerDetails'
+      properties:
+        externalId:
+          description: Optional external identifiers to add to the installer.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
+    InstallerDetails:
+      type: object
+      properties:
+        name:
+          description: The name of the installer.
+          type: string
+        email:
+          description: A contact email for the installer.
+          type: string
+          format: email
     InstallerId:
       description: The unique identifier of an installer.
       type: integer
@@ -2034,6 +2754,9 @@ components:
         description:
           description: A description of the product.
           type: string
+        sku:
+          description: The product SKU.
+          type: string
         distributors:
           description: The distributors who offer this product.
           type: array
@@ -2137,6 +2860,7 @@ components:
         productType:
           $ref: '#/components/schemas/ApplicationProductType'
         financials:
+          description: The project financials.
           type: object
           properties:
             agreementType:
@@ -2189,6 +2913,107 @@ components:
               type: number
             utilityRebate:
               type: number
+        milestones:
+          description: The project milestones.
+          type: object
+          properties:
+            m1:
+              type: object
+              properties:
+                m1ReviewedAt:
+                  type: string
+                  format: date
+                m1ApprovedAt:
+                  type: string
+                  format: date
+                initialReviewStartedAt:
+                  type: string
+                  format: date
+                initialReviewApprovedAt:
+                  type: string
+                  format: date
+                agreementSignedAt:
+                  type: string
+                  format: date
+                changeOrderAt:
+                  type: string
+                  format: date
+                siteSurveyCompletedAt:
+                  type: string
+                  format: date
+                ntpStartedAt:
+                  type: string
+                  format: date
+                ntpCompletedAt:
+                  type: string
+                  format: date
+                procurementApprovedAt:
+                  type: string
+                  format: date
+                procurementPaymentSentAt:
+                  type: string
+                  format: date
+                procurementShippedAt:
+                  type: string
+                  format: date
+                procurementDeliveredAt:
+                  type: string
+                  format: date
+                uccFiledAt:
+                  type: string
+                  format: date
+                permitSubmittedAt:
+                  type: string
+                  format: date
+                permitApprovedAt:
+                  type: string
+                  format: date
+            m2:
+              type: object
+              properties:
+                m2ReviewedAt:
+                  type: string
+                  format: date
+                m2ApprovedAt:
+                  type: string
+                  format: date
+                m2PaymentReady:
+                  type: boolean
+                m2PaymentSentAt:
+                  type: string
+                  format: date
+                installScheduledAt:
+                  type: string
+                  format: date
+                installCompletedAt:
+                  type: string
+                  format: date
+            m3:
+              type: object
+              properties:
+                m3ReviewedAt:
+                  type: string
+                  format: date
+                m3ApprovedAt:
+                  type: string
+                  format: date
+                m3PaymentReady:
+                  type: boolean
+                m3PaymentSentAt:
+                  type: string
+                  format: date
+                finalInspectionScheduledAt:
+                  type: string
+                  format: date
+                finalInspectionCompletedAt:
+                  type: string
+                  format: date
+                ptoAt:
+                  type: string
+                  format: date
+                startBillingAt:
+                  type: string
+                  format: date
         proposalLink:
           description: The link to the project proposal.
           type: string
@@ -2197,9 +3022,11 @@ components:
           type: string
           format: date
         createdAt:
+          description: The date the project was created.
           type: string
           format: date-time
         updatedAt:
+          description: The date the project was last updated.
           type: string
           format: date-time
         address:
@@ -2246,12 +3073,17 @@ components:
           type: array
           description: The attachments related to the project.
           items:
-            $ref: '#/components/schemas/Attachment'
+            $ref: '#/components/schemas/AttachmentIri'
         comments:
           type: array
           description: The comments related to the project.
           items:
             $ref: '#/components/schemas/CommentIri'
+        adders:
+          type: array
+          description: A list of adders for the project.
+          items:
+            $ref: '#/components/schemas/Adder'
         externalIdentifiers:
           type: array
           description: A list of external identifiers for the project.
@@ -2331,6 +3163,132 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/projects?page=2"
+    ProjectCreate:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - applicationId
+            - address
+            - customer
+          properties:
+            applicationId:
+              description: The unique identifer of the qualification application for the customer.
+              allOf:
+                - $ref: "#/components/schemas/ApplicationId"
+            address:
+              description: The project address.
+              allOf:
+                - $ref: "#/components/schemas/AddressCreate"
+            customer:
+              description: The project customer.
+              allOf:
+                - $ref: "#/components/schemas/UserCreate"
+            dealer:
+              description: The dealer responsible for the project. Either the `dealer` or `dealerId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/DealerCreate"
+              nullable: true
+            dealerId:
+              description: The unique identifier of the dealer.
+              type: integer
+              nullable: true
+            installer:
+              description: The installer responsible for the project. Either the `installer` or `installerId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/InstallerCreate"
+              nullable: true
+            installerId:
+              description: The unique identifier of the installer.
+              type: integer
+              nullable: true
+            distributor:
+              description: The distributor responsible for the project.
+              allOf:
+                - $ref: "#/components/schemas/DistributorCreate"
+              nullable: true
+            distributorId:
+              description: The unique identifier of the distributor.
+              type: integer
+              nullable: true
+            user:
+              description: The sales rep responsible for the project. Either the `user` or `userId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/UserCreate"
+              nullable: true
+            userId:
+              description: The unique identifier of the sales rep.
+              type: integer
+              nullable: true
+            externalId:
+              description: Optional external identifiers to add to the project.
+              type: array
+              items:
+                $ref: "#/components/schemas/ExternalIdentifierCreate"
+            agreementType:
+              $ref: '#/components/schemas/ApplicationAgreementType'
+            productType:
+              $ref: '#/components/schemas/ApplicationProductType'
+            totalContractValue:
+              description: The total contract value of the project.
+              type: number
+              format: number
+            amountFinanced:
+              description: The total amount that was financed by the customer.
+              type: number
+            downPayment:
+              description: The down payment provided by the customer.
+              type: number
+            dealerFee:
+              description: The loan dealer fee.
+              type: number
+              maximum: 1
+              minimum: 0
+            interestRate:
+              description: The loan interest rate.
+              type: number
+              maximum: 1
+              minimum: 0
+            contractRate:
+              description: The PPA/lease first year's contract rate.
+              type: number
+              maximum: 1
+              minimum: 0
+            escalator:
+              description: The PPA/lease escalator.
+              type: number
+              maximum: 1
+              minimum: 0
+            term:
+              description: The agreement term length in years.
+              default: 25
+              type: integer
+              maximum: 25
+              minimum: 1
+            proposalId:
+              description: A unique identifier for the proposal.
+              nullable: true
+              type: integer
+            proposalDate:
+              description: The date of the proposal.
+              nullable: true
+              type: string
+              format: date
+            proposalLink:
+              description: A link to the proposal
+              nullable: true
+              type: string
+              format: uri
+            introductoryTerm:
+              description: The loan introductory term length in months.
+              type: integer
+              default: 0
+              maximum: 36
+              minimum: 0
+            introductoryPayment:
+              description: The loan introductory payment.
+              type: number
+              default: 0
     ProjectId:
       description: The unique identifier of a project.
       type: integer
@@ -2369,7 +3327,7 @@ components:
         - site_survey
     ProjectProposalId:
       description: A second unique identifier of a project.
-      type: string
+      type: integer
     ProjectStatus:
       description: The current project status.
       type: string
@@ -2382,6 +3340,8 @@ components:
         - stale
     SalesRep:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/UserDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/UserIri'
@@ -2393,13 +3353,6 @@ components:
           $ref: '#/components/schemas/UserId'
         name:
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          format: email
     Segment:
       type: object
       properties:
@@ -2414,6 +3367,9 @@ components:
         name:
           description: The name of the segment.
           type: string
+        moduleQuantity:
+          description: The number of modules in the segment.
+          type: integer
         arrayType:
           description: The type of array.
           type: string
@@ -2442,6 +3398,49 @@ components:
       type: string
       format: iri-reference
       example: '/segments/1'
+    UserCreate:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - ssn
+        - dateOfBirth
+        - mobilePhone
+      allOf:
+        - $ref: '#/components/schemas/UserDetails'
+      properties:
+        ssn:
+          description: The last 4 of the user's SSN.
+          type: string
+          maxLength: 4
+          minLength: 4
+        dateOfBirth:
+          description: The user's date of birth.
+          type: string
+          format: date
+        mobilePhone:
+          description: The user's mobile phone number.
+          type: string
+          format: tel
+        externalId:
+          description: Optional external identifiers to add to the user.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
+    UserDetails:
+      type: object
+      properties:
+        firstName:
+          description: The user's first name.
+          type: string
+        lastName:
+          description: The user's last name.
+          type: string
+        email:
+          description: The users's email.
+          type: string
+          format: email
     UserId:
       description: The unique identifier of a user.
       type: integer
@@ -2552,11 +3551,15 @@ components:
           tokenUrl: https://partners.eliosfund.com/oauth/token
           refreshUrl: https://partners.eliosfund.com/oauth/refresh
           scopes:
+            create:applications: Can create a qualification application
+            create:attachments: Can create attachments
+            create:projects: Can create projects
             manage:webhooks: Can manage webhooks
+            qualify:applications: Can submit an application for qualification
+            update:applications: Can update a qualification application
+            update:projects: Can update a project
             view:action:items: Can view action items
             view:addresses: Can view addresses
-            create:applications: Can create a qualification application
-            qualify:applications: Can submit an application for qualification
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
@@ -2569,11 +3572,15 @@ components:
         clientCredentials:
           tokenUrl: https://partners.eliosfund.com/oauth/token
           scopes:
+            create:applications: Can create a qualification application
+            create:attachments: Can create attachments
+            create:projects: Can create projects
             manage:webhooks: Can manage webhooks
+            qualify:applications: Can submit an application for qualification
+            update:applications: Can update a qualification application
+            update:projects: Can update a project
             view:action:items: Can view action items
             view:addresses: Can view addresses
-            create:applications: Cab create a qualification application
-            qualify:applications: Can submit an application for qualification
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
