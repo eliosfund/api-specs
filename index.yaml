@@ -375,37 +375,37 @@ paths:
         200:
           description: The current qualification application status.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/ApplicationOpen'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         404:
           description: The requested application could not be found.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
   /applications/{applicationId}/qualify:
@@ -481,37 +481,37 @@ paths:
         200:
           description: The current qualification application status.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/ApplicationSubmit'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         404:
           description: The requested application could not be found.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
         500:
           description: There was an unexpected server error.
           content:
-            application/merge-patch+json:
+            application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
   /attachments/{attachmentId}:
