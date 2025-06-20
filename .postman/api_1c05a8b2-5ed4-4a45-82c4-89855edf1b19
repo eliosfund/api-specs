@@ -9,7 +9,6 @@ id = 1c05a8b2-5ed4-4a45-82c4-89855edf1b19
 
 [config.relations.collections]
 rootDirectory = postman/collections
-files[] = {"id":"38011021-7415b4f2-fae6-437c-8e13-7e98ca17b947","path":"Elios Fund API.json","metaData":{"generateCollectionPreferences":"{\"requestNameSource\":\"Fallback\",\"indentCharacter\":\"Space\",\"parametersResolution\":\"Example\",\"folderStrategy\":\"Paths\",\"includeAuthInfoInExample\":true,\"enableOptionalParameters\":true,\"keepImplicitHeaders\":false,\"includeDeprecated\":true,\"alwaysInheritAuthentication\":false,\"updateCollectionSync\":true,\"requestParametersResolution\":\"Example\",\"exampleParametersResolution\":\"Example\"}"}}
 
 [config.relations.collections.metaData]
 

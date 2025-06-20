@@ -1914,9 +1914,6 @@ components:
             - primaryApplicant
             - agreementType
             - productType
-            - userId
-            - dealerId
-            - installerId
             - consent1
             - consent2
             - consent3
@@ -1925,15 +1922,33 @@ components:
               $ref: "#/components/schemas/ApplicationApplicant"
             coApplicant:
               $ref: "#/components/schemas/ApplicationApplicant"
-            userId:
-              description: The ID of the sales rep.
-              type: integer
+            dealer:
+              description: The dealer responsible for the qualification application. Either the `dealer` or `dealerId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/DealerCreate"
+              nullable: true
             dealerId:
-              description: The ID of the dealer.
+              description: The unique identifier of the dealer.
               type: integer
+              nullable: true
+            installer:
+              description: The installer responsible for the qualification application. Either the `installer` or `installerId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/InstallerCreate"
+              nullable: true
             installerId:
-              description: The ID of the installer.
+              description: The unique identifier of the installer.
               type: integer
+              nullable: true
+            user:
+              description: The sales rep responsible for the project. Either the `user` or `userId` must be provided.
+              allOf:
+                - $ref: "#/components/schemas/UserCreate"
+              nullable: true
+            userId:
+              description: The unique identifier of the sales rep.
+              type: integer
+              nullable: true
             consent1:
               description: Whether or not the customer agrees to the first consent.
               type: boolean
@@ -3404,17 +3419,11 @@ components:
         - firstName
         - lastName
         - email
-        - ssn
         - dateOfBirth
         - mobilePhone
       allOf:
         - $ref: '#/components/schemas/UserDetails'
       properties:
-        ssn:
-          description: The last 4 of the user's SSN.
-          type: string
-          maxLength: 4
-          minLength: 4
         dateOfBirth:
           description: The user's date of birth.
           type: string
