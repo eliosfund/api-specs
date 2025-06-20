@@ -514,100 +514,6 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /attachments/{attachmentId}:
-    parameters:
-      - name: attachmentId
-        description: The unique identifier of the attachment.
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/AttachmentId'
-    get:
-      summary: Get an attachment
-      description: Returns all available information about a single attachment.
-      security:
-        - ApiKey:
-            - view:attachments
-        - OAuth:
-            - view:attachments
-      responses:
-        200:
-          description: The attachment corresponding to the provided `attachmentId`.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Attachment'
-        401:
-          description: There was no API key provided with the request or the API key was invalid.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        403:
-          description: The API key provided does not contain the proper scopes for the current request.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: The requested resource was not found.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: There was an unexpected server error.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /comments/{commentId}:
-    parameters:
-      - name: commentId
-        description: The unique identifier of the comment.
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/CommentId'
-    get:
-      summary: Get a comment
-      description: Returns all available information about a single comment.
-      security:
-        - ApiKey:
-            - view:comments
-        - OAuth:
-            - view:comments
-      responses:
-        200:
-          description: The comment corresponding to the provided `commentId`.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Comment'
-        401:
-          description: There was no API key provided with the request or the API key was invalid.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        403:
-          description: The API key provided does not contain the proper scopes for the current request.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: The requested resource was not found.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: There was an unexpected server error.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /dealers:
     get:
       summary: Get all dealers
@@ -2921,6 +2827,12 @@ components:
               type: number
             basePpw:
               description: The price per watt of the PV system.
+              type: number
+            adderPpw:
+              description: The price per watt of just the project adders.
+              type: number
+            grossPpw:
+              description: The sum of the base and adder PPW values.
               type: number
             federalRebate:
               type: number
