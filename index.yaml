@@ -1834,7 +1834,7 @@ components:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: The unique identifier of the dealer.
+              description: The unique reference ID of the dealer.
               type: integer
               nullable: true
             installer:
@@ -1843,7 +1843,7 @@ components:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: The unique identifier of the installer.
+              description: The unique reference ID of the installer.
               type: integer
               nullable: true
             user:
@@ -1852,7 +1852,7 @@ components:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: The unique identifier of the sales rep.
+              description: The unique reference ID of the sales rep.
               type: integer
               nullable: true
             consent1:
@@ -2146,11 +2146,6 @@ components:
       type: string
       format: iri-reference
       example: '/comments/1'
-    CustomerIri:
-      description: The unique JSON-LD IRI reference to the customer.
-      type: string
-      format: iri-reference
-      example: '/customers/1'
     Customer:
       type: object
       allOf:
@@ -2164,9 +2159,56 @@ components:
           example: User
         id:
           $ref: '#/components/schemas/UserId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           description: The user's full name.
           type: string
+    CustomerCreate:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - ssn
+        - dateOfBirth
+        - mobilePhone
+      allOf:
+        - $ref: '#/components/schemas/UserDetails'
+      properties:
+        middleName:
+          description: The user's middle name.
+          nullable: true
+          type: string
+        ssn:
+          description: The user's last four of their SSN.
+          type: string
+          format: numeric
+        dateOfBirth:
+          description: The user's date of birth.
+          type: string
+          format: date
+        mobilePhone:
+          description: The user's mobile phone number.
+          type: string
+          format: tel
+        homePhone:
+          description: The user's home phone number.
+          nullable: true
+          type: string
+          format: tel
+        externalId:
+          description: Optional external identifiers to add to the user.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
+    CustomerIri:
+      description: The unique JSON-LD IRI reference to the customer.
+      type: string
+      format: iri-reference
+      example: '/customers/1'
     Dealer:
       type: object
       allOf:
@@ -2180,6 +2222,10 @@ components:
           example: Dealer
         id:
           $ref: '#/components/schemas/DealerId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         website:
           description: The dealer's website.
           type: string
@@ -2310,6 +2356,10 @@ components:
           example: Distributor
         id:
           $ref: '#/components/schemas/DistributorId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         website:
           description: The distributor's website.
           type: string
@@ -2484,6 +2534,10 @@ components:
           example: Installer
         id:
           $ref: '#/components/schemas/InstallerId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         website:
           description: The installer's website.
           type: string
@@ -2592,6 +2646,10 @@ components:
           example: Partner
         id:
           $ref: '#/components/schemas/PartnerId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           description: The name of the partner.
           type: string
@@ -2789,6 +2847,12 @@ components:
             totalContractValue:
               description: The total contract price.
               type: number
+            totalPvValue:
+              description: The total price of the PV system.
+              type: number
+            totalStorageValue:
+              description: The total price of the storage system.
+              type: number
             totalAdderValue:
               description: The total price of all adders.
               type: number
@@ -2832,7 +2896,10 @@ components:
               description: The price per watt of just the project adders.
               type: number
             grossPpw:
-              description: The sum of the base and adder PPW values.
+              description: The sum of the base, storage and adder PPW values.
+              type: number
+            storagePpw:
+              description: The price per watt of just the storage system.
               type: number
             federalRebate:
               type: number
@@ -3110,14 +3177,14 @@ components:
             customer:
               description: The project customer.
               allOf:
-                - $ref: "#/components/schemas/UserCreate"
+                - $ref: "#/components/schemas/CustomerCreate"
             dealer:
               description: The dealer responsible for the project. Either the `dealer` or `dealerId` must be provided.
               allOf:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: The unique identifier of the dealer.
+              description: The unique reference ID of the dealer.
               type: integer
               nullable: true
             installer:
@@ -3126,7 +3193,7 @@ components:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: The unique identifier of the installer.
+              description: The unique reference ID of the installer.
               type: integer
               nullable: true
             distributor:
@@ -3135,7 +3202,7 @@ components:
                 - $ref: "#/components/schemas/DistributorCreate"
               nullable: true
             distributorId:
-              description: The unique identifier of the distributor.
+              description: The unique reference ID of the distributor.
               type: integer
               nullable: true
             user:
@@ -3144,7 +3211,7 @@ components:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: The unique identifier of the sales rep.
+              description: The unique reference ID of the sales rep.
               type: integer
               nullable: true
             externalId:
@@ -3278,6 +3345,10 @@ components:
           example: User
         id:
           $ref: '#/components/schemas/UserId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           type: string
     Segment:
@@ -3331,19 +3402,9 @@ components:
         - firstName
         - lastName
         - email
-        - dateOfBirth
-        - mobilePhone
       allOf:
         - $ref: '#/components/schemas/UserDetails'
       properties:
-        dateOfBirth:
-          description: The user's date of birth.
-          type: string
-          format: date
-        mobilePhone:
-          description: The user's mobile phone number.
-          type: string
-          format: tel
         externalId:
           description: Optional external identifiers to add to the user.
           type: array
