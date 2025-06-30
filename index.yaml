@@ -757,6 +757,40 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /pricing:
+    post:
+      summary: Generate pricing for a system
+      description: Returns the pricing for a system over the duration of the contract.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SystemPricingFactorYearCreate"
+      responses:
+        200:
+          description: The system pricing.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/SystemPricingFactorYearCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /products/avl:
     get:
       summary: Get all products
@@ -2860,7 +2894,13 @@ components:
               description: The amount financed by the customer.
               type: number
             monthlyPayment:
-              description: The first year monthly payment.
+              description: The first year monthly payment for PV.
+              type: number
+            monthlyStoragePayment:
+              description: The first year monthly payment for storage.
+              type: number
+            monthlyTotalPayment:
+              description: The first year total monthly payment.
               type: number
             m2PaymentAmount:
               description: The M2 payment amount.
@@ -2887,7 +2927,7 @@ components:
               description: The agreement term length.
               type: number
             contractRate:
-              description: The $/kWh price.
+              description: The first year $/kWh price.
               type: number
             basePpw:
               description: The price per watt of the PV system.
@@ -3235,27 +3275,31 @@ components:
               type: number
             dealerFee:
               description: The loan dealer fee.
+              example: 0
               type: number
               maximum: 1
               minimum: 0
             interestRate:
               description: The loan interest rate.
+              example: 0
               type: number
               maximum: 1
               minimum: 0
             contractRate:
-              description: The PPA/lease first year's contract rate.
+              description: The first year $/kWh price.
+              example: 0.1742
               type: number
               maximum: 1
               minimum: 0
             escalator:
               description: The PPA/lease escalator.
+              example: 0.0299
               type: number
               maximum: 1
               minimum: 0
             term:
               description: The agreement term length in years.
-              default: 25
+              example: 25
               type: integer
               maximum: 25
               minimum: 1
@@ -3275,14 +3319,14 @@ components:
               format: uri
             introductoryTerm:
               description: The loan introductory term length in months.
+              example: 18
               type: integer
-              default: 0
               maximum: 36
               minimum: 0
             introductoryPayment:
               description: The loan introductory payment.
+              example: 0
               type: number
-              default: 0
     ProjectId:
       description: The unique identifier of a project.
       type: integer
@@ -3396,6 +3440,94 @@ components:
       type: string
       format: iri-reference
       example: '/segments/1'
+    SystemPricingFactorYear:
+      type: object
+      properties:
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: SystemPricingFactorYear
+        year:
+          description: The pricing year.
+          type: integer
+        productionKWh:
+          description: The annual system production for the year.
+          type: number
+        ratePerKWh:
+          description: The electric rate for the year.
+          type: number
+        pvMonthlyPayment:
+          description: The monthly payment for just the PV system.
+          type: number
+        storageMonthlyPayment:
+          description: The monthly payment for just the storage system.
+          type: number
+        totalMonthlyPayment:
+          description: The total combined monthly payment.
+          type: number
+        pvAnnualPayment:
+          description: The annual cost for just the PV system.
+          type: number
+        storageAnnualPayment:
+          description: The annual cost for just the storage system.
+          type: number
+        totalAnnualPayment:
+          description: The total combined annual cost.
+          type: number
+    SystemPricingFactorYearCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/SystemPricingFactorYear"
+            "@id":
+              example: "/pricing"
+            totalItems:
+              type: integer
+              description: The total number of years calculated.
+              example: 25
+            member:
+              type: array
+              description: The pricing for a system over the duration of the contract.
+              items:
+                $ref: '#/components/schemas/SystemPricingFactorYear'
+    SystemPricingFactorYearCreate:
+      type: object
+      required:
+        - systemSize
+        - annualProduction
+        - degradationRate
+        - escalator
+        - contractRate
+      properties:
+        systemSize:
+          type: number
+          description: The system size in kW.
+          example: 10.25
+        annualProduction:
+          type: number
+          description: The annual system production in kWh.
+          example: 16245
+        degradationRate:
+          type: number
+          description: The degradation rate of the module being used. Typically around 0.5%.
+          example: 0.005
+          maximum: 1
+          minimum: 0
+        escalator:
+          type: number
+          description: The contract escalator.
+          example: 0.0299
+          maximum: 1
+          minimum: 0
+        contractRate:
+          description: The first year $/kWh price.
+          example: 0.1742
+          type: number
+          maximum: 1
+          minimum: 0
     UserCreate:
       type: object
       required:
