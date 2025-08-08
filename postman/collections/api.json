@@ -4561,12 +4561,12 @@
 			"item": [
 				{
 					"name": "Generate pricing for a system",
-					"id": "0a9676d4-53ee-45d5-834c-999595b07799",
+					"id": "6ec07bdf-ea8f-4c51-af64-2c2aacca6bb9",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -4600,10 +4600,10 @@
 					},
 					"response": [
 						{
-							"id": "b8aed751-3b2c-4702-98b2-37947eff6973",
+							"id": "e5bcfe0e-77bf-4d6b-bf36-e644536956e0",
 							"name": "The system pricing.",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -4649,13 +4649,13 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"@context\": \"/contexts/SystemPricingFactorYear\",\n  \"@id\": \"/pricing\",\n  \"@type\": \"Collection\",\n  \"totalItems\": 25,\n  \"member\": [\n    {\n      \"@type\": \"SystemPricingFactorYear\",\n      \"year\": -161138,\n      \"productionKWh\": 36128639.581802666,\n      \"ratePerKWh\": -83023606.95749731,\n      \"pvMonthlyPayment\": -54545063.30535875,\n      \"storageMonthlyPayment\": 57139114.38253811,\n      \"totalMonthlyPayment\": 76125765.74163419,\n      \"pvAnnualPayment\": 85601349.09743181,\n      \"storageAnnualPayment\": 52339435.88525474,\n      \"totalAnnualPayment\": -9541883.164680302\n    },\n    {\n      \"@type\": \"SystemPricingFactorYear\",\n      \"year\": -86648245,\n      \"productionKWh\": -78231470.06950553,\n      \"ratePerKWh\": 92216793.39790869,\n      \"pvMonthlyPayment\": 77976461.46294427,\n      \"storageMonthlyPayment\": 91776043.37103614,\n      \"totalMonthlyPayment\": 2476934.2709009647,\n      \"pvAnnualPayment\": -43176344.79486716,\n      \"storageAnnualPayment\": 54158504.44150609,\n      \"totalAnnualPayment\": 76781687.70994046\n    }\n  ]\n}"
+							"body": "{\n  \"@context\": \"/contexts/SystemPricingFactorYear\",\n  \"@id\": \"/pricing\",\n  \"@type\": \"Collection\",\n  \"totalItems\": 25,\n  \"member\": [\n    {\n      \"@type\": \"SystemPricingFactorYear\",\n      \"year\": 54605106,\n      \"productionKWh\": -34313308.05834736,\n      \"ratePerKWh\": 31978726.296360806,\n      \"pvMonthlyPayment\": -33806616.73554437,\n      \"storageMonthlyPayment\": 5479276.609851748,\n      \"totalMonthlyPayment\": -9596801.163163304,\n      \"pvAnnualPayment\": -1888559.162797913,\n      \"storageAnnualPayment\": -79439735.56221513,\n      \"totalAnnualPayment\": 45647634.95875552\n    },\n    {\n      \"@type\": \"SystemPricingFactorYear\",\n      \"year\": -12119555,\n      \"productionKWh\": -7978400.953464508,\n      \"ratePerKWh\": 68142566.09130213,\n      \"pvMonthlyPayment\": -40262652.16034539,\n      \"storageMonthlyPayment\": -31671644.377246544,\n      \"totalMonthlyPayment\": -39778635.89784003,\n      \"pvAnnualPayment\": -42072273.300517574,\n      \"storageAnnualPayment\": 1999289.5453333557,\n      \"totalAnnualPayment\": 56665061.579099834\n    }\n  ]\n}"
 						},
 						{
-							"id": "f138002e-42e7-4fcf-892b-b4344a187d8f",
+							"id": "e914364f-d7f7-4d4e-924b-9964e0070ec3",
 							"name": "There was no API key provided with the request or the API key was invalid.",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -4701,13 +4701,13 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"dolor labore laboris deserunt\",\n  \"status\": 15044974,\n  \"detail\": \"enim officia est eiusmod voluptate\"\n}"
+							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"aliqua voluptate\",\n  \"status\": 54170934,\n  \"detail\": \"consequat dolor eu cupidatat\"\n}"
 						},
 						{
-							"id": "719ce92c-3011-4bf2-bdbf-ae5b6cf56f8b",
+							"id": "4911f160-e196-427f-b5b8-209bebdc7478",
 							"name": "The API key provided does not contain the proper scopes for the current request.",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -4753,13 +4753,13 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"dolor labore laboris deserunt\",\n  \"status\": 15044974,\n  \"detail\": \"enim officia est eiusmod voluptate\"\n}"
+							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"aliqua voluptate\",\n  \"status\": 54170934,\n  \"detail\": \"consequat dolor eu cupidatat\"\n}"
 						},
 						{
-							"id": "625ca46b-500b-4947-80ff-6da41d140db9",
+							"id": "c7b8c2f8-c54c-4212-9f22-824af495eee8",
 							"name": "There was an unexpected server error.",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -4805,7 +4805,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"dolor labore laboris deserunt\",\n  \"status\": 15044974,\n  \"detail\": \"enim officia est eiusmod voluptate\"\n}"
+							"body": "{\n  \"type\": \"/errors/401\",\n  \"title\": \"aliqua voluptate\",\n  \"status\": 54170934,\n  \"detail\": \"consequat dolor eu cupidatat\"\n}"
 						}
 					]
 				}
@@ -8756,7 +8756,8 @@
 		{
 			"id": "71bb55fd-c28e-487c-aeaf-b1f24c4f2228",
 			"key": "baseUrl",
-			"value": "https://api.eliosfund.com"
+			"value": "https://api.eliosfund.com",
+			"type": "string"
 		}
 	]
 }

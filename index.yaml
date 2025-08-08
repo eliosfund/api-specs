@@ -758,14 +758,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
   /pricing:
-    post:
+    get:
       summary: Generate pricing for a system
       description: Returns the pricing for a system over the duration of the contract.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SystemPricingFactorYearCreate"
       responses:
         200:
           description: The system pricing.
@@ -1194,7 +1189,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Create a project attachment(s)
-      description: Adds new attachments to the project. The key of each file should be a valid `AttachmentType`.
+      description: Adds new attachments to the project.
       security:
         - ApiKey:
             - update:projects
@@ -2060,12 +2055,31 @@ components:
                       example: "/attachments?page=2"
     AttachmentCreate:
       type: object
-      additionalProperties:
-        type: string
-        format: binary
+      required:
+        - files
+      properties:
+        files:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - type
+              - file
+            properties:
+              name:
+                type: string
+                maxLength: 255
+                description: The name of the attachment.
+              type:
+                $ref: '#/components/schemas/AttachmentType'
+              file:
+                type: string
+                format: binary
+                description: 'The file to upload (max 10MB, allowed types: jpg, jpeg, png, pdf, docx).'
       description: >
-        The key of each file should be a valid `AttachmentType`.
-        Each key represents one file to upload.
+        Create attachments by providing an array of files with their metadata.
+        Each file requires a name, type, and file upload.
     AttachmentId:
       description: The unique identifier of an attachment.
       type: integer
