@@ -130,7 +130,22 @@ paths:
   /applications:
     get:
       summary: Get all qualification applications
-      description: Returns all available qualification applications.
+      description: |
+        Retrieves all solar financing qualification applications associated with your partner account.
+
+        Applications represent the first step in the solar financing workflow where customers
+        submit their personal information to determine their qualification for solar financing.
+
+        **Business Context:**
+        - Use this endpoint to list applications for reporting, status monitoring, or administration
+        - Applications are automatically filtered by your partner account access
+        - Results are paginated using Hydra collection format
+
+        **Application Lifecycle:**
+        1. `open` - Application created, can be edited
+        2. `submitted` - Application locked for editing, ready for qualification
+        3. `in_progress` - Qualification checks running
+        4. `approved/declined` - Final qualification result
       security:
         - ApiKey:
             - view:applications
@@ -162,8 +177,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create a qualification application
-      description: Start a new qualification application.
+      summary: Create a new qualification application
+      description: |
+        Creates a new solar financing qualification application for a customer.
+
+        **Business Context:**
+        This is the first step in the solar financing workflow. The application collects
+        customer demographic and contact information needed for credit qualification.
+
+        **Required Information:**
+        - Primary applicant details (name, address, contact, SSN last 4 digits)
+        - Product and agreement type for the solar installation
+        - Sales team assignment (dealer, installer, sales rep)
+        - Customer consents for credit checks and terms
+
+        **Optional Information:**
+        - Co-applicant details (joint applications for better qualification)
+        - External identifiers for integration with your systems
+        - Reference ID (e.g., proposal or quote ID)
+
+        **Next Steps:**
+        After creation, applications start in `open` status. You must call the submit endpoint
+        before running qualification checks.
+
+        **Validation Notes:**
+        - SSN must be exactly 4 digits (last 4 digits only for security)
+        - Phone numbers validated using E.164 format
+        - State codes must be 2-letter abbreviations
+        - ZIP codes must be exactly 5 digits
+        - Either provide existing team member IDs or create new team members inline
       security:
         - ApiKey:
             - create:applications
@@ -208,14 +250,42 @@ paths:
   /applications/{applicationId}:
     parameters:
       - name: applicationId
-        description: The unique identifier of the qualification application.
+        description: |
+          The unique identifier of the qualification application.
+          This is the numeric ID returned when creating an application.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
+        example: 12345
     get:
-      summary: Get a qualification application
-      description: Returns all available information about a single qualification application.
+      summary: Get qualification application details
+      description: |
+        Retrieves complete information about a specific qualification application,
+        including applicant details, status, team assignment, and credit qualification results.
+
+        **Business Context:**
+        Use this endpoint to:
+        - Check application status and progress
+        - Retrieve applicant information for customer service
+        - Get credit qualification tier results
+        - Review team assignments
+
+        **Response Information:**
+        - Full applicant demographics (SSN is masked for security)
+        - Current application status and progression
+        - Credit report tier (if qualification is complete)
+        - Assigned dealer, installer, and sales representative
+        - External identifiers and reference IDs
+
+        **Status Guide:**
+        - `open`: Application can still be edited
+        - `submitted`: Application locked, ready for qualification
+        - `in_progress`: Credit checks and qualification running
+        - `approved`: Customer qualified for financing
+        - `declined`: Customer did not qualify
+        - `onhold`: Manual review required
+        - `cancelled`: Application cancelled
       security:
         - ApiKey:
             - view:applications
@@ -255,14 +325,49 @@ paths:
   /applications/{applicationId}/ach:
     parameters:
       - name: applicationId
-        description: The unique identifier of the qualification application.
+        description: |
+          The unique identifier of the qualification application.
+          The application must be in `approved` status to access ACH authorization.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
+        example: 12345
     get:
-      summary: Check ACH authorization
-      description: Checks if the ACH authorization form has been completed by the customer. The ACH authorization can be completed using two seperate methods; either by API/Plaid or forwarding the customer to a website. Forward the customer to the `achAuthorizationUrl` to use the web version or initialize Plaid Link using the `plaidLinkToken` for the API version.
+      summary: Get ACH authorization status and options
+      description: |
+        Retrieves the ACH (Automated Clearing House) authorization status and available
+        completion methods for an approved qualification application.
+
+        **Business Context:**
+        ACH authorization is required for customers to set up automatic payments for their
+        solar financing. This step comes after successful credit qualification.
+
+        **Prerequisites:**
+        - Application must have `approved` status from qualification
+        - Customer must be ready to authorize bank account access
+
+        **Authorization Methods:**
+
+        1. **API Integration (Recommended):** Use the returned `plaidLinkToken` to initialize
+           Plaid Link in your application for seamless bank account connection
+
+        2. **Web Redirect:** Forward the customer to `achAuthorizationUrl` for a hosted
+           authorization experience
+
+        **Response Fields:**
+        - `achAuthorizationStatus`: `complete` or `incomplete`
+        - `plaidLinkToken`: Token for Plaid Link initialization (expires in 30 minutes)
+        - `achAuthorizationUrl`: Direct link for web-based authorization
+        - `achAuthorizationConsentHtml/Markdown`: Legal consent text to display
+
+        **Next Steps:**
+        After ACH authorization is complete, the customer can proceed to project creation
+        and contract execution.
+
+        **Error Conditions:**
+        - **403**: Application not in approved status
+        - **404**: Application not found or not accessible
       security:
         - ApiKey:
             - view:applications
@@ -306,8 +411,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create ACH authorization
-      description: Creates a new ACH authorization for the qualification application. This method involves using Plaid Link. You may also create an ACH authorization using a website. Use the `GET /applications/{applicationId}/ach` endpoint to forward the customer to the `achAuthorizationUrl` if you prefer the web version.
+      summary: Complete ACH authorization with Plaid
+      description: |
+        Completes the ACH authorization process using Plaid Link integration.
+
+        **Business Context:**
+        This endpoint processes the Plaid Link results after the customer has successfully
+        connected their bank account through the Plaid interface.
+
+        **Prerequisites:**
+        - Application must be in `approved` status
+        - Customer must have completed Plaid Link flow with valid public token
+        - Required customer information must be provided
+
+        **Integration Flow:**
+        1. Get ACH authorization details from GET endpoint
+        2. Initialize Plaid Link with the provided token
+        3. Customer completes bank account selection in Plaid interface
+        4. Plaid returns a public token
+        5. Submit the public token and customer details to this endpoint
+
+        **Required Information:**
+        - Customer's full legal name (must match bank account)
+        - Contact email and phone number
+        - Plaid public token from successful Link session
+
+        **Security Notes:**
+        - Plaid tokens expire after 30 minutes
+        - Customer information is validated against application data
+        - Bank account information is securely stored and encrypted
+
+        **Error Conditions:**
+        - **400**: Invalid Plaid token or expired token
+        - **403**: Application not approved or already has ACH authorization
+        - **422**: Customer information doesn't match application data
       security:
         - ApiKey:
             - update:applications
@@ -358,14 +495,51 @@ paths:
   /applications/{applicationId}/open:
     parameters:
       - name: applicationId
-        description: The unique identifier of the qualification application.
+        description: |
+          The unique identifier of the qualification application to reopen.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
+        example: 12345
     patch:
-      summary: Open a qualification application
-      description: Reopens a qualification application. The application must be in a `submitted`, `approved`, or `declined` state in order to be reopened. The qualification application will need to be submitted once again before a qualification check can happen.
+      summary: Reopen a qualification application for editing
+      description: |
+        Reopens a qualification application to allow editing of applicant information.
+
+        **Business Context:**
+        Use this endpoint when you need to modify application details after submission,
+        such as correcting customer information or updating product selections.
+
+        **Valid Source Statuses:**
+        - `submitted`: Application was submitted but not yet qualified
+        - `approved`: Qualified application that needs modifications
+        - `declined`: Declined application with correctable issues
+
+        **Status Transition:**
+        `submitted/approved/declined` → `open`
+
+        **After Reopening:**
+        - Application status becomes `open`
+        - All fields become editable again
+        - Previous qualification results are cleared
+        - Application must be resubmitted before running qualification again
+
+        **Common Use Cases:**
+        - Correcting customer address or contact information
+        - Adding or removing a co-applicant
+        - Updating product type or agreement terms
+        - Fixing data entry errors discovered after submission
+
+        **Important Notes:**
+        - Reopening clears previous credit qualification results
+        - Customer will need to be re-qualified after resubmission
+        - Any ACH authorization remains valid and doesn't need to be redone
+
+        **Error Conditions:**
+        - **400**: Application is already in `open` status
+        - **403**: Application status doesn't allow reopening
+        - **404**: Application not found
       security:
         - ApiKey:
             - update:applications
@@ -411,14 +585,57 @@ paths:
   /applications/{applicationId}/qualify:
     parameters:
       - name: applicationId
-        description: The unique identifier of the qualification application.
+        description: |
+          The unique identifier of the qualification application to qualify.
+          The application must be in `submitted` status.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
+        example: 12345
     get:
-      summary: Run a qualification application check
-      description: Runs the necessary processes to check the qualification status of an application. The application must be in a `submitted` state in order to run the qualification checks. While this process is not immediate, but often finishes within a minute, one should either listen to a webhook event or poll the `GET` endpoint to check the status of the application. The status of the application will turn from `in_progress` to either `approved` or `declined` once the qualification check finishes.
+      summary: Start credit qualification process
+      description: |
+        Initiates the credit qualification process for a submitted application.
+
+        **Business Context:**
+        This endpoint triggers the automated credit assessment that determines if the
+        customer qualifies for solar financing and at what tier level.
+
+        **Prerequisites:**
+        - Application must be in `submitted` status
+        - Cannot run qualification on applications that are already qualified
+        - All required applicant information must be complete and validated
+
+        **Qualification Process:**
+        1. Credit bureau reports are pulled for all applicants
+        2. Automated underwriting rules are applied
+        3. Credit tier is assigned based on qualification results
+        4. Final approval or decline decision is made
+
+        **Status Transitions:**
+        - `submitted` → `in_progress` (immediately)
+        - `in_progress` → `approved` or `declined` (within 1-3 minutes)
+        - Some applications may go to `onhold` for manual review
+
+        **Credit Tiers (best to worst):**
+        - `diamond`: Excellent credit, best rates
+        - `platinum`: Very good credit
+        - `gold`: Good credit
+        - `silver`: Fair credit
+        - `bronze`: Below average credit
+        - `mercury`: Poor credit, limited options
+        - `declined`: Does not qualify for financing
+
+        **Monitoring Results:**
+        - **Recommended**: Subscribe to `application.approved` and `application.declined` webhooks
+        - **Alternative**: Poll the GET `/applications/{applicationId}` endpoint every 30 seconds
+        - Results typically available within 60 seconds
+
+        **Error Conditions:**
+        - **400**: Application is not in `submitted` status
+        - **409**: Qualification already in progress or completed
+        - **422**: Missing required applicant information
       security:
         - ApiKey:
             - qualify:applications
@@ -464,14 +681,54 @@ paths:
   /applications/{applicationId}/submit:
     parameters:
       - name: applicationId
-        description: The unique identifier of the qualification application.
+        description: |
+          The unique identifier of the qualification application to submit.
+          The application must be in `open` status.
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/ApplicationId'
+        example: 12345
     patch:
-      summary: Submit a qualification application
-      description: Submits a qualification application and changes the status from `open` to `submitted`. A qualification application cannot be edited in the `submitted` state and may only transition to the `submitted` state from the `open` state. This is necessary before a qualification check can run.
+      summary: Submit application for qualification
+      description: |
+        Locks an application for editing and prepares it for credit qualification.
+
+        **Business Context:**
+        This endpoint finalizes the application data and moves it into the qualification
+        pipeline. After submission, the application cannot be edited without reopening it first.
+
+        **Prerequisites:**
+        - Application must be in `open` status
+        - All required fields must be completed and valid
+        - Customer consents must be obtained (consent1, consent2, consent3)
+
+        **Status Transition:**
+        `open` → `submitted`
+
+        **Validation Performed:**
+        - All required applicant information is complete
+        - Contact information is properly formatted
+        - Address information is valid and complete
+        - Team assignment (dealer, installer, sales rep) is specified
+        - Product and agreement types are selected
+        - Customer consents are acknowledged
+
+        **After Submission:**
+        - Application becomes read-only
+        - Ready for qualification process
+        - Must use `/qualify` endpoint to start credit checks
+        - Can be reopened if changes are needed
+
+        **Next Steps:**
+        1. Call `/applications/{applicationId}/qualify` to start credit assessment
+        2. Monitor status via webhooks or polling
+        3. Proceed to ACH authorization once approved
+
+        **Error Conditions:**
+        - **400**: Application is not in `open` status
+        - **422**: Required information is missing or invalid
+        - **409**: Application is already submitted
       security:
         - ApiKey:
             - update:applications
@@ -991,8 +1248,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create a project
-      description: Start a new project.
+      summary: Create a new solar installation project
+      description: |-
+        Creates a new solar installation project from an approved qualification application.
+
+        **Business Context:**
+        This endpoint converts a qualified customer into an active solar installation project
+        with complete financial terms, equipment specifications, and project management setup.
+
+        **Prerequisites:**
+        - Must reference an existing, approved qualification application
+        - Customer must have completed ACH authorization (if required)
+        - All financial terms must be finalized and agreed upon
+
+        **Required Information:**
+
+        **Customer & Installation Details:**
+        - Customer demographics (from application, but can be updated)
+        - Installation address (where solar system will be installed)
+        - Project team assignment (dealer, installer, sales rep, optional distributor)
+
+        **Financial Structure:**
+        - Agreement type (`ppa`, `lease`, or `loan`) with type-specific terms
+        - Total contract value and amount being financed
+        - Down payment and payment structure
+        - Interest rates, escalators, and fee structures
+
+        **Project Details:**
+        - Product type (solar only, solar + storage, etc.)
+        - Optional proposal information and external references
+        - Equipment add-ons and customizations
+
+        **Agreement Type Requirements:**
+
+        **Loan Projects:** Must include `introductoryTerm`, `introductoryPayment`, `dealerFee`, `interestRate`
+
+        **PPA Projects:** Must include `contractRate`, `escalator`
+
+        **Lease Projects:** Similar to PPA's with different rate structures
+
+        **Validation Rules:**
+        - `amountFinanced` cannot exceed `totalContractValue`
+        - `downPayment` cannot exceed `amountFinanced`
+        - `term` must be 25 years or less
+        - All rates and fees must be between 0 and 1 (0% to 100%)
+        - Referenced application must exist and be approved
+
+        **After Creation:**
+        - Project starts in `new` status
+        - Initial milestone tracking begins
+        - Project team is notified to begin work
+        - Customer contracts and agreements are prepared
       security:
         - ApiKey:
             - create:projects
@@ -1188,13 +1494,74 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create a project attachment(s)
-      description: Adds new attachments to the project.
+      summary: Upload project documents and attachments
+      description: |
+        Uploads new documents, photos, or files to a solar installation project.
+
+        **Business Context:**
+        Use this endpoint to add important project documentation at any stage of the
+        installation lifecycle. Proper document management is critical for compliance,
+        quality assurance, and successful project completion.
+
+        **Upload Process:**
+        1. Prepare files with appropriate names and types
+        2. Categorize each file with the correct attachment type
+        3. Upload multiple files in a single request
+        4. Files are automatically processed and organized
+
+         **File Requirements:**
+        - **Maximum Size**: 10MB per file
+        - **Supported Formats**: JPG, PNG, PDF, DOCX
+        - **Naming**: Descriptive filenames help with organization
+
+        **Required for Each File:**
+        - `name`: Descriptive name for the document
+        - `type`: Categorization using AttachmentType enum
+        - `file`: The binary file data
+
+        **When to Upload Documents:**
+
+        **Project Initiation:**
+        - Signed contracts and agreements
+        - Initial site photos and surveys
+        - Customer identification and property documents
+
+        **Design & Permitting:**
+        - Final system designs and layouts
+        - Permit applications and approvals
+        - Engineering calculations and reports
+
+        **Installation Phase:**
+        - Equipment delivery photos and receipts
+        - Installation progress documentation
+        - Safety inspection photos
+
+        **Completion & Testing:**
+        - Final installation photos
+        - System testing and commissioning results
+        - Inspection certificates and approvals
+
+        **Post-Installation:**
+        - Utility PTO documentation
+        - System monitoring setup proof
+        - Customer handover materials
+
+        **Best Practices:**
+        - Upload documents promptly to maintain project timeline
+        - Use clear, descriptive names for easy identification
+        - Organize files by milestone or project phase
+        - Include date information in filenames when relevant
+        - Verify file completeness before milestone approvals
+
+        **Automation Integration:**
+        Many document types can be automatically generated and uploaded
+        through integrations with design platforms, inspection tools,
+        and utility systems.
       security:
         - ApiKey:
-            - update:projects
+          - update:projects
         - OAuth:
-            - update:projects
+          - update:projects
       requestBody:
         content:
           multipart/form-data:
@@ -1760,48 +2127,113 @@ components:
           minimum: 3
           maximum: 3
     ApplicationApplicant:
-      description: The demographics of a qualification applicant.
+      description: |-
+        Complete demographic and contact information for a qualification applicant.
+        This information is used for credit checks and identity verification.
       type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - dateOfBirth
+        - ssn
+        - mobilePhone
+        - currentAddress
       properties:
         firstName:
-          description: The first name of the applicant.
+          description: |-
+            Applicant's legal first name as it appears on government identification.
+            Used for credit bureau matching and identity verification.
           type: string
+          maxLength: 255
+          minLength: 1
+          example: "John"
         middleName:
-          description: An optional middle name of the applicant.
+          description: |-
+            Optional middle name or initial. Can improve credit bureau matching accuracy.
           type: string
+          maxLength: 255
           nullable: true
+          example: "Michael"
         lastName:
-          description: The last name of the applicant.
+          description: |-
+            Applicant's legal last name as it appears on government identification.
+            Used for credit bureau matching and identity verification.
           type: string
+          maxLength: 255
+          minLength: 1
+          example: "Smith"
         email:
-          description: The email of the applicant.
+          description: |-
+            Primary email address for account notifications and communications.
+            Must be a valid, deliverable email address.
           type: string
           format: email
+          maxLength: 255
+          example: "john.smith@email.com"
         dateOfBirth:
-          description: The date of birth of the applicant.
+          description: |-
+            Applicant's date of birth in YYYY-MM-DD format.
+
+            **Requirements:**
+            - Must be at least 18 years old
+            - Used for credit bureau identity verification
+            - Must match government identification
           type: string
           format: date
+          example: "1985-06-15"
         ssn:
-          description: The last 4 digits of the applicant\'s social security number.
+          description: |-
+            Last 4 digits of the applicant's Social Security Number.
+
+            **Security Note:** Only the last 4 digits are collected for identity
+            verification while maintaining privacy and security.
+
+            **Format:** Exactly 4 numeric digits
           type: string
-          format: numeric
-          maxLength: 4
+          pattern: '^\d{4}$'
           minLength: 4
+          maxLength: 4
+          example: "1234"
         mobilePhone:
-          description: The mobile phone number of the applicant.
+          description: |-
+            Primary mobile phone number for contact and verification.
+
+            **Format Requirements:**
+            - Must be a valid US phone number
+            - Can include country code (+1)
+            - Various formatting accepted: (555) 123-4567, 555-123-4567, 555.123.4567
           type: string
           format: tel
-          pattern: ^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$
+          pattern: '^(\+1\s?)?\(?[2-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$'
+          example: "+15551234567"
         homePhone:
-          description: An optional home phone number of the applicant.
+          description: |-
+            Optional home/landline phone number for additional contact options.
+            Same format requirements as mobile phone.
           type: string
           format: tel
+          pattern: '^(\+1\s?)?\(?[2-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$'
           nullable: true
+          example: "+15559876543"
         currentAddress:
-          description: The current home address of the applicant.
+          description: |-
+            Current residential address where the applicant has lived.
+
+            **Requirements:**
+            - Must be a valid US address
+            - Used for credit bureau verification
+            - Required for all applicants
           $ref: '#/components/schemas/ApplicationAddress'
         previousAddress:
-          description: If the applicant has not lived at their current address for more than two years, their previous home address.
+          description: |-
+            Previous residential address if applicant has lived at current address
+            for less than 2 years.
+
+            **When Required:**
+            - If current address residency is less than 24 months
+            - Helps with credit bureau identity verification
+            - Can improve qualification odds
           $ref: '#/components/schemas/ApplicationAddress'
           nullable: true
     ApplicationCollection:
@@ -1842,6 +2274,7 @@ components:
                       example: "/applications?page=2"
     ApplicationCreate:
       type: object
+      description: Schema for creating a new solar financing qualification application.
       allOf:
         - $ref: '#/components/schemas/ApplicationDetails'
         - type: object
@@ -1855,49 +2288,135 @@ components:
           properties:
             primaryApplicant:
               $ref: "#/components/schemas/ApplicationApplicant"
+              description: |-
+                Primary applicant information. This person will be the main contact
+                and primary responsibility holder for the solar financing.
             coApplicant:
               $ref: "#/components/schemas/ApplicationApplicant"
+              description: |-
+                Optional co-applicant for joint applications. Adding a co-applicant
+                can improve qualification odds by combining credit profiles.
+                When provided, all co-applicant fields become required.
+              nullable: true
             dealer:
-              description: The dealer responsible for the qualification application. Either the `dealer` or `dealerId` must be provided.
+              description: |-
+                Create a new dealer record for this application. Use this when the dealer
+                doesn't exist in the system yet. Cannot be used with `dealerId`.
+
+                **Either `dealer` or `dealerId` must be provided.**
               allOf:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: The unique reference ID of the dealer.
+              description: |-
+                Reference to an existing dealer by ID. Use this when working with
+                established dealer partners. Cannot be used with `dealer`.
+
+                **Either `dealer` or `dealerId` must be provided.**
               type: integer
+              minimum: 1
               nullable: true
+              example: 123
             installer:
-              description: The installer responsible for the qualification application. Either the `installer` or `installerId` must be provided.
+              description: |-
+                Create a new installer record for this application. Use this when the
+                installer doesn't exist in the system yet. Cannot be used with `installerId`.
+
+                **Either `installer` or `installerId` must be provided.**
               allOf:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: The unique reference ID of the installer.
+              description: |-
+                Reference to an existing installer by ID. Use this when working with
+                established installer partners. Cannot be used with `installer`.
+
+                **Either `installer` or `installerId` must be provided.**
               type: integer
+              minimum: 1
               nullable: true
+              example: 456
             user:
-              description: The sales rep responsible for the project. Either the `user` or `userId` must be provided.
+              description: |-
+                Create a new sales representative record for this application. Use this
+                when the sales rep doesn't exist in the system yet. Cannot be used with `userId`.
+
+                **Either `user` or `userId` must be provided.**
               allOf:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: The unique reference ID of the sales rep.
+              description: |-
+                Reference to an existing sales representative by ID. Use this when working
+                with established sales team members. Cannot be used with `user`.
+
+                **Either `user` or `userId` must be provided.**
               type: integer
+              minimum: 1
               nullable: true
+              example: 789
             consent1:
-              description: Whether or not the customer agrees to the first consent.
+              description: |-
+                Customer consent for credit report authorization. Must be `true`.
+
+                **Legal Requirement**: Customer must explicitly agree to credit checks.
               type: boolean
+              enum: [true]
             consent2:
-              description: Whether or not the customer agrees to the second consent.
+              description: |-
+                Customer consent for terms and conditions. Must be `true`.
+
+                **Legal Requirement**: Customer must agree to financing terms.
               type: boolean
+              enum: [true]
             consent3:
-              description: Whether or not the customer agrees to the third consent.
+              description: |-
+                Customer consent for marketing communications. Must be `true`.
+
+                **Legal Requirement**: Customer must agree to contact policies.
               type: boolean
+              enum: [true]
             externalId:
-              description: Optional external identifiers to add to the application.
+              description: |-
+                Optional external identifiers for integration with your systems.
+                Useful for tracking applications across different platforms.
+
+                **Common Use Cases:**
+                - CRM system IDs
+                - Proposal or quote numbers
+                - Lead tracking identifiers
               type: array
               items:
                 $ref: "#/components/schemas/ExternalIdentifierCreate"
+              example:
+                - key: "crm_lead_id"
+                  value: "LEAD-12345"
+                - key: "proposal_number"
+                  value: "PROP-2024-001"
+      example:
+        referenceId: "PROP-2024-001"
+        agreementType: "ppa"
+        productType: "solar_storage"
+        primaryApplicant:
+          firstName: "John"
+          lastName: "Smith"
+          email: "john.smith@email.com"
+          dateOfBirth: "1985-06-15"
+          ssn: "1234"
+          mobilePhone: "+15551234567"
+          currentAddress:
+            streetNumber: "123"
+            streetName: "Main Street"
+            city: "Phoenix"
+            state: "AZ"
+            postCode: "85001"
+            country: "USA"
+        dealerId: 123
+        installerId: 456
+        userId: 789
+        consent1: true
+        consent2: true
+        consent3: true
     ApplicationDetails:
       type: object
       properties:
@@ -3213,134 +3732,554 @@ components:
                       example: "/projects?page=2"
     ProjectCreate:
       type: object
+      description: |-
+        Schema for creating a new solar installation project with complete financial terms,
+        team assignments, and project specifications.
       allOf:
         - type: object
           required:
             - applicationId
             - address
             - customer
+            - agreementType
+            - productType
+            - totalContractValue
+            - amountFinanced
+            - downPayment
+            - term
+            - proposalDate
           properties:
             applicationId:
-              description: The unique identifer of the qualification application for the customer.
-              allOf:
-                - $ref: "#/components/schemas/ApplicationId"
+              description: |-
+                Reference to the approved qualification application this project is based on.
+
+                **Requirements:**
+                - Application must exist and be approved
+                - Customer from application will be linked to this project
+                - Credit qualification tier will carry forward
+
+                **Business Rule:** One application can generate multiple projects
+                (e.g., main system + later battery addition)
+              type: integer
+              minimum: 1
+              example: 12345
             address:
-              description: The project address.
+              description: |-
+                Physical address where the solar system will be installed.
+
+                **Important:** This may differ from the customer's home address
+                if installing on a secondary property, rental, or commercial building.
+
+                **Used For:**
+                - Permitting and utility coordination
+                - Installation crew routing and scheduling
+                - System design and shading analysis
+                - Property value assessments
               allOf:
                 - $ref: "#/components/schemas/AddressCreate"
             customer:
-              description: The project customer.
+              description: |-
+                Customer information for the solar installation project.
+
+                **Backend Processing Logic:**
+                1. **Customer Lookup**: System first searches for existing customer by email address
+                2. **Found**: If customer exists, links to project (other fields can update existing record)
+                3. **Not Found**: Creates new customer record with provided information
+
+                **Data Sources:**
+                - **From Application**: Usually copied from the referenced qualification application
+                - **Updated Info**: May include refreshed customer details if information changed
+                - **Different Customer**: For gift installations or third-party ownership
+
+                **Required Information:**
+                All customer fields are required in the API request for data completeness,
+                but the system intelligently handles customer lookup and creation:
+
+                - Legal name (must match contracts and agreements)
+                - Email address (primary lookup key for existing customers)
+                - Contact information for project coordination
+                - SSN last 4 digits for identity verification
+                - Current demographic and address information
+
+                **Business Benefits:**
+                - Prevents duplicate customer records
+                - Maintains data consistency across applications and projects
+                - Supports multiple projects per customer
+                - Allows customer information updates
               allOf:
                 - $ref: "#/components/schemas/CustomerCreate"
             dealer:
-              description: The dealer responsible for the project. Either the `dealer` or `dealerId` must be provided.
+              description: |-
+                Solar dealer/sales company responsible for the project.
+                Create new dealer record if not already in the system.
+
+                **Cannot be used with `dealerId`** - choose one approach.
+
+                **Either `dealer` or `dealerId` must be provided.**
+
+                **Dealer Responsibilities:**
+                - Customer relationship and sales process
+                - Contract execution and customer service
+                - Sales commission and fee processing
+                - Quality assurance and customer satisfaction
               allOf:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: The unique reference ID of the dealer.
+              description: |-
+                Reference to existing dealer by ID for established partnerships.
+
+                **Cannot be used with `dealer`** - choose one approach.
+
+                **Either `dealer` or `dealerId` must be provided.**
+
+                **When to Use:** Working with existing dealer partners who are
+                already registered in the system with established rates and terms.
               type: integer
+              minimum: 1
               nullable: true
+              example: 123
             installer:
-              description: The installer responsible for the project. Either the `installer` or `installerId` must be provided.
+              description: |-
+                Solar installation company responsible for the physical installation.
+                Create new installer record if not already in the system.
+
+                **Cannot be used with `installerId`** - choose one approach.
+
+                **Either `installer` or `installerId` must be provided.**
+
+                **Installer Responsibilities:**
+                - System design and engineering
+                - Permitting and utility coordination
+                - Physical installation and commissioning
+                - Post-installation support and warranty
               allOf:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: The unique reference ID of the installer.
+              description: |-
+                Reference to existing installer by ID for established partnerships.
+
+                **Cannot be used with `installer`** - choose one approach.
+
+                **Either `installer` or `installerId` must be provided.**
+
+                **When to Use:** Working with certified installer partners who are
+                already registered with verified credentials and service areas.
               type: integer
+              minimum: 1
               nullable: true
+              example: 456
             distributor:
-              description: The distributor responsible for the project.
+              description: |-
+                Optional equipment distributor for specialized procurement needs.
+
+                **When Used:**
+                - Specific equipment requirements or availability
+                - Regional distributor relationships
+                - Special pricing or warranty terms
+                - Bulk purchasing coordination
+
+                **Cannot be used with `distributorId`** - choose one approach.
               allOf:
                 - $ref: "#/components/schemas/DistributorCreate"
               nullable: true
             distributorId:
-              description: The unique reference ID of the distributor.
+              description: |-
+                Reference to existing equipment distributor by ID.
+
+                **Cannot be used with `distributor`** - choose one approach.
+
+                **Common Use Cases:**
+                - Regional distributor partnerships
+                - Specialized equipment sourcing
+                - Volume purchasing agreements
+                - Logistics and delivery coordination
               type: integer
+              minimum: 1
               nullable: true
+              example: 789
             user:
-              description: The sales rep responsible for the project. Either the `user` or `userId` must be provided.
+              description: |-
+                Sales representative responsible for the customer relationship.
+                Create new user record if not already in the system.
+
+                **Cannot be used with `userId`** - choose one approach.
+
+                **Either `user` or `userId` must be provided.**
+
+                **Sales Rep Responsibilities:**
+                - Primary customer contact and relationship
+                - Project coordination and communication
+                - Commission and compensation tracking
+                - Customer service and issue resolution
               allOf:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: The unique reference ID of the sales rep.
+              description: |-
+                Reference to existing sales representative by ID.
+
+                **Cannot be used with `user`** - choose one approach.
+
+                **Either `user` or `userId` must be provided.**
+
+                **When to Use:** Assigning projects to established sales team
+                members with existing customer relationships and commission structures.
               type: integer
+              minimum: 1
               nullable: true
+              example: 101112
             externalId:
-              description: Optional external identifiers to add to the project.
+              description: |-
+                Optional external system identifiers for integration and tracking.
+
+                **Common Integration Use Cases:**
+                - CRM system project IDs
+                - Proposal and design tool references
+                - ERP system project numbers
+                - Customer portal tracking IDs
+                - Third-party platform connections
               type: array
               items:
                 $ref: "#/components/schemas/ExternalIdentifierCreate"
+              example:
+                - key: "crm_project_id"
+                  value: "PROJ-2024-001"
+                - key: "proposal_id"
+                  value: "PROP-12345"
             agreementType:
-              $ref: '#/components/schemas/ApplicationAgreementType'
+              description: |-
+                Type of solar financing agreement for this project.
+
+                **Agreement Types:**
+                - `ppa`: Power Purchase Agreement - customer buys energy produced
+                - `lease`: Solar lease - customer leases equipment with fixed payments
+                - `loan`: Solar loan - customer finances equipment purchase
+
+                **Required Fields by Type:**
+                - **Loan**: `introductoryTerm`, `introductoryPayment`, `dealerFee`, `interestRate`
+                - **PPA**: `contractRate`, `escalator`
+                - **Lease**: Similar to loan with different rate structures
+              allOf:
+                - $ref: '#/components/schemas/ApplicationAgreementType'
             productType:
-              $ref: '#/components/schemas/ApplicationProductType'
+              description: |-
+                Type of solar energy system being installed.
+
+                **Product Types:**
+                - `solar`: Solar panels only
+                - `solar_storage`: Solar panels with battery storage
+                - `solar_storage_other`: Solar + storage + additional products
+                - `solar_other`: Solar panels with other add-ons
+                - `storage`: Battery storage only (rare)
+
+                **Impact:** Affects pricing, rebates, and installation complexity
+              allOf:
+                - $ref: '#/components/schemas/ApplicationProductType'
             totalContractValue:
-              description: The total contract value of the project.
+              description: |-
+                Total dollar value of the solar installation contract.
+
+                **Includes:**
+                - Solar equipment (panels, inverters, racking)
+                - Battery storage (if applicable)
+                - Installation labor and materials
+                - Permits, inspections, and utility connections
+                - Equipment add-ons and upgrades
+                - Sales tax and fees
+
+                **Business Rules:**
+                - Must be greater than or equal to `amountFinanced`
+                - Used for pricing calculations ($/watt metrics)
+                - Determines rebate and tax credit amounts
               type: number
-              format: number
+              format: currency
+              minimum: 0
+              example: 25000.00
             amountFinanced:
-              description: The total amount that was financed by the customer.
+              description: |-
+                Dollar amount being financed through Elios Fund.
+
+                **Calculation:** `totalContractValue` - `downPayment` = `amountFinanced`
+
+                **Business Rules:**
+                - Cannot exceed `totalContractValue`
+                - Must be greater than or equal to `downPayment`
+                - Determines monthly payment calculations
+                - Subject to qualification limits based on credit tier
+
+                **Common Scenarios:**
+                - 100% financing: `amountFinanced` = `totalContractValue`, `downPayment` = 0
+                - Partial financing: Customer pays down payment, finances remainder
               type: number
+              format: currency
+              minimum: 0
+              example: 20000.00
             downPayment:
-              description: The down payment provided by the customer.
+              description: |-
+                Customer down payment amount paid at contract signing.
+
+                **Business Rules:**
+                - Cannot exceed `amountFinanced`
+                - Reduces total financing amount and monthly payments
+                - Often used to lower monthly payments or improve qualification
+
+                **Common Amounts:**
+                - $0 for 100% financing (most common)
+                - $2,000-$5,000 for payment reduction
+                - 10-20% of total for traditional financing
               type: number
+              format: currency
+              minimum: 0
+              example: 5000.00
             dealerFee:
-              description: The loan dealer fee.
-              example: 0
+              description: |-
+                Dealer fee percentage for loan products (decimal format).
+
+                **Required for:** `agreementType: loan`
+
+                **Format:** Decimal (0.05 = 5%)
+
+                **Business Context:**
+                - Compensation paid to dealer for loan origination
+                - Typically 2-8% of financed amount
+                - Built into customer pricing
+                - Affects dealer profitability and customer rates
               type: number
-              maximum: 1
+              format: percentage
               minimum: 0
+              maximum: 1
+              example: 0.055
             interestRate:
-              description: The loan interest rate.
-              example: 0
+              description: |-
+                Annual interest rate for loan products (decimal format).
+
+                **Required for:** `agreementType: loan`
+
+                **Format:** Decimal (0.0599 = 5.99% APR)
+
+                **Business Context:**
+                - Customer's borrowing rate based on credit qualification
+                - Affects monthly payment calculations
+                - May include introductory/promotional periods
+                - Determines total cost of financing over loan term
               type: number
-              maximum: 1
+              format: percentage
               minimum: 0
+              maximum: 1
+              example: 0.0599
             contractRate:
-              description: The first year $/kWh price.
+              description: |-
+                First-year energy rate for PPA products ($/kWh in decimal format).
+
+                **Required for:** `agreementType: ppa`
+
+                **Format:** Decimal dollars per kWh (0.1742 = $0.1742/kWh)
+
+                **Business Context:**
+                - Rate customer pays for solar energy produced
+                - Typically lower than utility rates
+                - Escalates annually based on `escalator` percentage
+                - Determines customer savings and project economics
+              type: number
+              format: rate
+              minimum: 0
+              maximum: 1
               example: 0.1742
-              type: number
-              maximum: 1
-              minimum: 0
             escalator:
-              description: The PPA/lease escalator.
-              example: 0.0299
+              description: |-
+                Annual rate increase percentage for PPA/lease products (decimal format).
+
+                **Required for:** `agreementType: ppa`
+
+                **Format:** Decimal (0.0299 = 2.99% annual increase)
+
+                **Business Context:**
+                - Annual increase in energy rate or lease payment
+                - Typically 0-4% per year
+                - Accounts for inflation and operational costs
+                - Lower escalators = better customer value
               type: number
-              maximum: 1
+              format: percentage
               minimum: 0
+              maximum: 1
+              example: 0.0299
             term:
-              description: The agreement term length in years.
-              example: 25
+              description: |-
+                Agreement length in years.
+
+                **Common Terms:**
+                - **25 years**: Standard for PPAs and leases
+                - **20 years**: Common for loans
+                - **12-15 years**: Short-term loan options
+
+                **Business Impact:**
+                - Longer terms = lower monthly payments
+                - Affects equipment warranty coverage
+                - Determines total project economics
+                - Must align with equipment design life
               type: integer
-              maximum: 25
               minimum: 1
+              maximum: 25
+              example: 25
             proposalId:
-              description: A unique identifier for the proposal.
-              nullable: true
+              description: |-
+                Optional reference to the original sales proposal.
+
+                **Use Cases:**
+                - Link to design and pricing tools
+                - Sales process tracking and reporting
+                - Commission calculations
+                - Customer communication reference
               type: integer
-            proposalDate:
-              description: The date of the proposal.
+              minimum: 1
               nullable: true
+              example: 98765
+            proposalDate:
+              description: |-
+                Date when the proposal was presented to the customer.
+
+                **Business Uses:**
+                - Sales cycle tracking and reporting
+                - Pricing validity periods
+                - Commission qualification dates
+                - Customer communication timeline
+
+                **Required Field** for project tracking and reporting.
               type: string
               format: date
+              example: "2024-03-15"
             proposalLink:
-              description: A link to the proposal
-              nullable: true
+              description: |-
+                Optional URL link to the customer proposal document.
+
+                **Common Sources:**
+                - Design tool proposal exports (Aurora, HelioScope)
+                - Sales presentation platforms
+                - Customer portal links
+                - Document management systems
+
+                **Customer Access:** Often shared with customers for reference
               type: string
               format: uri
+              nullable: true
+              example: "https://portal.example.com/proposals/12345"
             introductoryTerm:
-              description: The loan introductory term length in months.
-              example: 18
+              description: |-
+                Length of introductory/promotional payment period in months.
+
+                **Required for:** `agreementType: loan`
+
+                **Common Terms:**
+                - 18 months (most popular)
+                - 12 months (shorter promotion)
+                - 24-36 months (extended promotions)
+
+                **Business Purpose:**
+                - Lower initial payments to improve qualification
+                - Marketing incentive for customer acquisition
+                - Cash flow management for customers
               type: integer
-              maximum: 36
               minimum: 0
+              maximum: 36
+              example: 18
             introductoryPayment:
-              description: The loan introductory payment.
-              example: 0
+              description: |-
+                Monthly payment amount during introductory period.
+
+                **Required for:** `agreementType: loan`
+
+                **Common Values:**
+                - $0 (no-payment promotion)
+                - $89-$149 (reduced payment)
+                - 50% of regular payment (partial reduction)
+
+                **After Intro Period:** Payments increase to regular amortized amount
               type: number
+              format: currency
+              minimum: 0
+              example: 89.00
+            adders:
+              description: |-
+                Optional equipment add-ons and upgrades beyond the base solar system.
+
+                **Common Adders:**
+                - Electrical panel upgrades
+                - Roof repairs or reinforcements
+                - Trenching and conduit runs
+                - Monitoring system upgrades
+                - Extended warranties
+                - Smart home integrations
+
+                **Pricing Impact:** Adds to total contract value and affects $/watt calculations
+              type: array
+              items:
+                type: object
+                required:
+                  - name
+                  - quantity
+                  - subtotal
+                properties:
+                  name:
+                    description: Name/description of the equipment add-on
+                    type: string
+                    example: "Electrical Panel Upgrade"
+                  quantity:
+                    description: Number of units being installed
+                    type: integer
+                    minimum: 1
+                    example: 1
+                  subtotal:
+                    description: Total cost for this add-on (quantity × unit price)
+                    type: number
+                    format: currency
+                    minimum: 0
+                    example: 2500.00
+      example:
+        applicationId: 12345
+        customer:
+          firstName: "John"
+          lastName: "Smith"
+          email: "john.smith@email.com"
+          dateOfBirth: "1985-06-15"
+          ssn: "1234"
+          mobilePhone: "+15551234567"
+        address:
+          streetNumber: "789"
+          streetName: "Solar Avenue"
+          city: "Phoenix"
+          state: "AZ"
+          postCode: "85001"
+          country: "USA"
+        agreementType: "loan"
+        productType: "solar_storage"
+        totalContractValue: 35000.00
+        amountFinanced: 30000.00
+        downPayment: 5000.00
+        dealerFee: 0.055
+        interestRate: 0.0599
+        term: 20
+        introductoryTerm: 18
+        introductoryPayment: 149.00
+        proposalDate: "2024-03-15"
+        proposalId: 98765
+        proposalLink: "https://portal.example.com/proposals/98765"
+        dealerId: 123
+        installerId: 456
+        userId: 101112
+        externalId:
+          - key: "crm_project_id"
+            value: "PROJ-2024-001"
+          - key: "design_tool_id"
+            value: "AURORA-12345"
+        adders:
+          - name: "Electrical Panel Upgrade"
+            quantity: 1
+            subtotal: 2500.00
+          - name: "Roof Reinforcement"
+            quantity: 1
+            subtotal: 1500.00
     ProjectId:
       description: The unique identifier of a project.
       type: integer
