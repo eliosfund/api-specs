@@ -21,14 +21,173 @@ servers:
     description: For access to the staging environment, please contact Elios Fund support.
 
 paths:
-  /action-items/{actionItemId}/attachments:
+  /action-items:
+    get:
+      summary: Get all action items
+      description: |-
+        Retrieves all action items associated with your partner account.
+
+        **Business Context:**
+        Action items represent tasks, issues, or documentation requirements that need
+        attention during the solar installation process. They help track project progress,
+        ensure compliance, and maintain quality standards.
+
+        **Action Item Types:**
+        - **Documentation**: Required documents, permits, or certificates
+        - **Quality Assurance**: Inspection items or compliance checks
+        - **Customer Communication**: Follow-ups, confirmations, or notifications
+        - **Technical**: Engineering reviews, design approvals, or system testing
+        - **Financial**: Payment processing, rebate applications, or funding requirements
+
+        **Use Cases:**
+        - Project management and milestone tracking
+        - Quality assurance and compliance monitoring
+        - Team coordination and task assignment
+        - Customer communication management
+        - Audit trail and project documentation
+
+        **Response Information:**
+        - Action item details (title, description, priority, status)
+        - Assignment information (project, team member)
+        - Due dates and completion tracking
+        - Related attachments and comments
+        - Creation and update timestamps
+
+        **Filtering and Organization:**
+        Action items are automatically filtered by your partner account access.
+        Results include items from all projects and applications you have permission to view.
+
+        **Status Management:**
+        - `open`: Newly created, requires attention
+        - `in_review`: Under review or being processed
+        - `needs_corrections`: Requires updates or fixes
+        - `hold`: Temporarily paused or waiting for dependencies
+        - `complete`: Successfully finished
+
+        **Priority Levels:**
+        - `critical`: Immediate attention required, blocks project progress
+        - `high`: Important, should be addressed soon
+        - `medium`: Standard priority, normal workflow
+        - `low`: Nice to have, can be addressed when time permits
+      security:
+        - ApiKey:
+            - view:action::items
+        - OAuth:
+            - view:action::items
+      responses:
+        200:
+          description: All action items assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ActionItemCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /action-items/{actionItemId}:
     parameters:
       - name: actionItemId
-        description: The unique identifier of the action item.
+        description: The unique reference identifier of the action item.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/AttachmentId'
+          type: string
+          format: uuid
+    get:
+      summary: Get a specific action item
+      description: |-
+        Retrieves detailed information about a specific action item by its unique identifier.
+
+        **Business Context:**
+        Use this endpoint to get complete details about a specific action item, including
+        its current status, assignee information, due dates, and any associated attachments
+        or comments.
+
+        **Response Information:**
+        - Complete action item details (title, description, priority, status)
+        - Assignment information (project, team member, due date)
+        - Creation and update timestamps
+        - Links to related attachments and comments
+        - Project context and relationships
+
+        **Common Use Cases:**
+        - Displaying action item details in project management interfaces
+        - Checking status before making updates
+        - Retrieving information for notifications or reports
+        - Accessing action item data for workflow integrations
+
+        **Status Values:**
+        - `open`: Newly created, requires attention
+        - `in_review`: Under review or being processed
+        - `needs_corrections`: Requires updates or fixes
+        - `hold`: Temporarily paused or waiting for dependencies
+        - `complete`: Successfully finished
+
+        **Priority Levels:**
+        - `critical`: Immediate attention required, blocks project progress
+        - `high`: Important, should be addressed soon
+        - `medium`: Standard priority, normal workflow
+        - `low`: Nice to have, can be addressed when time permits
+      security:
+        - ApiKey:
+            - view:action::items
+        - OAuth:
+            - view:action::items
+      responses:
+        200:
+          description: The requested action item.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ActionItem'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested action item could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /action-items/{actionItemId}/attachments:
+    parameters:
+      - name: actionItemId
+        description: The unique reference identifier of the action item.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     get:
       summary: Get action item attachments
       description: Returns all the current action item attachments.
@@ -74,14 +233,102 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Upload action item documents and attachments
+      description: |
+        Uploads new documents, photos, or files to an action item.
+
+        **Business Context:**
+        Use this endpoint to add supporting documentation to action items during the
+        project lifecycle. Proper document management helps track progress and
+        maintain compliance requirements.
+
+        **Upload Process:**
+        1. Prepare files with appropriate names and types
+        2. Categorize each file with the correct attachment type
+        3. Upload single file per request
+        4. Files are automatically processed and organized
+
+         **File Requirements:**
+        - **Maximum Size**: 10MB per file
+        - **Supported Formats**: JPG, PNG, PDF, DOCX
+        - **Naming**: Descriptive filenames help with organization
+
+        **Required for Each File:**
+        - `name`: Descriptive name for the document
+        - `type`: Categorization using AttachmentType enum
+        - `file`: The binary file data
+
+        **When to Upload Documents:**
+
+        **Action Item Documentation:**
+        - Supporting evidence for task completion
+        - Inspection photos and verification materials
+        - Compliance documentation and certifications
+        - Customer communications and approvals
+
+        **Best Practices:**
+        - Upload documents promptly when completing action items
+        - Use clear, descriptive names for easy identification
+        - Organize files by task or milestone
+        - Include date information in filenames when relevant
+        - Verify file completeness before marking action items complete
+      security:
+        - ApiKey:
+            - create:attachments
+        - OAuth:
+            - create:attachments
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AttachmentCreate"
+      responses:
+        201:
+          description: The attachment was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AttachmentCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested action item could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /action-items/{actionItemId}/comments:
     parameters:
       - name: actionItemId
-        description: The unique identifier of the action item.
+        description: The unique reference identifier of the action item.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ActionItemId'
+          type: string
+          format: uuid
     get:
       summary: Get action item comments
       description: Returns all the current action item comments.
@@ -111,6 +358,78 @@ paths:
                 $ref: '#/components/schemas/Error'
         404:
           description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new comment for an action item
+      description: |-
+        Creates a new comment for the specified action item.
+
+        **Business Context:**
+        Comments provide a communication channel for project stakeholders to discuss
+        action item progress, issues, and updates. This enables collaborative tracking
+        of action item resolution and maintains an audit trail of communication.
+
+        **Common Use Cases:**
+        - Progress updates from team members
+        - Issue reporting and resolution discussions
+        - Status clarifications and questions
+        - Documentation of completion notes
+
+        **Validation Rules:**
+        - Comment text is required and must not be empty
+        - Maximum comment length is 65,535 characters
+        - Action item must exist and be accessible to the requesting user
+
+        **After Creation:**
+        - Comment is immediately visible to all users with access to the action item
+        - Comment creation is logged in the action item's activity timeline
+        - Relevant stakeholders may receive notifications (depending on system configuration)
+      security:
+        - ApiKey:
+            - create:comments
+        - OAuth:
+            - create:comments
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/CommentCreate"
+      responses:
+        201:
+          description: The comment was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested action item could not be found.
           content:
             application/ld+json:
               schema:
@@ -218,7 +537,7 @@ paths:
               $ref: "#/components/schemas/ApplicationCreate"
       responses:
         201:
-          description: The new qualification application.
+          description: The qualification application was created successfully.
           content:
             application/ld+json:
               schema:
@@ -251,13 +570,14 @@ paths:
     parameters:
       - name: applicationId
         description: |
-          The unique identifier of the qualification application.
-          This is the numeric ID returned when creating an application.
+          The unique reference identifier of the qualification application.
+          This is the UUID returned when creating an application.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ApplicationId'
-        example: 12345
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
     get:
       summary: Get qualification application details
       description: |
@@ -322,17 +642,116 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a qualification application
+      description: |-
+        Updates specific fields of an existing qualification application.
+
+        **Business Context:**
+        Use this endpoint to modify application details such as applicant information,
+        team assignments, or application metadata without requiring full application recreation.
+
+        **What Can Be Updated:**
+
+        **Primary Applicant Information:**
+        - Personal details (name, email, phone, date of birth)
+        - Contact information and current address
+        - SSN and identification details
+
+        **Co-Applicant Information:**
+        - All co-applicant personal and contact details
+        - Co-applicant address information
+        - Co-applicant identification
+
+        **Team Assignments:**
+        - Sales representative assignment (userId/user)
+        - Dealer assignment (dealerId/dealer)
+        - Installer assignment (installerId/installer)
+
+        **Application Metadata:**
+        - Agreement and product types
+        - Reference IDs and external identifiers
+
+        **Validation Rules:**
+        - All existing application validation rules apply to updated values
+        - Co-applicant fields become required when adding a co-applicant
+        - Address fields follow standard validation patterns
+        - Email and phone number format validation applies
+
+        **Partial Updates:**
+        - Only provided fields will be updated
+        - Missing fields will retain their current values
+        - Set fields to `null` to clear optional values
+
+        **Business Rules:**
+        - Applications in `submitted` or later status may have restricted update permissions
+        - Team changes may trigger workflow notifications
+        - Primary applicant changes may require re-qualification
+
+        **Common Use Cases:**
+        - Correcting applicant information before submission
+        - Adding or updating co-applicant details
+        - Reassigning applications to different team members
+        - Updating contact information for communication
+      security:
+        - ApiKey:
+            - update:applications
+        - OAuth:
+            - update:applications
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: "#/components/schemas/ApplicationUpdate"
+      responses:
+        200:
+          description: The updated application.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications/{applicationId}/ach:
     parameters:
       - name: applicationId
         description: |
-          The unique identifier of the qualification application.
+          The unique reference identifier of the qualification application.
           The application must be in `approved` status to access ACH authorization.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ApplicationId'
-        example: 12345
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
     get:
       summary: Get ACH authorization status and options
       description: |
@@ -365,9 +784,6 @@ paths:
         After ACH authorization is complete, the customer can proceed to project creation
         and contract execution.
 
-        **Error Conditions:**
-        - **403**: Application not in approved status
-        - **404**: Application not found or not accessible
       security:
         - ApiKey:
             - view:applications
@@ -440,11 +856,6 @@ paths:
         - Plaid tokens expire after 30 minutes
         - Customer information is validated against application data
         - Bank account information is securely stored and encrypted
-
-        **Error Conditions:**
-        - **400**: Invalid Plaid token or expired token
-        - **403**: Application not approved or already has ACH authorization
-        - **422**: Customer information doesn't match application data
       security:
         - ApiKey:
             - update:applications
@@ -457,7 +868,7 @@ paths:
               $ref: "#/components/schemas/AchAuthorizationCreate"
       responses:
         201:
-          description: The new ACH authorization.
+          description: The ACH authorization was created successfully.
           content:
             application/ld+json:
               schema:
@@ -492,16 +903,209 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /applications/{applicationId}/external-identifiers:
+    parameters:
+      - name: applicationId
+        description: |
+          The unique reference identifier of the qualification application.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+    get:
+      summary: Get external identifiers for an application
+      description: |
+        Retrieves all external identifiers associated with a specific application.
+
+        **Business Context:**
+        External identifiers allow partners to maintain references between their systems
+        and Elios Fund applications. This enables seamless integration and tracking
+        across multiple platforms.
+
+        **Common Use Cases:**
+        - Track applications in your CRM system
+        - Maintain references to third-party tools
+        - Support multi-system workflows
+        - Enable data synchronization between platforms
+        - Audit trail and relationship mapping
+
+        **Response Information:**
+        - Key-value pairs of external system identifiers
+        - Creation timestamps and source tracking
+        - Support for multiple identifier types per application
+      security:
+        - ApiKey:
+            - view:applications
+        - OAuth:
+            - view:applications
+      responses:
+        200:
+          description: The external identifiers for the application.
+          content:
+            application/ld+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ExternalIdentifierCollection'
+                  - type: object
+                    properties:
+                      "@id":
+                        example: "/applications/550e8400-e29b-41d4-a716-446655440000/external-identifiers"
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create or update external identifier for an application
+      description: |
+        Creates a new external identifier for the application or updates an existing one
+        if the key already exists.
+
+        **Business Context:**
+        This endpoint supports integration workflows by allowing partners to establish
+        and maintain cross-references between their systems and Elios Fund applications.
+
+        **Update Behavior:**
+        - If an external identifier with the same key exists, it will be updated
+        - If the key is new, a new external identifier will be created
+        - This allows for idempotent operations and easy data synchronization
+
+        **Common Integration Patterns:**
+        - Store your CRM opportunity/lead ID when creating applications
+        - Link to third-party design tools and their project references
+        - Connect workflow management system task IDs
+        - Maintain audit trails across multiple systems
+        - Support customer portal cross-references
+
+        **Security:**
+        - Requires `update:applications` scope
+        - External identifiers are scoped to your partner account
+        - Values should not contain sensitive customer information
+      security:
+        - ApiKey:
+            - update:applications
+        - OAuth:
+            - update:applications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - externalId
+              properties:
+                externalId:
+                  type: object
+                  description: The external identifier to create or update
+                  required:
+                    - key
+                    - value
+                  properties:
+                    key:
+                      type: string
+                      description: |
+                        Unique identifier key for the external system.
+                        Common patterns: system_name, system_name.entity_type, or custom namespace.
+                      maxLength: 255
+                      example: "salesforce.opportunity"
+                    value:
+                      type: string
+                      description: |
+                        The external system's identifier value.
+                        Should be the primary key or unique reference from your system.
+                      maxLength: 255
+                      example: "006XX000004TMXLYA4"
+            examples:
+              crm_integration:
+                summary: CRM Integration
+                description: Link application to CRM opportunity
+                value:
+                  externalId:
+                    key: "salesforce.opportunity"
+                    value: "006XX000004TMXLYA4"
+              design_tool:
+                summary: Design Tool Reference
+                description: Link to external design platform
+                value:
+                  externalId:
+                    key: "aurora.project"
+                    value: "proj_abc123xyz"
+      responses:
+        201:
+          description: The external identifier was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifier'
+        200:
+          description: The external identifier was updated successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifier'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested application could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /applications/{applicationId}/open:
     parameters:
       - name: applicationId
         description: |
-          The unique identifier of the qualification application to reopen.
+          The unique reference identifier of the qualification application to reopen.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ApplicationId'
-        example: 12345
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
     patch:
       summary: Reopen a qualification application for editing
       description: |
@@ -535,11 +1139,6 @@ paths:
         - Reopening clears previous credit qualification results
         - Customer will need to be re-qualified after resubmission
         - Any ACH authorization remains valid and doesn't need to be redone
-
-        **Error Conditions:**
-        - **400**: Application is already in `open` status
-        - **403**: Application status doesn't allow reopening
-        - **404**: Application not found
       security:
         - ApiKey:
             - update:applications
@@ -586,13 +1185,14 @@ paths:
     parameters:
       - name: applicationId
         description: |
-          The unique identifier of the qualification application to qualify.
+          The unique reference identifier of the qualification application to qualify.
           The application must be in `submitted` status.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ApplicationId'
-        example: 12345
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
     get:
       summary: Start credit qualification process
       description: |
@@ -631,11 +1231,6 @@ paths:
         - **Recommended**: Subscribe to `application.approved` and `application.declined` webhooks
         - **Alternative**: Poll the GET `/applications/{applicationId}` endpoint every 30 seconds
         - Results typically available within 60 seconds
-
-        **Error Conditions:**
-        - **400**: Application is not in `submitted` status
-        - **409**: Qualification already in progress or completed
-        - **422**: Missing required applicant information
       security:
         - ApiKey:
             - qualify:applications
@@ -682,13 +1277,14 @@ paths:
     parameters:
       - name: applicationId
         description: |
-          The unique identifier of the qualification application to submit.
+          The unique reference identifier of the qualification application to submit.
           The application must be in `open` status.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ApplicationId'
-        example: 12345
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
     patch:
       summary: Submit application for qualification
       description: |
@@ -724,11 +1320,6 @@ paths:
         1. Call `/applications/{applicationId}/qualify` to start credit assessment
         2. Monitor status via webhooks or polling
         3. Proceed to ACH authorization once approved
-
-        **Error Conditions:**
-        - **400**: Application is not in `open` status
-        - **422**: Required information is missing or invalid
-        - **409**: Application is already submitted
       security:
         - ApiKey:
             - update:applications
@@ -808,11 +1399,12 @@ paths:
   /dealers/{dealerId}:
     parameters:
       - name: dealerId
-        description: The unique identifier of the dealer.
+        description: The unique reference identifier of the dealer.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/DealerId'
+          type: string
+          format: uuid
     get:
       summary: Get a dealer
       description: Returns all available information about a single dealer.
@@ -842,6 +1434,278 @@ paths:
                 $ref: '#/components/schemas/Error'
         404:
           description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs:
+    post:
+      summary: Create a new solar system design
+      description: |-
+        Creates a new solar system design for a project with specifications and performance data.
+
+        **Business Context:**
+        Solar designs define the technical specifications and performance characteristics
+        of the proposed solar installation, including system size, equipment selection,
+        and energy production estimates.
+
+        **Design Creation Process:**
+        1. **Layout Planning**: System size and equipment configuration
+        2. **Performance Modeling**: Energy production and shading analysis
+        3. **Equipment Selection**: Modules, inverters, racking, and storage
+        4. **Optimization**: Balancing cost, performance, and aesthetics
+
+        **Required Design Data:**
+        - **System Size**: Total DC capacity in kilowatts
+        - **Performance Metrics**: Annual production and system offset
+        - **Shading Analysis**: Annual Solar Access (ASA) percentage
+        - **Design Identity**: Name and source system
+
+        **Primary Design Logic:**
+        - If `isPrimary=true`: Sets this as the active design (others become secondary)
+        - If `isPrimary=false/null` and no primary exists: Becomes primary automatically
+        - If `isPrimary=false/null` and primary exists: Becomes secondary design
+
+        **Integration Sources:**
+        - **Manual Entry**: Basic system specifications
+        - **Design Software**: Aurora Solar, Helioscope, PV*SOL
+        - **Site Analysis**: Scanifly, Sunobi integration
+        - **API Import**: External design tools and platforms
+
+        **Validation Requirements:**
+        - System size must be realistic for project type
+        - Production estimates should align with system size and location
+        - ASA values must be within reasonable ranges (0-100%)
+        - System offset should match customer energy needs
+
+        **Common Use Cases:**
+        - Initial system sizing and layout
+        - Design import from engineering software
+        - Alternative design scenarios
+        - System optimization iterations
+        - Customer presentation materials
+      security:
+        - ApiKey:
+            - create:designs
+        - OAuth:
+            - create:designs
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/DesignCreate"
+      responses:
+        201:
+          description: The design was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/{designId}:
+    parameters:
+      - name: designId
+        description: The unique reference identifier of the design.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get specific solar system design
+      description: |-
+        Retrieves detailed information about a specific solar system design.
+
+        **Business Context:**
+        Individual designs contain comprehensive technical specifications,
+        performance data, and equipment details needed for system installation
+        and financing calculations.
+
+        **Design Information Includes:**
+        - **System Specifications**: Size, offset, production estimates
+        - **Performance Data**: Annual Solar Access, energy production
+        - **Equipment Details**: Modules, inverters, racking, storage
+        - **Design Metadata**: Source, creation date, primary status
+        - **Segment Information**: Array layouts and equipment breakdowns
+
+        **Common Use Cases:**
+        - Engineering review and approval
+        - Customer presentation and approval
+        - Equipment procurement and ordering
+        - Installation planning and coordination
+        - Performance monitoring setup
+        - Financing calculation verification
+
+        **Design Status:**
+        - **Primary**: Active design for installation and financing
+        - **Secondary**: Alternative or archived design versions
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The requested design.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a solar system design
+      description: |-
+        Updates specific fields of an existing solar system design.
+
+        **Business Context:**
+        Design updates are common throughout the project lifecycle as systems
+        are refined through engineering review, customer feedback, equipment
+        availability, and performance optimization.
+
+        **What Can Be Updated:**
+
+        **Design Specifications:**
+        - System size and performance metrics
+        - Annual production and offset calculations
+        - Annual Solar Access (ASA) shading analysis
+        - Design name and version tracking
+
+        **Design Status:**
+        - Primary/secondary design designation
+        - Design source and origin tracking
+
+        **Update Triggers:**
+        - **Engineering Review**: Refined calculations and specifications
+        - **Equipment Changes**: Updated product availability or selection
+        - **Site Conditions**: Revised shading or structural analysis
+        - **Customer Requests**: Size or aesthetic modifications
+        - **Utility Requirements**: Interconnection size restrictions
+
+        **Primary Design Changes:**
+        - Setting `isPrimary=true` promotes design to active status
+        - Previous primary design automatically becomes secondary
+        - Primary changes may trigger financing recalculation
+        - Customer approval may be required for significant changes
+
+        **Validation Rules:**
+        - All existing design validation rules apply to updated values
+        - System size changes must be realistic and achievable
+        - Production estimates should align with system specifications
+        - ASA values must remain within valid ranges (0-100%)
+
+        **Partial Updates:**
+        - Only provided fields will be updated
+        - Missing fields retain their current values
+        - Set fields to `null` to clear optional values
+
+        **Business Rules:**
+        - Designs attached to submitted projects may have update restrictions
+        - Primary design changes may require customer approval
+        - Equipment updates may affect procurement and scheduling
+        - Projects must be in "new" status to allow design updates
+        - If a project is already "in_progress" or later, create a new design instead
+
+        **Common Use Cases:**
+        - Design version control and iteration tracking
+        - Performance optimization and refinement
+        - Equipment substitution and availability updates
+        - Customer-requested modifications
+        - Engineering review and approval workflow
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: "#/components/schemas/DesignUpdate"
+      responses:
+        200:
+          description: The updated design.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
           content:
             application/ld+json:
               schema:
@@ -889,11 +1753,12 @@ paths:
   /distributors/{distributorId}:
     parameters:
       - name: distributorId
-        description: The unique identifier of the distributor.
+        description: The unique reference identifier of the distributor.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/DistributorId'
+          type: string
+          format: uuid
     get:
       summary: Get a distributor
       description: Returns all available information about a single distributor.
@@ -970,11 +1835,12 @@ paths:
   /installers/{installerId}:
     parameters:
       - name: installerId
-        description: The unique identifier of the installer.
+        description: The unique reference identifier of the installer.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/InstallerId'
+          type: string
+          format: uuid
     get:
       summary: Get an installer
       description: Returns all available information about a single installer.
@@ -1014,17 +1880,22 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /pricing:
+  /partners:
     get:
-      summary: Generate pricing for a system
-      description: Returns the pricing for a system over the duration of the contract.
+      summary: Get all partners
+      description: Returns all available partners.
+      security:
+        - ApiKey:
+            - view:partners
+        - OAuth:
+            - view:partners
       responses:
         200:
-          description: The system pricing.
+          description: All partners assigned to your account.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/SystemPricingFactorYearCollection'
+                $ref: '#/components/schemas/PartnerCollection'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -1033,6 +1904,128 @@ paths:
                 $ref: '#/components/schemas/Error'
         403:
           description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /partners/{partnerId}:
+    parameters:
+      - name: partnerId
+        description: The unique reference identifier of the partner.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a partner
+      description: Returns all available information about a single partner.
+      security:
+        - ApiKey:
+            - view:partners
+        - OAuth:
+            - view:partners
+      responses:
+        200:
+          description: The partner corresponding to the provided `partnerId`.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested resource was not found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{productId}:
+    parameters:
+      - name: productId
+        description: The unique reference identifier of the product.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a specific product
+      description: |-
+        Retrieves detailed information about a specific product by its unique identifier.
+
+        **Business Context:**
+        Use this endpoint to get complete details about a specific product, including
+        its specifications, manufacturer information, pricing, and availability status.
+
+        **Response Information:**
+        - Complete product details (name, model, type, specifications)
+        - Manufacturer information and part numbers
+        - Technical specifications and performance data
+        - Pricing and availability status
+        - Product category and classification
+        - Warranty and certification details
+
+        **Common Use Cases:**
+        - Displaying product details in design interfaces
+        - Equipment selection and comparison
+        - Retrieving specifications for proposals
+        - Validating product availability for projects
+        - Accessing technical data for engineering review
+
+        **Product Categories:**
+        - **Modules**: Solar panels with wattage and efficiency ratings
+        - **Inverters**: String, power optimizers, and microinverters
+        - **Batteries**: Energy storage systems with capacity specifications
+        - **Racking**: Mounting systems for various installation types
+      security:
+        - ApiKey:
+            - view:products
+        - OAuth:
+            - view:products
+      responses:
+        200:
+          description: The requested product.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested product could not be found.
           content:
             application/ld+json:
               schema:
@@ -1215,7 +2208,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   /projects:
     get:
-      summary: Get all projects
+      summary: Get all solar installation projects
       description: Returns all available projects.
       security:
         - ApiKey:
@@ -1311,7 +2304,7 @@ paths:
               $ref: "#/components/schemas/ProjectCreate"
       responses:
         201:
-          description: The new project.
+          description: The project was created successfully.
           content:
             application/ld+json:
               schema:
@@ -1343,13 +2336,14 @@ paths:
   /projects/{projectId}:
     parameters:
       - name: projectId
-        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        description: The unique reference identifier of the project.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ProjectId'
+          type: string
+          format: uuid
     get:
-      summary: Get a project
+      summary: Get a solar installation project
       description: Returns all available information about a single project.
       security:
         - ApiKey:
@@ -1387,22 +2381,119 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a solar installation project
+      description: |-
+        Updates specific fields of an existing solar installation project.
+
+        **Business Context:**
+        Use this endpoint to modify project details such as financial terms, team assignments,
+        or project specifications without requiring a full project recreation.
+
+        **What Can Be Updated:**
+
+        **Financial Terms:**
+        - Agreement type and product type
+        - Contract values and financing amounts
+        - Interest rates, escalators, and payment terms
+        - Down payment and term length
+
+        **Team Assignments:**
+        - Sales representative assignment (userId/user)
+        - Dealer assignment (dealerId/dealer)
+        - Installer assignment (installerId/installer)
+
+        **Project Details:**
+        - Proposal information and external references
+        - Project timeline and dates
+
+        **Validation Rules:**
+        - All existing project validation rules apply to updated values
+        - `amountFinanced` cannot exceed `totalContractValue`
+        - `downPayment` cannot exceed `amountFinanced`
+        - Agreement-specific fields must be provided if changing agreement type
+
+        **Partial Updates:**
+        - Only provided fields will be updated
+        - Missing fields will retain their current values
+        - Set fields to `null` to clear optional values
+
+        **Business Rules:**
+        - Projects in certain statuses may have restricted update permissions
+        - Team changes may trigger workflow notifications
+        - Financial changes may require additional approvals
+        - Projects must be in "new" status to allow major updates
+        - If a project is already "in_progress" or later, consider creating a new design instead
+
+        **Common Use Cases:**
+        - Updating pricing based on final equipment selection
+        - Reassigning projects to different team members
+        - Correcting proposal information or external references
+        - Adjusting payment terms after customer negotiation
+      security:
+        - ApiKey:
+            - update:projects
+        - OAuth:
+            - update:projects
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        200:
+          description: The updated project.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /projects/{projectId}/action-items:
     parameters:
       - name: projectId
-        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        description: The unique reference identifier of the project.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ProjectId'
+          type: string
+          format: uuid
     get:
-      summary: Get project action items
+      summary: Get a project's action items
       description: Returns all the current project action items.
       security:
         - ApiKey:
-            - view:projects
+            - view:action::items
         - OAuth:
-            - view:projects
+            - view:action::items
       responses:
         200:
           description: The project action items.
@@ -1443,19 +2534,20 @@ paths:
   /projects/{projectId}/attachments:
     parameters:
       - name: projectId
-        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        description: The unique reference identifier of the project.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ProjectId'
+          type: string
+          format: uuid
     get:
-      summary: Get project attachments
+      summary: Get a project's attachments
       description: Returns all the current project attachments.
       security:
         - ApiKey:
-            - view:projects
+            - view:attachments
         - OAuth:
-            - view:projects
+            - view:attachments
       responses:
         200:
           description: The project attachments.
@@ -1559,9 +2651,9 @@ paths:
         and utility systems.
       security:
         - ApiKey:
-          - update:projects
+            - create:attachments
         - OAuth:
-          - update:projects
+            - create:attachments
       requestBody:
         content:
           multipart/form-data:
@@ -1569,7 +2661,7 @@ paths:
               $ref: "#/components/schemas/AttachmentCreate"
       responses:
         201:
-          description: The new attachment.
+          description: The attachment was created successfully.
           content:
             application/ld+json:
               schema:
@@ -1607,19 +2699,20 @@ paths:
   /projects/{projectId}/comments:
     parameters:
       - name: projectId
-        description: The unique identifier of the project. This can be the Project ID or Proposal ID.
+        description: The unique reference identifier of the project.
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/ProjectId'
+          type: string
+          format: uuid
     get:
-      summary: Get project comments
+      summary: Get a project's comments
       description: Returns all the current project comments.
       security:
         - ApiKey:
-            - view:projects
+            - view:comments
         - OAuth:
-            - view:projects
+            - view:comments
       responses:
         200:
           description: The project comments.
@@ -1657,63 +2750,51 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /partners:
-    get:
-      summary: Get all partners
-      description: Returns all available partners.
+    post:
+      summary: Create a new comment for a project
+      description: |-
+        Creates a new comment for the specified solar installation project.
+
+        **Business Context:**
+        Comments provide a communication channel for project stakeholders including
+        customers, sales representatives, installers, dealers, and project managers
+        to discuss project progress, coordinate activities, and document important information.
+
+        **Common Use Cases:**
+        - Customer feedback and requests
+        - Installation progress updates
+        - Design change discussions
+        - Issue reporting and resolution
+        - Milestone completion notes
+        - Communication between project team members
+
+        **Validation Rules:**
+        - Comment text is required and must not be empty
+        - Maximum comment length is 65,535 characters
+        - Project must exist and be accessible to the requesting user
+
+        **After Creation:**
+        - Comment is immediately visible to all users with access to the project
+        - Comment creation is logged in the project's activity timeline
+        - Relevant stakeholders may receive notifications (depending on system configuration)
+        - Comments contribute to the project's communication audit trail
       security:
         - ApiKey:
-            - view:partners
+            - create:comments
         - OAuth:
-            - view:partners
+            - create:comments
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/CommentCreate"
       responses:
-        200:
-          description: All partners assigned to your account.
+        201:
+          description: The comment was created successfully.
           content:
             application/ld+json:
               schema:
-                $ref: '#/components/schemas/PartnerCollection'
-        401:
-          description: There was no API key provided with the request or the API key was invalid.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        403:
-          description: The API key provided does not contain the proper scopes for the current request.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: There was an unexpected server error.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /partners/{partnerId}:
-    parameters:
-      - name: partnerId
-        description: The unique identifier of the partner.
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/PartnerId'
-    get:
-      summary: Get a partner
-      description: Returns all available information about a single partner.
-      security:
-        - ApiKey:
-            - view:partners
-        - OAuth:
-            - view:partners
-      responses:
-        200:
-          description: The partner corresponding to the provided `partnerId`.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/Partner'
+                $ref: '#/components/schemas/Comment'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -1727,7 +2808,536 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         404:
-          description: The requested resource was not found.
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/designs:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a project's solar system designs
+      description: |-
+        Retrieves all solar system designs associated with a specific project.
+
+        **Business Context:**
+        Projects typically have multiple design iterations as the solar system layout
+        is refined through engineering review, customer feedback, and optimization processes.
+
+        **Design Types:**
+        - **Primary Design**: The active design used for financing and installation
+        - **Secondary Designs**: Alternative layouts, revisions, or archived versions
+
+        **Common Use Cases:**
+        - Review design iteration history
+        - Compare different layout options
+        - Access equipment specifications for procurement
+        - Generate customer presentation materials
+        - Track design approval status
+
+        **Response Information:**
+        - Design specifications (size, production, shading analysis)
+        - Equipment details (modules, inverters, racking, storage)
+        - Design source and creation metadata
+        - Primary/secondary design status
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The project designs.
+          content:
+            application/ld+json:
+              schema:
+                type: object
+                properties:
+                  "@context":
+                    example: "/contexts/Design"
+                  "@id":
+                    example: "/projects/123/designs"
+                  "@type":
+                    example: "hydra:Collection"
+                  "hydra:member":
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/designs/primary:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get the primary solar system design for a project
+      description: |-
+        Retrieves the primary (active) solar system design for a project.
+
+        **Business Context:**
+        Each project has one primary design that serves as the official system
+        specification for financing, installation, and customer documentation.
+        The primary design is the "source of truth" for all project calculations.
+
+        **Primary Design Purpose:**
+        - **Financing Calculations**: Used for loan sizing and payment calculations
+        - **Customer Proposals**: Appears in all customer-facing documents
+        - **Installation Planning**: Equipment procurement and installation specs
+        - **Performance Monitoring**: Baseline for system performance tracking
+        - **Utility Applications**: Submitted for interconnection approvals
+
+        **Primary Design Rules:**
+        - Only one design per project can be primary at any time
+        - If no primary design exists, returns 404
+        - Primary status is automatically managed when designs are created/updated
+        - Primary design changes may trigger financial recalculations
+
+        **When Primary Design Changes:**
+        - New design created with `isPrimary=true`
+        - Existing design updated with `isPrimary=true`
+        - Previous primary automatically becomes secondary
+
+        **Response Information:**
+        - Complete design specifications and performance data
+        - All equipment details (modules, inverters, racking, storage)
+        - System sizing and energy production estimates
+        - Design source and creation metadata
+
+        **Common Use Cases:**
+        - Generate customer proposals and contracts
+        - Calculate financing terms and payments
+        - Prepare equipment procurement orders
+        - Submit utility interconnection applications
+        - Set up performance monitoring systems
+        - Validate system specifications before installation
+
+        **Integration Patterns:**
+        - **Proposal Generation**: Fetch primary design for customer documents
+        - **Financial Calculations**: Use primary design for loan calculations
+        - **Equipment Ordering**: Source procurement specs from primary design
+        - **Monitoring Setup**: Configure performance tracking from primary specs
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The primary design for the project.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found or has no primary design.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/external-identifiers:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get external identifiers for a project
+      description: |-
+        Retrieves all external identifiers associated with a project.
+
+        **Business Context:**
+        External identifiers allow Elios Fund projects to be linked with records
+        in external systems, enabling seamless data synchronization and cross-platform
+        integrations. Each project can have multiple external identifiers for different
+        systems and purposes.
+
+        **External Identifier Purpose:**
+        - **CRM Integration**: Link projects with CRM system records
+        - **ERP Systems**: Connect with enterprise resource planning platforms
+        - **Solar Design Tools**: Associate with design software project IDs
+        - **Utility Systems**: Map to utility company tracking numbers
+        - **Partner Platforms**: Reference partner system project identifiers
+        - **Third-party APIs**: Enable integration with external service providers
+
+        **External Identifier Structure:**
+        - **Key**: Identifies the external system or purpose (e.g., "salesforce_id", "sunobi_project")
+        - **Value**: The actual identifier used in the external system
+        - **Source**: How the identifier was created (API, manual entry, import)
+
+        **Common External Identifier Keys:**
+        - `salesforce_id`: Salesforce CRM project record ID
+        - `sunobi_project`: Sunobi design platform project identifier
+        - `utility_application`: Utility interconnection application number
+        - `partner_system_id`: Partner's internal project tracking ID
+        - `legacy_project_id`: Previous system project identifier for migrations
+
+        **Response Information:**
+        - Complete list of all external identifiers for the project
+        - Key-value pairs showing external system mappings
+        - Creation source and timestamps for audit trails
+        - Reference IDs for API operations
+
+        **Integration Patterns:**
+        - **Data Synchronization**: Use external IDs to sync project data across systems
+        - **Webhook Processing**: Match incoming webhook data using external identifiers
+        - **Migration Support**: Maintain references to legacy system identifiers
+        - **Partner Integration**: Enable partners to reference their own project IDs
+        - **Cross-system Lookup**: Find Elios projects using external system identifiers
+
+        **Use Cases:**
+        - Sync project status updates from partner systems
+        - Match utility interconnection applications with projects
+        - Maintain cross-references during data migrations
+        - Enable partner platforms to reference Elios projects
+        - Link with design tools and equipment procurement systems
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: A collection of external identifiers for the project.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifierCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create or update an external identifier for a project
+      description: |-
+        Creates a new external identifier for a project or updates an existing one
+        if the key matches. This endpoint implements upsert behavior based on the
+        external identifier key.
+
+        **Business Context:**
+        External identifiers enable Elios Fund projects to maintain references to
+        records in external systems. This endpoint allows API consumers to establish
+        or update these cross-system links programmatically.
+
+        **Upsert Behavior:**
+        - **New Key**: Creates a new external identifier with the provided key-value pair
+        - **Existing Key**: Updates the existing identifier's value for the matching key
+        - **Key Matching**: Exact string match on the external identifier key field
+        - **Atomic Operation**: Update or create happens in a single database transaction
+
+        **Request Structure:**
+        The request body must contain an `externalId` object with:
+        - **key**: String identifier for the external system (e.g., "salesforce_id")
+        - **value**: The actual external identifier value (e.g., "SF001234")
+
+        **Common Use Cases:**
+        - **CRM Integration**: Store Salesforce or HubSpot project record IDs
+        - **Design Tool Sync**: Link with Sunobi, Scanifly, or Aurora project IDs
+        - **Utility Integration**: Store utility application or interconnection numbers
+        - **Partner System Links**: Reference partner's internal project identifiers
+        - **Migration Support**: Maintain legacy system project references
+        - **Webhook Processing**: Store external system IDs from incoming webhooks
+
+        **Example External Identifier Keys:**
+        - `salesforce_project_id`: CRM project record identifier
+        - `sunobi_project_uuid`: Solar design platform project ID
+        - `utility_app_number`: Utility interconnection application number
+        - `partner_ref_id`: Partner system's project reference
+        - `legacy_system_id`: Previous platform project identifier
+
+        **Response Information:**
+        - Complete external identifier record including generated reference ID
+        - Confirmation of key-value pair storage
+        - Creation/update timestamps for audit purposes
+        - Source attribution showing API creation
+
+        **Integration Patterns:**
+        - **Webhook Handlers**: Store external IDs from incoming webhook payloads
+        - **Data Sync Jobs**: Maintain cross-system references during sync operations
+        - **Migration Scripts**: Preserve legacy system identifiers during platform migrations
+        - **Partner Integrations**: Allow partners to maintain their own project references
+        - **External API Calls**: Store response IDs from external system API calls
+      security:
+        - ApiKey:
+            - update:projects
+        - OAuth:
+            - update:projects
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              required:
+                - externalId
+              properties:
+                externalId:
+                  type: object
+                  required:
+                    - key
+                    - value
+                  properties:
+                    key:
+                      type: string
+                      description: The external system identifier key (e.g., "salesforce_id", "partner_ref")
+                      example: "sunobi_project_id"
+                    value:
+                      type: string
+                      description: The external identifier value in the remote system
+                      example: "proj_987654321"
+                  description: External identifier key-value pair for cross-system reference
+            examples:
+              crm_integration:
+                summary: CRM System Integration
+                description: Link project with Salesforce CRM record
+                value:
+                  externalId:
+                    key: "salesforce_project_id"
+                    value: "SF001234567"
+              design_tool:
+                summary: Solar Design Platform
+                description: Connect with Sunobi design project
+                value:
+                  externalId:
+                    key: "sunobi_project_uuid"
+                    value: "proj_abc123def456"
+              partner_system:
+                summary: Partner Integration
+                description: Store partner's internal project reference
+                value:
+                  externalId:
+                    key: "partner_project_ref"
+                    value: "PART-2024-001"
+      responses:
+        201:
+          description: The external identifier was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifier'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: Validation error in request data.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      summary: Get all users
+      description: |-
+        Retrieves all users associated with your partner account.
+
+        **Business Context:**
+        Users represent sales representatives, project managers, and other team members
+        who are involved in the solar financing and installation process. This endpoint
+        provides access to user information for team management, assignment, and communication.
+
+        **Use Cases:**
+        - Team member selection for application and project assignment
+        - User management and directory services
+        - Communication and contact information lookup
+        - Reporting and analytics on team performance
+        - Integration with CRM and project management systems
+
+        **Response Information:**
+        - User profile details (name, email, phone, role)
+
+        **Filtering and Organization:**
+        Users are automatically filtered by your partner account access.
+        Results include only users from your organization and associated teams.
+      security:
+        - ApiKey:
+            - view:users
+        - OAuth:
+            - view:users
+      responses:
+        200:
+          description: All users assigned to your account.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/UserCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    parameters:
+      - name: userId
+        description: The unique reference identifier of the user.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a specific user
+      description: |-
+        Retrieves detailed information about a specific user by their unique identifier.
+
+        **Business Context:**
+        Use this endpoint to get complete details about a specific team member,
+        including their contact information, role assignments, and current status.
+
+        **Response Information:**
+        - Complete user profile (name, email, phone, role)
+
+        **Common Use Cases:**
+        - Displaying user details in team management interfaces
+        - Retrieving contact information for communication
+        - Checking user availability for project assignments
+        - Accessing user data for reporting and analytics
+        - User profile management and updates
+      security:
+        - ApiKey:
+            - view:users
+        - OAuth:
+            - view:users
+      responses:
+        200:
+          description: The requested user.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested user could not be found.
           content:
             application/ld+json:
               schema:
@@ -1741,7 +3351,64 @@ paths:
   /webhooks:
     get:
       summary: Get all webhooks
-      description: Returns all available webhooks.
+      description: |-
+        Retrieves a paginated list of all webhook configurations associated with your partner account.
+
+        **Business Context:**
+        Webhooks enable real-time event notifications for critical business events
+        in the solar financing workflow. This endpoint provides a comprehensive
+        overview of all configured integrations and their current status.
+
+        **Webhook Overview:**
+        Webhooks are HTTP callbacks that automatically notify your systems when
+        important events occur in the Elios Fund platform, enabling seamless
+        integration and workflow automation.
+
+        **Event Categories:**
+        - **Application Events**: Customer qualification status changes
+        - **Project Events**: Solar project lifecycle updates
+        - **User Events**: Account and profile modifications
+        - **Status Changes**: Phase transitions and approval workflows
+
+        **Response Information:**
+        - **Configuration Details**: Endpoint URLs, HTTP methods, and event filters
+        - **Status Information**: Enabled/disabled state and delivery health
+        - **Security Settings**: Authentication and SSL configuration overview
+        - **Metadata**: Creation dates, descriptions, and partner assignments
+        - **Event Subscriptions**: Which events each webhook is listening for
+
+        **Common Use Cases:**
+        - **Integration Audit**: Review all configured webhook endpoints
+        - **Health Monitoring**: Check status of all webhook integrations
+        - **Configuration Management**: Backup and document webhook settings
+        - **Troubleshooting**: Identify webhooks that may be causing issues
+        - **Onboarding**: Understand existing integrations during system setup
+
+        **Webhook Management Workflow:**
+        1. **Discovery**: Use this endpoint to see all current webhooks
+        2. **Configuration**: Create new webhooks for additional integrations
+        3. **Monitoring**: Regularly check webhook status and delivery success
+        4. **Maintenance**: Update or disable webhooks as systems evolve
+
+        **Integration Patterns:**
+        - **Event-Driven Architecture**: Webhooks trigger downstream processing
+        - **Real-Time Sync**: Keep external systems updated with Elios data
+        - **Workflow Automation**: Trigger business processes on status changes
+        - **Notification Systems**: Alert teams of important events
+        - **Data Pipeline**: Feed events into analytics and reporting systems
+
+        **Filtering and Monitoring:**
+        - All webhooks are scoped to your partner account automatically
+        - Includes both active and disabled webhook configurations
+        - Results are paginated using Hydra collection format
+        - Each webhook shows its event subscription details
+
+        **Best Practices:**
+        - **Regular Audits**: Review webhook configurations monthly
+        - **Status Monitoring**: Check for disabled or failing webhooks
+        - **Documentation**: Maintain records of webhook purposes and owners
+        - **Testing**: Validate webhook endpoints before production deployment
+        - **Security**: Ensure webhook URLs use HTTPS and proper authentication
       security:
         - ApiKey:
             - manage:webhooks
@@ -1772,19 +3439,385 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new webhook
+      description: |-
+        Creates a new webhook endpoint to receive real-time event notifications from the Elios Fund platform.
+
+        **Business Context:**
+        Webhooks enable seamless integration between Elios Fund and your business systems
+        by automatically notifying your applications when important events occur.
+
+        **Integration Benefits:**
+        - **Real-Time Updates**: Immediate notification of status changes
+        - **Automated Workflows**: Trigger business processes on events
+        - **Data Synchronization**: Keep external systems in sync
+        - **Customer Communications**: Enable timely customer notifications
+        - **Business Intelligence**: Feed events into analytics systems
+
+        **Required Configuration:**
+        - **Endpoint URL**: Your HTTPS endpoint that will receive webhook calls
+        - **HTTP Method**: POST or PUT for webhook delivery method
+        - **Event Subscriptions**: Specific events you want to receive
+        - **Description**: Human-readable description for management
+
+        **Supported Events:**
+        - **Application Events**: application.approved, application.declined, application.submitted
+        - **Project Events**: project.created, project.updated, project.completed
+        - **User Events**: user.created, user.updated
+        - **Action Item Events**: action_item.created, action_item.completed
+
+        **Security Options:**
+        - **Webhook Secret**: Shared secret for HMAC signature validation
+        - **SSL Configuration**: Custom CA, client certificates for enhanced security
+        - **Authentication**: Bearer tokens, API keys, or custom headers
+
+        **Webhook Payload Format:**
+        All webhooks send JSON payloads with event metadata including:
+        - Event type and timestamp
+        - Resource identifiers and current status
+        - Related entity information
+        - Partner context and scope
+
+        **Best Practices:**
+        - **HTTPS Only**: All webhook URLs must use HTTPS for security
+        - **Idempotency**: Design endpoints to handle duplicate deliveries
+        - **Response Codes**: Return 2xx status codes for successful processing
+        - **Timeouts**: Respond within 10 seconds to avoid retries
+        - **Error Handling**: Log failures and implement retry logic
+
+        **Webhook Delivery:**
+        - **Retry Logic**: Failed deliveries are retried with exponential backoff
+        - **Status Monitoring**: Track delivery success rates and failures
+        - **Filtering**: Only subscribed events are delivered to each webhook
+        - **Rate Limiting**: Respect webhook endpoint rate limits
+
+        **Testing Integration:**
+        - **Development**: Test with sandbox events before production
+        - **Validation**: Verify signature validation and payload parsing
+        - **Error Scenarios**: Test failure handling and retry logic
+        - **Load Testing**: Ensure endpoints handle expected event volumes
+      security:
+        - ApiKey:
+            - manage:webhooks
+        - OAuth:
+            - manage:webhooks
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/WebhookCreate"
+      responses:
+        201:
+          description: The webhook was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /webhooks/{webhookId}:
+    parameters:
+      - name: webhookId
+        description: The unique reference identifier of the webhook.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get specific webhook details
+      description: |-
+        Retrieves detailed information about a specific webhook configuration.
+
+        **Business Context:**
+        Individual webhooks contain the complete configuration needed for event notifications,
+        including endpoint URLs, authentication, event filters, and delivery settings.
+
+        **Webhook Information Includes:**
+        - **Endpoint Configuration**: Target URL and HTTP method
+        - **Event Filters**: Specific events that trigger notifications
+        - **Security Settings**: Authentication and SSL certificate configuration
+        - **Status Information**: Enabled/disabled state and delivery history
+        - **Metadata**: Description, creation date, and partner assignment
+
+        **Common Use Cases:**
+        - Verify webhook configuration before deployment
+        - Troubleshoot webhook delivery issues
+        - Review event filtering and routing settings
+        - Audit webhook security configurations
+        - Monitor webhook status and performance
+
+        **Integration Patterns:**
+        - **Configuration Management**: Retrieve settings for backup or migration
+        - **Monitoring**: Check webhook health and delivery status
+        - **Debugging**: Analyze webhook configuration during troubleshooting
+        - **Documentation**: Generate webhook configuration documentation
+      security:
+        - ApiKey:
+            - manage:webhooks
+        - OAuth:
+            - manage:webhooks
+      responses:
+        200:
+          description: The requested webhook configuration.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested webhook could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a webhook configuration
+      description: |-
+        Updates specific fields of an existing webhook configuration.
+
+        **Business Context:**
+        Use this endpoint to modify webhook settings such as endpoint URLs, event subscriptions,
+        security configurations, or enable/disable status without requiring webhook recreation.
+
+        **What Can Be Updated:**
+
+        **Endpoint Configuration:**
+        - Target URL and HTTP method
+        - Description and documentation
+        - Enable/disable status
+
+        **Event Subscriptions:**
+        - Add or remove event types
+        - Modify event filtering
+        - Update subscription scope
+
+        **Security Settings:**
+        - Webhook secret for signature validation
+        - SSL certificate configuration (CA, client certs)
+        - Authentication headers and tokens
+
+        **Operational Settings:**
+        - Enable or disable webhook delivery
+        - Retry configuration and timeouts
+        - Rate limiting parameters
+
+        **Validation Rules:**
+        - All existing webhook validation rules apply to updated values
+        - URL must be valid HTTPS endpoint
+        - Event types must be from supported event list
+        - Security settings must follow platform requirements
+
+        **Partial Updates:**
+        - Only provided fields will be updated
+        - Missing fields will retain their current values
+        - Set fields to `null` to clear optional values
+
+        **Business Rules:**
+        - URL changes take effect immediately for new events
+        - Event subscription changes apply to future events only
+        - Disabled webhooks stop receiving all events
+        - Security changes require webhook endpoint updates
+
+        **Common Use Cases:**
+        - Updating webhook URLs during infrastructure changes
+        - Adding or removing event subscriptions
+        - Enabling/disabling webhooks for maintenance
+        - Updating security secrets during key rotation
+        - Modifying descriptions for better documentation
+
+        **Impact Assessment:**
+        - **URL Changes**: Test new endpoint before updating
+        - **Event Changes**: Review downstream systems for compatibility
+        - **Security Updates**: Coordinate with webhook endpoint maintainers
+        - **Status Changes**: Monitor integration health after changes
+
+        **Best Practices:**
+        - **Gradual Updates**: Test changes in development first
+        - **Monitoring**: Watch delivery metrics after configuration changes
+        - **Documentation**: Update integration documentation after changes
+        - **Backup**: Record previous configuration before major updates
+        - **Coordination**: Notify webhook endpoint owners of changes
+      security:
+        - ApiKey:
+            - manage:webhooks
+        - OAuth:
+            - manage:webhooks
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: "#/components/schemas/WebhookUpdate"
+      responses:
+        200:
+          description: The updated webhook.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested webhook could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a webhook
+      description: |-
+        Permanently removes a webhook from the system, stopping all future event notifications.
+
+        **Business Context:**
+        Webhook deletion is typically performed when integrations are being
+        decommissioned, endpoints are no longer valid, or webhook configurations
+        need to be completely rebuilt.
+
+        **Deletion Impact:**
+        - **Immediate Effect**: Webhook stops receiving events immediately
+        - **Permanent Action**: Cannot be undone - webhook must be recreated if needed
+        - **Event History**: Past webhook deliveries remain in logs for audit purposes
+        - **No Notifications**: No events will be sent to the deleted webhook URL
+
+        **When to Delete Webhooks:**
+        - **Integration Decommission**: Removing old or unused integrations
+        - **Endpoint Changes**: When webhook URLs are permanently changing
+        - **Security Incidents**: Compromised endpoints requiring immediate removal
+        - **Configuration Errors**: Starting over with clean webhook setup
+        - **Partner Offboarding**: Removing webhooks for departed partners
+
+        **Alternative Actions:**
+        - **Disable Instead**: Use PATCH to set `enabled: false` for temporary suspension
+        - **Update Configuration**: Use PATCH to modify URL, events, or settings
+        - **Event Filtering**: Modify event subscriptions without deletion
+
+        **Best Practices:**
+        - **Backup Configuration**: Record webhook settings before deletion
+        - **Gradual Migration**: Disable before deleting when migrating endpoints
+        - **Monitor Impact**: Verify downstream systems handle the removal properly
+        - **Documentation**: Update integration documentation after deletion
+
+        **Common Use Cases:**
+        - Cleaning up test or development webhooks
+        - Removing webhooks for decommissioned services
+        - Resolving webhook delivery failures permanently
+        - Consolidating multiple webhooks into single endpoints
+        - Partner relationship termination cleanup
+
+        **Integration Cleanup:**
+        After deletion, ensure downstream systems are updated to remove
+        dependencies on webhook notifications from this endpoint.
+      security:
+        - ApiKey:
+            - manage:webhooks
+        - OAuth:
+            - manage:webhooks
+      responses:
+        204:
+          description: The webhook was successfully deleted.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested webhook could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     AchAuthorization:
       type: object
       properties:
+        "@context":
+          example: "/contexts/AchAuthorization"
         "@id":
           $ref: '#/components/schemas/AchAuthorizationIri'
         "@type":
           type: string
           description: The JSON-LD resource type.
           example: AchAuthorization
-        id:
-          $ref: '#/components/schemas/AchAuthorizationId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         fullName:
           type: string
           description: The customer's full name.
@@ -1821,14 +3854,11 @@ components:
         plaidPublicToken:
           type: string
           description: The Plaid public token.
-    AchAuthorizationId:
-      description: The unique identifier of an ACH authorization.
-      type: integer
     AchAuthorizationIri:
       description: The unique JSON-LD IRI reference to the ACH authorization.
       type: string
       format: iri-reference
-      example: '/ach-authorizations/1'
+      example: '/ach-authorizations/550e8400-e29b-41d4-a716-446655440001'
     ActionItem:
       type: object
       properties:
@@ -1838,8 +3868,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: ActionItem
-        id:
-          $ref: '#/components/schemas/ActionItemId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         title:
           type: string
           description: The title of the action item.
@@ -1875,6 +3907,44 @@ components:
           description: The date the action item was last updated.
           type: string
           format: date-time
+        actionable:
+          description: |-
+            The resource that this action item is about.
+
+            **Business Context:**
+            Action items are always associated with a specific resource in the system,
+            such as a project, application, or other entity that requires attention or action.
+
+            **Common Actionable Resources:**
+            - **Project**: Action items related to solar installation projects
+            - **Application**: Action items for qualification applications
+            - **Customer**: Action items for customer-specific requirements
+            - **Dealer/Installer**: Action items for partner-specific tasks
+
+            **Resource Reference:**
+            Contains the JSON-LD IRI (@id) and type (@type) of the associated resource,
+            allowing clients to easily navigate to the related entity for more context.
+          type: object
+          properties:
+            "@id":
+              type: string
+              format: iri-reference
+              description: The JSON-LD IRI reference to the actionable resource.
+              example: "/projects/550e8400-e29b-41d4-a716-446655440017"
+            "@type":
+              type: string
+              description: The JSON-LD resource type of the actionable resource.
+              enum:
+                - Project
+                - Application
+                - Customer
+                - Dealer
+                - Installer
+                - Partner
+              example: "Project"
+          required:
+            - "@id"
+            - "@type"
         attachments:
           type: array
           items:
@@ -1919,22 +3989,11 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/action-items?page=2"
-    ActionItemId:
-      description: The unique identifier of an action item.
-      type: integer
     ActionItemIri:
       description: The unique JSON-LD IRI reference to the action item.
       type: string
       format: iri-reference
-      example: '/action-items/1'
-    AdderId:
-      description: The unique identifier of an adder.
-      type: integer
-    AdderIri:
-      description: The unique JSON-LD IRI reference to the adder.
-      type: string
-      format: iri-reference
-      example: '/adders/1'
+      example: '/action-items/550e8400-e29b-41d4-a716-446655440002'
     Adder:
       type: object
       properties:
@@ -1944,18 +4003,23 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Adder
-        id:
-          $ref: '#/components/schemas/AdderId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           type: string
         quantity:
           type: integer
         subtotal:
           type: number
+    AdderIri:
+      description: The unique JSON-LD IRI reference to the adder.
+      type: string
+      format: iri-reference
+      example: '/adders/550e8400-e29b-41d4-a716-446655440003'
     Address:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/AddressCreate'
       properties:
         "@id":
           $ref: '#/components/schemas/AddressIri'
@@ -1963,10 +4027,20 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Address
-        id:
-          $ref: '#/components/schemas/AddressId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         street:
           type: string
+        streetExtra:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postCode:
+          type: integer
         address:
           description: A formatted address string.
           type: string
@@ -2007,27 +4081,28 @@ components:
           default: USA
           maxLength: 3
           minLength: 3
-    AddressId:
-      description: The unique identifier of an address.
-      type: integer
     AddressIri:
       description: The unique JSON-LD IRI reference to the address.
       type: string
       format: iri-reference
-      example: '/addresses/1'
+      example: '/addresses/550e8400-e29b-41d4-a716-446655440004'
     Application:
       type: object
       allOf:
         - $ref: '#/components/schemas/ApplicationDetails'
       properties:
+        "@context":
+          example: "/contexts/Application"
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
         "@type":
           type: string
           description: The JSON-LD resource type.
           example: Application
-        id:
-          $ref: '#/components/schemas/ApplicationId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         primaryApplicant:
           $ref: '#/components/schemas/ApplicationApplicant'
         coApplicant:
@@ -2063,6 +4138,257 @@ components:
           description: A list of external identifiers for the qualification application.
           items:
             $ref: '#/components/schemas/ExternalIdentifier'
+    ApplicationUpdate:
+      type: object
+      description: Schema for updating an existing solar financing qualification application.
+      properties:
+        primaryApplicant:
+          type: object
+          description: Primary applicant information updates.
+          properties:
+            firstName:
+              description: Primary applicant first name.
+              type: string
+              maxLength: 255
+            middleName:
+              description: Primary applicant middle name.
+              type: string
+              maxLength: 255
+              nullable: true
+            lastName:
+              description: Primary applicant last name.
+              type: string
+              maxLength: 255
+            email:
+              description: Primary applicant email address.
+              type: string
+              format: email
+              maxLength: 255
+            dateOfBirth:
+              description: Primary applicant date of birth.
+              type: string
+              format: date
+            ssn:
+              description: Primary applicant last 4 digits of SSN.
+              type: string
+              pattern: '^\d{4}$'
+            mobilePhone:
+              description: Primary applicant mobile phone number (10 digits only).
+              type: string
+              pattern: '^\d{10}$'
+              minLength: 10
+              maxLength: 10
+            homePhone:
+              description: Primary applicant home phone number (10 digits only).
+              type: string
+              pattern: '^\d{10}$'
+              minLength: 10
+              maxLength: 10
+              nullable: true
+            currentAddress:
+              type: object
+              description: Primary applicant current residential address.
+              properties:
+                streetNumber:
+                  description: Street number.
+                  type: number
+                streetName:
+                  description: Street name.
+                  type: string
+                  maxLength: 255
+                city:
+                  description: City name.
+                  type: string
+                  minLength: 3
+                  maxLength: 60
+                state:
+                  description: State abbreviation (2 characters).
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                postCode:
+                  description: ZIP code (5 digits).
+                  type: string
+                  pattern: '^\d{5}$'
+                country:
+                  description: Country code (3 characters).
+                  type: string
+                  minLength: 3
+                  maxLength: 3
+        coApplicant:
+          type: object
+          description: Co-applicant information updates.
+          nullable: true
+          properties:
+            firstName:
+              description: Co-applicant first name.
+              type: string
+              maxLength: 255
+              nullable: true
+            middleName:
+              description: Co-applicant middle name.
+              type: string
+              maxLength: 255
+              nullable: true
+            lastName:
+              description: Co-applicant last name.
+              type: string
+              maxLength: 255
+            email:
+              description: Co-applicant email address.
+              type: string
+              format: email
+              maxLength: 255
+            dateOfBirth:
+              description: Co-applicant date of birth.
+              type: string
+              format: date
+            ssn:
+              description: Co-applicant last 4 digits of SSN.
+              type: string
+              pattern: '^\d{4}$'
+            mobilePhone:
+              description: Co-applicant mobile phone number (10 digits only).
+              type: string
+              pattern: '^\d{10}$'
+              minLength: 10
+              maxLength: 10
+            homePhone:
+              description: Co-applicant home phone number (10 digits only).
+              type: string
+              pattern: '^\d{10}$'
+              minLength: 10
+              maxLength: 10
+              nullable: true
+            currentAddress:
+              type: object
+              description: Co-applicant current residential address.
+              properties:
+                streetNumber:
+                  description: Street number.
+                  type: number
+                streetName:
+                  description: Street name.
+                  type: string
+                  maxLength: 255
+                city:
+                  description: City name.
+                  type: string
+                  minLength: 3
+                  maxLength: 60
+                state:
+                  description: State abbreviation (2 characters).
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                postCode:
+                  description: ZIP code (5 digits).
+                  type: string
+                  pattern: '^\d{5}$'
+                country:
+                  description: Country code (3 characters).
+                  type: string
+                  minLength: 3
+                  maxLength: 3
+        referenceId:
+          description: Partner reference identifier for the application.
+          type: string
+          nullable: true
+        agreementType:
+          $ref: '#/components/schemas/ApplicationAgreementType'
+        productType:
+          $ref: '#/components/schemas/ApplicationProductType'
+        userId:
+          description: Existing user ID to assign as sales representative.
+          type: integer
+        user:
+          type: object
+          description: New user information for sales representative assignment.
+          properties:
+            firstName:
+              description: Sales representative first name.
+              type: string
+              maxLength: 255
+            lastName:
+              description: Sales representative last name.
+              type: string
+              maxLength: 255
+            email:
+              description: Sales representative email address.
+              type: string
+              format: email
+              maxLength: 255
+            externalId:
+              type: array
+              description: External identifiers for the user.
+              nullable: true
+              items:
+                type: object
+                properties:
+                  key:
+                    description: External identifier key.
+                    type: string
+                  value:
+                    description: External identifier value.
+                    type: string
+        dealerId:
+          description: Existing dealer ID to assign to this application.
+          type: integer
+        dealer:
+          type: object
+          description: New dealer information for assignment.
+          properties:
+            name:
+              description: Dealer company name.
+              type: string
+              maxLength: 255
+            email:
+              description: Dealer email address.
+              type: string
+              format: email
+              maxLength: 255
+            externalId:
+              type: array
+              description: External identifiers for the dealer.
+              nullable: true
+              items:
+                type: object
+                properties:
+                  key:
+                    description: External identifier key.
+                    type: string
+                  value:
+                    description: External identifier value.
+                    type: string
+        installerId:
+          description: Existing installer ID to assign to this application.
+          type: integer
+        installer:
+          type: object
+          description: New installer information for assignment.
+          properties:
+            name:
+              description: Installer company name.
+              type: string
+              maxLength: 255
+            email:
+              description: Installer email address.
+              type: string
+              format: email
+              maxLength: 255
+            externalId:
+              type: array
+              description: External identifiers for the installer.
+              nullable: true
+              items:
+                type: object
+                properties:
+                  key:
+                    description: External identifier key.
+                    type: string
+                  value:
+                    description: External identifier value.
+                    type: string
     ApplicationAch:
       type: object
       properties:
@@ -2072,6 +4398,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Application
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         achAuthorizationStatus:
           $ref: '#/components/schemas/ApplicationAchStatus'
         achAuthorizationUrl:
@@ -2182,40 +4512,28 @@ components:
           type: string
           format: date
           example: "1985-06-15"
-        ssn:
-          description: |-
-            Last 4 digits of the applicant's Social Security Number.
-
-            **Security Note:** Only the last 4 digits are collected for identity
-            verification while maintaining privacy and security.
-
-            **Format:** Exactly 4 numeric digits
-          type: string
-          pattern: '^\d{4}$'
-          minLength: 4
-          maxLength: 4
-          example: "1234"
         mobilePhone:
           description: |-
             Primary mobile phone number for contact and verification.
 
             **Format Requirements:**
             - Must be a valid US phone number
-            - Can include country code (+1)
-            - Various formatting accepted: (555) 123-4567, 555-123-4567, 555.123.4567
+            - Must be 10 characters long
           type: string
-          format: tel
-          pattern: '^(\+1\s?)?\(?[2-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$'
-          example: "+15551234567"
+          pattern: '^\d{10}$'
+          minLength: 10
+          maxLength: 10
+          example: "5551234567"
         homePhone:
           description: |-
             Optional home/landline phone number for additional contact options.
             Same format requirements as mobile phone.
           type: string
-          format: tel
-          pattern: '^(\+1\s?)?\(?[2-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$'
+          pattern: '^\d{10}$'
+          minLength: 10
+          maxLength: 10
           nullable: true
-          example: "+15559876543"
+          example: "5559876543"
         currentAddress:
           description: |-
             Current residential address where the applicant has lived.
@@ -2313,10 +4631,10 @@ components:
                 established dealer partners. Cannot be used with `dealer`.
 
                 **Either `dealer` or `dealerId` must be provided.**
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
-              example: 123
+              example: "550e8400-e29b-41d4-a716-446655440021"
             installer:
               description: |-
                 Create a new installer record for this application. Use this when the
@@ -2332,10 +4650,10 @@ components:
                 established installer partners. Cannot be used with `installer`.
 
                 **Either `installer` or `installerId` must be provided.**
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
-              example: 456
+              example: "550e8400-e29b-41d4-a716-446655440022"
             user:
               description: |-
                 Create a new sales representative record for this application. Use this
@@ -2354,7 +4672,7 @@ components:
               type: integer
               minimum: 1
               nullable: true
-              example: 789
+              example: "550e8400-e29b-41d4-a716-446655440026"
             consent1:
               description: |-
                 Customer consent for credit report authorization. Must be `true`.
@@ -2394,7 +4712,6 @@ components:
                 - key: "proposal_number"
                   value: "PROP-2024-001"
       example:
-        referenceId: "PROP-2024-001"
         agreementType: "ppa"
         productType: "solar_storage"
         primaryApplicant:
@@ -2403,7 +4720,7 @@ components:
           email: "john.smith@email.com"
           dateOfBirth: "1985-06-15"
           ssn: "1234"
-          mobilePhone: "+15551234567"
+          mobilePhone: "5551234567"
           currentAddress:
             streetNumber: "123"
             streetName: "Main Street"
@@ -2411,9 +4728,9 @@ components:
             state: "AZ"
             postCode: "85001"
             country: "USA"
-        dealerId: 123
-        installerId: 456
-        userId: 789
+        dealerId: "550e8400-e29b-41d4-a716-446655440021"
+        installerId: "550e8400-e29b-41d4-a716-446655440022"
+        userId: "550e8400-e29b-41d4-a716-446655440035"
         consent1: true
         consent2: true
         consent3: true
@@ -2428,14 +4745,11 @@ components:
           $ref: '#/components/schemas/ApplicationAgreementType'
         productType:
           $ref: '#/components/schemas/ApplicationProductType'
-    ApplicationId:
-      description: The unique identifier of a qualification application.
-      type: integer
     ApplicationIri:
       description: The unique JSON-LD IRI reference to the qualification application.
       type: string
       format: iri-reference
-      example: '/applications/1'
+      example: '/applications/550e8400-e29b-41d4-a716-446655440005'
     ApplicationOpen:
       type: object
       properties:
@@ -2447,8 +4761,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Application
-        id:
-          $ref: '#/components/schemas/ApplicationId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         status:
           $ref: "#/components/schemas/ApplicationStatus"
           default: open
@@ -2484,8 +4800,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Application
-        id:
-          $ref: '#/components/schemas/ApplicationId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         status:
           $ref: "#/components/schemas/ApplicationStatus"
     ApplicationQualify:
@@ -2499,8 +4817,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Application
-        id:
-          $ref: '#/components/schemas/ApplicationId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         status:
           $ref: "#/components/schemas/ApplicationStatus"
           default: in_progress
@@ -2513,8 +4833,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Attachment
-        id:
-          $ref: '#/components/schemas/AttachmentId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           type: string
           description: The name of the attachment.
@@ -2575,38 +4897,28 @@ components:
     AttachmentCreate:
       type: object
       required:
-        - files
+        - name
+        - type
+        - file
       properties:
-        files:
-          type: array
-          items:
-            type: object
-            required:
-              - name
-              - type
-              - file
-            properties:
-              name:
-                type: string
-                maxLength: 255
-                description: The name of the attachment.
-              type:
-                $ref: '#/components/schemas/AttachmentType'
-              file:
-                type: string
-                format: binary
-                description: 'The file to upload (max 10MB, allowed types: jpg, jpeg, png, pdf, docx).'
+        name:
+          type: string
+          maxLength: 255
+          description: The name of the attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+        file:
+          type: string
+          format: binary
+          description: 'The file to upload (max 10MB, allowed types: jpg, jpeg, png, heic, gif, pdf, doc, docx, xls, xlsx, ppt, pptx, txt, xml, csv).'
       description: >
-        Create attachments by providing an array of files with their metadata.
-        Each file requires a name, type, and file upload.
-    AttachmentId:
-      description: The unique identifier of an attachment.
-      type: integer
+        Create a single attachment by providing file metadata and upload.
+        Only one file can be uploaded at a time.
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
       format: iri-reference
-      example: '/attachments/1'
+      example: '/attachments/550e8400-e29b-41d4-a716-446655440006'
     AttachmentSource:
       description: The location the attachment was provided from.
       type: string
@@ -2630,19 +4942,21 @@ components:
         - final_inspection
         - install
         - interconnection
-        - miscellaneous
-        - monitoring
         - m1_verification_form
         - m2_verification_form
         - m3_verification_form
         - m4_verification_form
+        - miscellaneous
+        - monitoring
         - nem
         - other
         - permit
         - plan_set
         - procurement
+        - production_report
         - property_document
         - pto
+        - shading_report
         - site_survey_photo
         - title_verification
         - true_up
@@ -2659,8 +4973,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Comment
-        id:
-          $ref: '#/components/schemas/CommentId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         comment:
           description: The main comment content.
           type: string
@@ -2705,14 +5021,23 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/comments?page=2"
-    CommentId:
-      description: The unique identifier of a comment.
-      type: integer
+    CommentCreate:
+      type: object
+      required:
+        - comment
+      properties:
+        comment:
+          type: string
+          description: The main comment content.
+          maxLength: 65535
+          example: "Initial site inspection completed. All electrical connections verified and system is ready for commissioning."
+      description: >
+        Create a new comment by providing the comment text content.
     CommentIri:
       description: The unique JSON-LD IRI reference to the comment.
       type: string
       format: iri-reference
-      example: '/comments/1'
+      example: '/comments/550e8400-e29b-41d4-a716-446655440007'
     Customer:
       type: object
       allOf:
@@ -2724,8 +5049,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: User
-        id:
-          $ref: '#/components/schemas/UserId'
         referenceId:
           type: string
           format: uuid
@@ -2775,7 +5098,7 @@ components:
       description: The unique JSON-LD IRI reference to the customer.
       type: string
       format: iri-reference
-      example: '/customers/1'
+      example: '/customers/550e8400-e29b-41d4-a716-446655440008'
     Dealer:
       type: object
       allOf:
@@ -2787,8 +5110,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Dealer
-        id:
-          $ref: '#/components/schemas/DealerId'
         referenceId:
           type: string
           format: uuid
@@ -2860,14 +5181,11 @@ components:
           description: A contact email for the dealer.
           type: string
           format: email
-    DealerId:
-      description: The unique identifier of a dealer.
-      type: integer
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
       format: iri-reference
-      example: '/dealers/1'
+      example: '/dealers/550e8400-e29b-41d4-a716-446655440009'
     Design:
       type: object
       properties:
@@ -2877,8 +5195,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Design
-        id:
-          $ref: '#/components/schemas/DesignId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           description: The name of the design.
           type: string
@@ -2902,14 +5222,264 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Segment'
-    DesignId:
-      description: The unique identifier of a design.
-      type: integer
     DesignIri:
       description: The unique JSON-LD IRI reference to the design.
       type: string
       format: iri-reference
-      example: '/designs/1'
+      example: '/designs/550e8400-e29b-41d4-a716-446655440010'
+    DesignSource:
+      description: The source system or tool used to create the design.
+      type: string
+      enum:
+        - api
+        - aurora
+        - sunobi
+        - scanifly
+        - sub_contractor_hub
+        - other
+        - manual
+    DesignCreate:
+      type: object
+      description: Schema for creating a new solar system design for a project.
+      required:
+        - projectId
+        - name
+        - systemSize
+        - systemOffset
+        - asa
+        - annualProduction
+      properties:
+        projectId:
+          description: |-
+            The unique identifier of the project this design belongs to.
+
+            **Business Context:**
+            - Links the design to a specific solar installation project
+            - Used for project organization and tracking
+            - Required for all design creation operations
+            - Must reference an existing project in the system
+
+            **Validation:**
+            - Must be a valid UUID format
+            - Referenced project must exist
+            - User must have access to the specified project
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440017"
+        name:
+          description: |-
+            Human-readable name for this design version.
+
+            **Naming Best Practices:**
+            - Include version number: "Rev 1", "Rev 2", "Final Design"
+            - Reference design source: "Aurora Design v3", "Manual Layout"
+            - Indicate status: "Preliminary", "Final", "Customer Approved"
+
+            **Common Examples:**
+            - "Initial Design Rev 1"
+            - "Customer Approved Final"
+            - "Aurora Import v2.1"
+          type: string
+          maxLength: 255
+          example: "Customer Approved Final Design"
+        source:
+          description: |-
+            The source system or tool used to create this design.
+
+            **Design Sources:**
+            - `scanifly`: Design imported from Scanifly platform
+            - `aurora`: Design imported from Aurora Solar
+            - `manual`: Manually created design
+            - `helioscope`: Design imported from Helioscope
+            - `pv_case`: Design imported from PV*SOL or PVcase
+            - `other`: Design from other tools or sources
+          allOf:
+            - $ref: '#/components/schemas/DesignSource'
+          nullable: true
+        systemSize:
+          description: |-
+            Total system size in kilowatts (kW) DC rating.
+
+            **Business Context:**
+            - Used for financing calculations and loan sizing
+            - Determines equipment requirements and costs
+            - Affects utility interconnection requirements
+            - Must match equipment specifications in design
+
+            **Validation:**
+            - Must be greater than 0
+            - Should align with customer energy needs
+            - Consider local utility size restrictions
+          type: number
+          format: float
+          minimum: 0.01
+          example: 8.32
+        systemOffset:
+          description: |-
+            Percentage of customer's annual energy usage that this system will offset.
+
+            **Business Impact:**
+            - 100% = Net Zero Energy system
+            - >100% = Net Positive (system produces excess)
+            - <100% = Partial offset (customer still has electric bills)
+
+            **Common Ranges:**
+            - Residential: 80-120% typical
+            - Commercial: 50-100% typical
+            - Utility restrictions may limit to 100%
+          type: number
+          format: float
+          minimum: 0
+          maximum: 200
+          example: 95.5
+        asa:
+          description: |-
+            Annual Solar Access (ASA) - percentage representing shading analysis results.
+
+            **Solar Access Ranges:**
+            - 90-100%: Excellent, minimal shading
+            - 80-89%: Good, some minor shading
+            - 70-79%: Fair, moderate shading impact
+            - <70%: Poor, significant shading concerns
+
+            **Impact on Performance:**
+            - Higher ASA = better energy production
+            - Lower ASA = reduced system efficiency
+            - Affects financing qualification in some cases
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 87.3
+        annualProduction:
+          description: |-
+            Estimated annual energy production in kilowatt-hours (kWh).
+
+            **Production Factors:**
+            - System size (kW) × Solar irradiance × System efficiency
+            - Accounts for weather, shading, equipment efficiency
+            - Used for customer savings calculations
+            - Basis for performance guarantees
+
+            **Typical Production:**
+            - Varies by location: 1,200-1,800 kWh per kW annually
+            - Arizona/California: Higher production
+            - Northern states: Lower production
+          type: number
+          format: float
+          minimum: 0
+          example: 12450.75
+        isPrimary:
+          description: |-
+            Whether this design should be set as the primary/active design for the project.
+
+            **Primary Design Rules:**
+            - Only one design per project can be primary
+            - Primary design is used for financing calculations
+            - Primary design appears in customer documents
+            - Setting isPrimary=true makes other designs secondary
+
+            **Default Behavior:**
+            - If not specified and no primary exists: becomes primary
+            - If not specified and primary exists: becomes secondary
+            - If true: replaces current primary design
+          type: boolean
+          nullable: true
+          example: true
+    DesignUpdate:
+      type: object
+      description: |-
+        Schema for updating an existing solar system design.
+        All fields are optional - only provided fields will be updated.
+      properties:
+        name:
+          description: |-
+            Updated human-readable name for this design version.
+
+            **Common Update Scenarios:**
+            - Version increments: "Rev 1" → "Rev 2"
+            - Status changes: "Draft" → "Final"
+            - Approval tracking: "Pending Review" → "Customer Approved"
+          type: string
+          maxLength: 255
+          example: "Customer Approved Final Design v2"
+        source:
+          description: |-
+            Updated design source if design was re-imported or modified.
+
+            **Source Change Examples:**
+            - Manual design refined in Aurora: `manual` → `aurora`
+            - Scanifly import updated: `scanifly` (version update)
+            - Design tool migration: `helioscope` → `aurora`
+          allOf:
+            - $ref: '#/components/schemas/DesignSource'
+          nullable: true
+        systemSize:
+          description: |-
+            Updated total system size in kilowatts (kW) DC rating.
+
+            **Size Change Impacts:**
+            - May affect financing pre-approval amounts
+            - Could trigger utility interconnection review
+            - Equipment lists and costs will need updates
+            - Customer contracts may require amendments
+          type: number
+          format: float
+          minimum: 0.01
+          example: 9.28
+        systemOffset:
+          description: |-
+            Updated percentage of customer's annual energy usage offset.
+
+            **Offset Change Reasons:**
+            - Updated customer usage data
+            - System size modifications
+            - Refined production estimates
+            - Customer preference changes
+          type: number
+          format: float
+          minimum: 0
+          maximum: 200
+          example: 105.2
+        asa:
+          description: |-
+            Updated Annual Solar Access percentage from refined shading analysis.
+
+            **ASA Update Triggers:**
+            - More detailed shading studies
+            - Seasonal shading analysis
+            - Tree growth/removal considerations
+            - Design layout optimizations
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 91.7
+        annualProduction:
+          description: |-
+            Updated estimated annual energy production in kWh.
+
+            **Production Update Reasons:**
+            - Equipment changes (higher efficiency panels)
+            - Layout optimizations
+            - Updated weather data
+            - Refined modeling parameters
+          type: number
+          format: float
+          minimum: 0
+          example: 13825.50
+        isPrimary:
+          description: |-
+            Whether to promote this design to primary status.
+
+            **Primary Status Changes:**
+            - Set to `true` to make this the active design
+            - Other designs automatically become secondary
+            - Triggers recalculation of project financials
+            - May require customer approval for significant changes
+          type: boolean
+          nullable: true
+          example: false
     Distributor:
       type: object
       allOf:
@@ -2921,8 +5491,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Distributor
-        id:
-          $ref: '#/components/schemas/DistributorId'
         referenceId:
           type: string
           format: uuid
@@ -2994,14 +5562,11 @@ components:
           description: A contact email for the distributor.
           type: string
           format: email
-    DistributorId:
-      description: The unique identifier of a distributor.
-      type: integer
     DistributorIri:
       description: The unique JSON-LD IRI reference to the distributor.
       type: string
       format: iri-reference
-      example: '/distributors/1'
+      example: '/distributors/550e8400-e29b-41d4-a716-446655440011'
     Error:
       type: object
       properties:
@@ -3019,9 +5584,6 @@ components:
         detail:
           description: More detailed error information.
           type: string
-    ExternalIdentifierId:
-      description: The unique identifier of an external identifier.
-      type: integer
     ExternalIdentifier:
       type: object
       allOf:
@@ -3033,8 +5595,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: ExternalIdentifier
-        id:
-          $ref: '#/components/schemas/ExternalIdentifierId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
     ExternalIdentifierCreate:
       type: object
       allOf:
@@ -3051,11 +5615,47 @@ components:
         value:
           type: string
           description: The value of the external identifier.
+    ExternalIdentifierCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/ExternalIdentifier"
+            "@id":
+              example: "/external-identifiers"
+            totalItems:
+              type: integer
+              description: The total number of external identifiers.
+              example: 3
+            member:
+              type: array
+              description: A list of external identifiers.
+              items:
+                $ref: '#/components/schemas/ExternalIdentifier'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/external-identifiers?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/external-identifiers?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/external-identifiers?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/external-identifiers?page=2"
     ExternalIdentifierIri:
       description: The unique JSON-LD IRI reference to the external identifier.
       type: string
       format: iri-reference
-      example: '/external-identifiers/1'
+      example: '/external-identifiers/550e8400-e29b-41d4-a716-446655440012'
     HydraCollectionMetadata:
       type: object
       properties:
@@ -3099,8 +5699,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Installer
-        id:
-          $ref: '#/components/schemas/InstallerId'
         referenceId:
           type: string
           format: uuid
@@ -3172,14 +5770,11 @@ components:
           description: A contact email for the installer.
           type: string
           format: email
-    InstallerId:
-      description: The unique identifier of an installer.
-      type: integer
     InstallerIri:
       description: The unique JSON-LD IRI reference to the installer.
       type: string
       format: iri-reference
-      example: '/installers/1'
+      example: '/installers/550e8400-e29b-41d4-a716-446655440013'
     Manufacturer:
       type: object
       properties:
@@ -3189,19 +5784,18 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Manufacturer
-        id:
-          $ref: '#/components/schemas/ManufacturerId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           description: The name of the manufacturer.
           type: string
-    ManufacturerId:
-      description: The unique identifier of a manufacturer.
-      type: integer
     ManufacturerIri:
       description: The unique JSON-LD IRI reference to the manufacturer.
       type: string
       format: iri-reference
-      example: '/manufacturers/1'
+      example: '/product-manufacturers/550e8400-e29b-41d4-a716-446655440014'
     Partner:
       type: object
       properties:
@@ -3211,8 +5805,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Partner
-        id:
-          $ref: '#/components/schemas/PartnerId'
         referenceId:
           type: string
           format: uuid
@@ -3264,14 +5856,11 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/partners?page=2"
-    PartnerId:
-      description: The unique identifier of a partner.
-      type: integer
     PartnerIri:
       description: The unique JSON-LD IRI reference to the partner.
       type: string
       format: iri-reference
-      example: '/partners/1'
+      example: '/partners/550e8400-e29b-41d4-a716-446655440015'
     Product:
       type: object
       properties:
@@ -3281,8 +5870,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Product
-        id:
-          $ref: '#/components/schemas/ProductId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         type:
           description: The type of product.
           type: string
@@ -3302,6 +5893,9 @@ components:
           type: string
         sku:
           description: The product SKU.
+          type: string
+        model:
+          description: The product model number or identifier.
           type: string
         distributors:
           description: The distributors who offer this product.
@@ -3374,14 +5968,11 @@ components:
                         type: string
                       property:
                         type: string
-    ProductId:
-      description: The unique identifier of a product.
-      type: integer
     ProductIri:
       description: The unique JSON-LD IRI reference to the product.
       type: string
       format: iri-reference
-      example: '/products/1'
+      example: '/products/550e8400-e29b-41d4-a716-446655440016'
     Project:
       type: object
       properties:
@@ -3391,10 +5982,13 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Project
-        id:
-          $ref: '#/components/schemas/ProjectId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         proposalId:
-          $ref: '#/components/schemas/ProjectProposalId'
+          type: string
+          description: The optional identifier of the proposal used for the project.
         status:
           $ref: '#/components/schemas/ProjectStatus'
         phase:
@@ -3760,9 +6354,9 @@ components:
 
                 **Business Rule:** One application can generate multiple projects
                 (e.g., main system + later battery addition)
-              type: integer
-              minimum: 1
-              example: 12345
+              type: string
+              format: uuid
+              example: "550e8400-e29b-41d4-a716-446655440000"
             address:
               description: |-
                 Physical address where the solar system will be installed.
@@ -3838,7 +6432,7 @@ components:
               type: integer
               minimum: 1
               nullable: true
-              example: 123
+              example: "550e8400-e29b-41d4-a716-446655440027"
             installer:
               description: |-
                 Solar installation company responsible for the physical installation.
@@ -3869,7 +6463,7 @@ components:
               type: integer
               minimum: 1
               nullable: true
-              example: 456
+              example: "550e8400-e29b-41d4-a716-446655440028"
             distributor:
               description: |-
                 Optional equipment distributor for specialized procurement needs.
@@ -3895,10 +6489,10 @@ components:
                 - Specialized equipment sourcing
                 - Volume purchasing agreements
                 - Logistics and delivery coordination
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
-              example: 789
+              example: "550e8400-e29b-41d4-a716-446655440023"
             user:
               description: |-
                 Sales representative responsible for the customer relationship.
@@ -3926,10 +6520,10 @@ components:
 
                 **When to Use:** Assigning projects to established sales team
                 members with existing customer relationships and commission structures.
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
-              example: 101112
+              example: "550e8400-e29b-41d4-a716-446655440024"
             externalId:
               description: |-
                 Optional external system identifiers for integration and tracking.
@@ -4015,7 +6609,7 @@ components:
               type: number
               format: currency
               minimum: 0
-              example: 20000.00
+              example: 25000.00
             downPayment:
               description: |-
                 Customer down payment amount paid at contract signing.
@@ -4032,10 +6626,10 @@ components:
               type: number
               format: currency
               minimum: 0
-              example: 5000.00
+              example: 0
             dealerFee:
               description: |-
-                Dealer fee percentage for loan products (decimal format).
+                Dealer fee percentage for loan agreements (decimal format).
 
                 **Required for:** `agreementType: loan`
 
@@ -4050,10 +6644,10 @@ components:
               format: percentage
               minimum: 0
               maximum: 1
-              example: 0.055
+              example: 0
             interestRate:
               description: |-
-                Annual interest rate for loan products (decimal format).
+                Annual interest rate for loan agreements (decimal format).
 
                 **Required for:** `agreementType: loan`
 
@@ -4068,7 +6662,7 @@ components:
               format: percentage
               minimum: 0
               maximum: 1
-              example: 0.0599
+              example: 0
             contractRate:
               description: |-
                 First-year energy rate for PPA products ($/kWh in decimal format).
@@ -4086,7 +6680,7 @@ components:
               format: rate
               minimum: 0
               maximum: 1
-              example: 0.1742
+              example: 0.1667
             escalator:
               description: |-
                 Annual rate increase percentage for PPA/lease products (decimal format).
@@ -4135,7 +6729,7 @@ components:
               type: integer
               minimum: 1
               nullable: true
-              example: 98765
+              example: "1234567890"
             proposalDate:
               description: |-
                 Date when the proposal was presented to the customer.
@@ -4149,7 +6743,7 @@ components:
                 **Required Field** for project tracking and reporting.
               type: string
               format: date
-              example: "2024-03-15"
+              example: "1234567890"
             proposalLink:
               description: |-
                 Optional URL link to the customer proposal document.
@@ -4183,7 +6777,7 @@ components:
               type: integer
               minimum: 0
               maximum: 36
-              example: 18
+              example: 0
             introductoryPayment:
               description: |-
                 Monthly payment amount during introductory period.
@@ -4199,7 +6793,7 @@ components:
               type: number
               format: currency
               minimum: 0
-              example: 89.00
+              example: 0
             adders:
               description: |-
                 Optional equipment add-ons and upgrades beyond the base solar system.
@@ -4237,14 +6831,14 @@ components:
                     minimum: 0
                     example: 2500.00
       example:
-        applicationId: 12345
+        applicationId: "550e8400-e29b-41d4-a716-446655440000"
         customer:
           firstName: "John"
           lastName: "Smith"
           email: "john.smith@email.com"
           dateOfBirth: "1985-06-15"
           ssn: "1234"
-          mobilePhone: "+15551234567"
+          mobilePhone: "5551234567"
         address:
           streetNumber: "789"
           streetName: "Solar Avenue"
@@ -4263,11 +6857,11 @@ components:
         introductoryTerm: 18
         introductoryPayment: 149.00
         proposalDate: "2024-03-15"
-        proposalId: 98765
+        proposalId: "1234567890"
         proposalLink: "https://portal.example.com/proposals/98765"
-        dealerId: 123
-        installerId: 456
-        userId: 101112
+        dealerId: "550e8400-e29b-41d4-a716-446655440021"
+        installerId: "550e8400-e29b-41d4-a716-446655440022"
+        userId: "550e8400-e29b-41d4-a716-446655440024"
         externalId:
           - key: "crm_project_id"
             value: "PROJ-2024-001"
@@ -4280,14 +6874,385 @@ components:
           - name: "Roof Reinforcement"
             quantity: 1
             subtotal: 1500.00
-    ProjectId:
-      description: The unique identifier of a project.
-      type: integer
+    ProjectUpdate:
+      type: object
+      description: |-
+        Schema for updating an existing solar installation project.
+        All fields are optional - only provided fields will be updated.
+      properties:
+        agreementType:
+          description: |-
+            Solar financing agreement type.
+
+            **Agreement Types:**
+            - `loan`: Traditional solar loan with fixed payments
+            - `ppa`: Power Purchase Agreement - customer buys power, not panels
+            - `lease`: Solar lease with fixed monthly payments
+
+            **Impact of Changes:**
+            - Changing agreement type may require updated financial terms
+            - Some fields are only required for specific agreement types
+            - Rate structures and payment calculations will be recalculated
+          allOf:
+            - $ref: "#/components/schemas/ApplicationAgreementType"
+        productType:
+          description: |-
+            Type of solar installation being financed.
+
+            **Product Options:**
+            - `solar`: Solar panels only
+            - `solar_storage`: Solar panels with battery storage
+            - `storage`: Battery storage only (rare, usually for existing solar)
+
+            **Business Impact:**
+            Different product types may have different:
+            - Qualification requirements and credit tiers
+            - Interest rates and financing terms
+            - Equipment warranties and service agreements
+            - Installation complexity and timeline
+          allOf:
+            - $ref: "#/components/schemas/ApplicationProductType"
+        totalContractValue:
+          description: |-
+            Total value of the solar installation contract including all equipment,
+            installation, permits, and additional services.
+
+            **Important:** Must be greater than or equal to `amountFinanced`
+          type: number
+          format: float
+          minimum: 0
+          example: 25000.00
+        amountFinanced:
+          description: |-
+            Portion of the total contract value that will be financed through Elios Fund.
+            The difference between total contract value and amount financed represents
+            the customer's out-of-pocket costs (down payment, rebates applied, etc.).
+
+            **Calculation:** `totalContractValue` - `downPayment` - (rebates/incentives)
+            **Important:** Cannot exceed `totalContractValue`
+          type: number
+          format: float
+          minimum: 0
+          example: 25000.00
+        downPayment:
+          description: |-
+            Customer's upfront payment toward the project.
+
+            **Business Rules:**
+            - Reduces the amount that needs to be financed
+            - Improves loan terms and qualification chances
+            - Must not exceed the amount being financed
+
+            **Important:** Cannot exceed `amountFinanced`
+          type: number
+          format: float
+          minimum: 0
+          example: 0
+        introductoryTerm:
+          description: |-
+            Duration in months for special introductory payment terms.
+            **Required for loan agreements only.**
+
+            Common introductory periods:
+            - 18 months: Standard promotional period
+            - 12 months: Short-term promotion
+            - 0 months: No introductory period (standard rates immediately)
+          type: integer
+          minimum: 0
+          maximum: 60
+          example: 0
+        introductoryPayment:
+          description: |-
+            Monthly payment amount during the introductory period.
+            **Required for loan agreements only.**
+
+            **Typical Strategies:**
+            - $0 payments: Deferred payment start
+            - Reduced payments: Lower initial burden
+            - Interest-only: Principal payments deferred
+          type: number
+          format: float
+          minimum: 0
+          example: 0
+        dealerFee:
+          description: |-
+            Dealer commission as a percentage of the financed amount.
+            **Required for loan agreements only.**
+
+            **Range:** Typically 0% to 15% depending on:
+            - Dealer partnership level and volume
+            - Loan terms and customer credit tier
+            - Promotional campaigns and incentives
+
+            **Business Impact:**
+            - Paid to dealer upon project completion
+            - Built into customer's financing terms
+            - Affects final APR calculations
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0
+        interestRate:
+          description: |-
+            Annual interest rate for loan agreements.
+            **Required for loan agreements only.**
+
+            **Rate Determination:**
+            - Based on customer credit tier from qualification
+            - Market rates and Elios Fund's cost of capital
+            - Loan term length and risk factors
+
+            **Representation:** Decimal format (0.0649 = 6.49% APR)
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0
+        contractRate:
+          description: |-
+            Price per kWh for power purchased under PPA agreements.
+            **Required for PPA or lease agreements only.**
+
+            **Rate Setting:**
+            - Based on local utility rates and solar production estimates
+            - Typically 10-20% below utility rates for customer savings
+            - Fixed for the contract term or subject to escalation
+
+            **Customer Benefit:** Immediate savings with no upfront costs
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.1667
+        escalator:
+          description: |-
+            Annual rate increase for PPA/lease payments.
+            **Required for PPA or lease agreements only.**
+
+            **Purpose:**
+            - Accounts for inflation and rising utility costs
+            - Keeps customer savings consistent over time
+            - Industry standard: 0.5% to 3.5% annually
+
+            **Representation:** Decimal format (0.025 = 2.5% annual increase)
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.0299
+        term:
+          description: |-
+            Contract duration in years.
+
+            **Typical Terms:**
+            - **Loans:** 10-25 years (most common: 20 years)
+            - **PPA/Lease:** 20-25 years (matches equipment warranties)
+
+            **Considerations:**
+            - Longer terms = lower payments, more total interest
+            - Must not exceed equipment warranty periods
+            - Some jurisdictions have maximum term limits
+          type: integer
+          minimum: 1
+          maximum: 25
+          example: 25
+        proposalId:
+          description: |-
+            Reference number from the solar design/proposal system.
+
+            **Integration Points:**
+            - Links to design software (Aurora, Helioscope, etc.)
+            - Connects to CRM proposal records
+            - References sales team quote numbers
+
+            **Optional but Recommended:** Helps track proposals through sales-to-installation lifecycle
+          type: integer
+          minimum: 1
+          example: "1234567890"
+          nullable: true
+        proposalLink:
+          description: |-
+            Direct URL to the customer's solar proposal or design.
+
+            **Common Sources:**
+            - Design platform sharing links
+            - Sales presentation URLs
+            - Customer portal proposal access
+
+            **Customer Experience:** Provides easy access to view their system design and savings projections
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://share.aurorasolar.com/designs/abc123"
+          nullable: true
+        proposalDate:
+          description: |-
+            Date when the customer's solar proposal was presented or finalized.
+
+            **Business Uses:**
+            - Sales cycle tracking and analytics
+            - Proposal validity periods (pricing may expire)
+            - Timeline coordination between sales and project teams
+
+            **Format:** ISO 8601 date format (YYYY-MM-DD)
+          type: string
+          format: date
+          example: "2024-03-15"
+        userId:
+          description: |-
+            Reference to existing sales representative by internal user ID.
+
+            **Cannot be used with `user`** - choose one approach.
+            **Cannot be used together:** Specify either `userId` (existing) or `user` (new/inline)
+
+            **Sales Rep Responsibilities:**
+            - Customer relationship and ongoing support
+            - Commission tracking and payment
+            - Project coordination and updates
+            - Customer service and issue resolution
+          type: integer
+          minimum: 1
+          example: "550e8400-e29b-41d4-a716-446655440031"
+          nullable: true
+        user:
+          description: |-
+            Create new sales representative record if not already in the system.
+            **Cannot be used with `userId`** - choose one approach.
+
+            **Use Cases:**
+            - Onboarding new sales team members
+            - Third-party sales partnerships
+            - Customer referrals with commission splits
+
+            **Backend Processing:**
+            System will check if user exists by email before creating new record.
+          allOf:
+            - $ref: "#/components/schemas/UserCreate"
+          nullable: true
+        dealerId:
+          description: |-
+            Reference to existing dealer by ID for established partnerships.
+            **Cannot be used with `dealer`** - choose one approach.
+
+            **Dealer Responsibilities:**
+            - Customer relationship and sales process
+            - Contract execution and customer service
+            - Sales commission and fee processing
+            - Quality assurance and customer satisfaction
+          type: integer
+          minimum: 1
+          example: "550e8400-e29b-41d4-a716-446655440032"
+          nullable: true
+        dealer:
+          description: |-
+            Create new dealer record if not already in the system.
+            **Cannot be used with `dealerId`** - choose one approach.
+
+            **Use Cases:**
+            - Onboarding new dealer partnerships
+            - Regional expansion with local dealers
+            - Referral partnerships
+          allOf:
+            - $ref: "#/components/schemas/DealerCreate"
+          nullable: true
+        installerId:
+          description: |-
+            Reference to existing installer by ID for established partnerships.
+            **Cannot be used with `installer`** - choose one approach.
+
+            **Installer Responsibilities:**
+            - Physical system installation and commissioning
+            - Permit applications and approvals
+            - Safety compliance and quality control
+            - Warranty service and maintenance coordination
+          type: integer
+          minimum: 1
+          example: "550e8400-e29b-41d4-a716-446655440033"
+          nullable: true
+        installer:
+          description: |-
+            Create new installer record if not already in the system.
+            **Cannot be used with `installerId`** - choose one approach.
+
+            **Use Cases:**
+            - Expanding installer network
+            - Regional coverage requirements
+            - Specialized installation capabilities
+          allOf:
+            - $ref: "#/components/schemas/InstallerCreate"
+          nullable: true
+        distributorId:
+          description: |-
+            Reference to existing distributor by ID (optional).
+            **Cannot be used with `distributor`** - choose one approach.
+
+            **Distributor Role:**
+            - Equipment procurement and logistics
+            - Regional market coordination
+            - Volume pricing and inventory management
+            - Technical support and training
+          type: integer
+          minimum: 1
+          example: "550e8400-e29b-41d4-a716-446655440034"
+          nullable: true
+        distributor:
+          description: |-
+            Create new distributor record if not already in the system (optional).
+            **Cannot be used with `distributorId`** - choose one approach.
+
+            **Optional Role:** Not all projects require distributor involvement
+          allOf:
+            - $ref: "#/components/schemas/DistributorCreate"
+          nullable: true
+        externalId:
+          description: |-
+            Array of external system identifiers for integration tracking.
+
+            **Integration Examples:**
+            - CRM system: `{"key": "salesforce_opportunity", "value": "006xx000004TmiQAAS"}`
+            - Design platform: `{"key": "aurora_design", "value": "design_abc123"}`
+            - ERP system: `{"key": "sap_project", "value": "PRJ-2024-001"}`
+            - Proposal tool: `{"key": "proposal_builder", "value": "prop_xyz789"}`
+
+            **Benefits:**
+            - Seamless data flow between systems
+            - Reduced manual data entry and errors
+            - Comprehensive project tracking across platforms
+            - Audit trail for compliance and reporting
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalIdentifierCreate"
+          nullable: true
+        adders:
+          description: |-
+            Optional equipment add-ons and customizations beyond the base solar system.
+
+            **Common Add-Ons:**
+            - **Electrical:** Main panel upgrades, sub-panels, EV chargers
+            - **Structural:** Roof repairs, reinforcements, trenching
+            - **Aesthetic:** Premium racking, hidden conduit, landscaping
+            - **Technology:** Monitoring systems, smart home integration
+            - **Services:** Extended warranties, maintenance plans
+
+            **Pricing Impact:**
+            - Increases total contract value
+            - May affect financing terms and rates
+            - Can improve project margins for installers
+
+            **Customer Value:**
+            - One-stop shopping for complete solution
+            - Coordinated installation and warranties
+            - Financing covers entire project scope
+          type: array
+          items:
+            $ref: "#/components/schemas/Adder"
+          nullable: true
     ProjectIri:
       description: The unique JSON-LD IRI reference to the project.
       type: string
       format: iri-reference
-      example: '/projects/1'
+      example: '/projects/550e8400-e29b-41d4-a716-446655440017'
     ProjectMilestone:
       description: The current project milestone.
       type: string
@@ -4316,9 +7281,6 @@ components:
         - rebates
         - sale
         - site_survey
-    ProjectProposalId:
-      description: A second unique identifier of a project.
-      type: integer
     ProjectStatus:
       description: The current project status.
       type: string
@@ -4340,8 +7302,6 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: User
-        id:
-          $ref: '#/components/schemas/UserId'
         referenceId:
           type: string
           format: uuid
@@ -4357,8 +7317,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Segment
-        id:
-          $ref: '#/components/schemas/SegmentId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         name:
           description: The name of the segment.
           type: string
@@ -4385,14 +7347,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
-    SegmentId:
-      description: The unique identifier of a segment.
-      type: integer
     SegmentIri:
       description: The unique JSON-LD IRI reference to the segment.
       type: string
       format: iri-reference
-      example: '/segments/1'
+      example: '/segments/550e8400-e29b-41d4-a716-446655440018'
     SystemPricingFactorYear:
       type: object
       properties:
@@ -4481,6 +7440,77 @@ components:
           type: number
           maximum: 1
           minimum: 0
+    User:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/User"
+        "@id":
+          $ref: '#/components/schemas/UserIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: User
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        firstName:
+          type: string
+          description: The user's first name.
+        lastName:
+          type: string
+          description: The user's last name.
+        name:
+          type: string
+          description: The user's full name.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+        type:
+          type: array
+          description: The user's account type.
+          items:
+            $ref: '#/components/schemas/UserType'
+    UserCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/User"
+            "@id":
+              example: "/products"
+            totalItems:
+              type: integer
+              description: The total number of users.
+              example: 5
+            member:
+              type: array
+              description: A list of users.
+              items:
+                $ref: '#/components/schemas/User'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/users?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/users?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/users?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/users?page=2"
     UserCreate:
       type: object
       required:
@@ -4508,14 +7538,11 @@ components:
           description: The users's email.
           type: string
           format: email
-    UserId:
-      description: The unique identifier of a user.
-      type: integer
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
       format: iri-reference
-      example: '/users/1'
+      example: '/users/550e8400-e29b-41d4-a716-446655440019'
     Webhook:
       type: object
       properties:
@@ -4525,8 +7552,10 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Webhook
-        id:
-          $ref: '#/components/schemas/WebhookId'
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
         url:
           description: The URL the webhook request will be sent to.
           type: string
@@ -4546,21 +7575,133 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebhookEvent'
-    WebhookEvent:
-      description: The type of event that triggers the webhook.
+        description:
+          description: A human-readable description of the webhook's purpose.
+          type: string
+          maxLength: 4000
+        secret:
+          description: The webhook secret used for HMAC signature validation.
+          type: string
+          maxLength: 255
+        caPath:
+          description: The path to the CA certificate for SSL verification.
+          type: string
+          maxLength: 4000
+        keyPath:
+          description: The path to the private key for client certificate authentication.
+          type: string
+          maxLength: 4000
+        certPath:
+          description: The path to the client certificate for SSL authentication.
+          type: string
+          maxLength: 4000
+    UserType:
       type: string
       enum:
-        - application.created
-        - application.updated
-        - application.deleted
-        - project.created
-        - project.updated
-        - project.deleted
-        - project.phase.updated
-        - project.status.updated
-        - user.created
-        - user.updated
-        - user.deleted
+        - internal
+        - customer
+        - sales_rep
+        - partner_admin
+        - investor_admin
+        - account_manager
+        - user
+    WebhookCreate:
+      type: object
+      required:
+        - url
+        - method
+        - events
+      properties:
+        url:
+          description: The URL the webhook request will be sent to. Must be HTTPS.
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://api.example.com/webhooks/elios"
+        method:
+          description: The HTTP method that will be used for webhook delivery.
+          type: string
+          enum:
+            - get
+            - post
+          example: "post"
+        events:
+          description: The events that will trigger the webhook to send.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/WebhookEvent'
+          example: ["application.approved", "project.created"]
+        description:
+          description: A human-readable description of the webhook's purpose.
+          type: string
+          maxLength: 4000
+          example: "Webhook for application status updates"
+        secret:
+          description: The webhook secret used for HMAC signature validation.
+          type: string
+          maxLength: 255
+          example: "your-webhook-secret-key"
+        caPath:
+          description: The path to the CA certificate for SSL verification.
+          type: string
+          maxLength: 4000
+        keyPath:
+          description: The path to the private key for client certificate authentication.
+          type: string
+          maxLength: 4000
+        certPath:
+          description: The path to the client certificate for SSL authentication.
+          type: string
+          maxLength: 4000
+    WebhookUpdate:
+      type: object
+      properties:
+        url:
+          description: The URL the webhook request will be sent to. Must be HTTPS.
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://api.example.com/webhooks/elios"
+        method:
+          description: The HTTP method that will be used for webhook delivery.
+          type: string
+          enum:
+            - get
+            - post
+          example: "post"
+        events:
+          description: The events that will trigger the webhook to send.
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEvent'
+          example: ["application.approved", "project.created"]
+        description:
+          description: A human-readable description of the webhook's purpose.
+          type: string
+          maxLength: 4000
+          example: "Webhook for application status updates"
+        enabled:
+          description: Whether or not the webhook is enabled.
+          type: boolean
+          example: true
+        secret:
+          description: The webhook secret used for HMAC signature validation.
+          type: string
+          maxLength: 255
+          example: "your-webhook-secret-key"
+        caPath:
+          description: The path to the CA certificate for SSL verification.
+          type: string
+          maxLength: 4000
+        keyPath:
+          description: The path to the private key for client certificate authentication.
+          type: string
+          maxLength: 4000
+        certPath:
+          description: The path to the client certificate for SSL authentication.
+          type: string
+          maxLength: 4000
     WebhookCollection:
       type: object
       allOf:
@@ -4597,14 +7738,26 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/webhooks?page=2"
-    WebhookId:
-      description: The unique identifier of a webhook.
-      type: integer
+    WebhookEvent:
+      description: The type of event that triggers the webhook.
+      type: string
+      enum:
+        - application.created
+        - application.updated
+        - application.deleted
+        - project.created
+        - project.updated
+        - project.deleted
+        - project.phase.updated
+        - project.status.updated
+        - user.created
+        - user.updated
+        - user.deleted
     WebhookIri:
       description: The unique JSON-LD IRI reference to the webhook.
       type: string
       format: iri-reference
-      example: '/webhooks/1'
+      example: '/webhooks/550e8400-e29b-41d4-a716-446655440020'
   securitySchemes:
     ApiKey:
       type: http
@@ -4620,20 +7773,25 @@ components:
           scopes:
             create:applications: Can create a qualification application
             create:attachments: Can create attachments
+            create:comments: Can create comments
+            create:designs: Can create designs
             create:projects: Can create projects
             manage:webhooks: Can manage webhooks
             qualify:applications: Can submit an application for qualification
             update:applications: Can update a qualification application
+            update:designs: Can update a design
             update:projects: Can update a project
-            view:action:items: Can view action items
+            view:action::items: Can view action items
             view:addresses: Can view addresses
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
             view:dealers: Can view dealers
+            view:designs: Can view designs
             view:distributors: Can view distributors
             view:installers: Can view installers
             view:partners: Can view partners
+            view:products: Can view products
             view:projects: Can view projects
             view:users: Can view users
         clientCredentials:
@@ -4641,20 +7799,25 @@ components:
           scopes:
             create:applications: Can create a qualification application
             create:attachments: Can create attachments
+            create:comments: Can create comments
+            create:designs: Can create designs
             create:projects: Can create projects
             manage:webhooks: Can manage webhooks
             qualify:applications: Can submit an application for qualification
             update:applications: Can update a qualification application
+            update:designs: Can update a design
             update:projects: Can update a project
-            view:action:items: Can view action items
+            view:action::items: Can view action items
             view:addresses: Can view addresses
             view:applications: Can view applications
             view:attachments: Can view attachments
             view:comments: Can view comments
             view:dealers: Can view dealers
+            view:designs: Can view designs
             view:distributors: Can view distributors
             view:installers: Can view installers
             view:partners: Can view partners
+            view:products: Can view products
             view:projects: Can view projects
             view:users: Can view users
 security:
