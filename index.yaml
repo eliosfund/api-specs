@@ -390,11 +390,6 @@ paths:
         - Status clarifications and questions
         - Documentation of completion notes
 
-        **Validation Rules:**
-        - Comment text is required and must not be empty
-        - Maximum comment length is 65,535 characters
-        - Action item must exist and be accessible to the requesting user
-
         **After Creation:**
         - Comment is immediately visible to all users with access to the action item
         - Comment creation is logged in the action item's activity timeline
@@ -436,6 +431,222 @@ paths:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /adders/{adderId}:
+    parameters:
+      - name: adderId
+        description: The unique reference identifier of the adder.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 5e40985a-51e7-3099-8c2c-dbc97159297c
+    get:
+      summary: Get a specific project adder
+      description: |-
+        Retrieves detailed information about a specific project adder by its unique identifier.
+
+        **Business Context:**
+        Adders represent additional upgrades, equipment, or work items beyond the base solar
+        installation. Use this endpoint to get complete details about a specific adder,
+        including its name, pricing, and reference information.
+
+        **Common Adder Types:**
+        - **Electrical Upgrades**: Panel upgrades, sub-panels, electrical work
+        - **Structural Work**: Roof repairs, reinforcement, re-roofing
+        - **Additional Equipment**: EV chargers, energy storage, monitoring systems
+        - **Site Preparation**: Tree removal, trenching, access improvements
+        - **Permits and Fees**: Additional permit costs, utility fees
+
+        **Response Information:**
+        - Complete adder details (name, reference ID, subtotal)
+        - Pricing and cost breakdown
+        - Integration context and relationships
+
+        **Common Use Cases:**
+        - Displaying adder details in project management interfaces
+        - Cost breakdown and pricing analysis
+        - Integration with billing and invoicing systems
+        - Project estimation and proposal generation
+      security:
+        - ApiKey:
+            - view:adders
+        - OAuth:
+            - view:adders
+      responses:
+        200:
+          description: The requested adder.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Adder'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested adder could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a project adder
+      description: |-
+        Updates specific fields of an existing project adder.
+
+        **Business Context:**
+        Use this endpoint to modify adder details such as name, quantity, or pricing
+        as project requirements change or during the estimation and approval process.
+
+        **What Can Be Updated:**
+        - **Name**: Description or title of the adder
+        - **Quantity**: Number of units or items
+        - **Subtotal**: Total cost for the adder
+        - **Metadata**: Additional properties and specifications
+
+        **Update Triggers:**
+        - **Pricing Changes**: Updated vendor quotes or material costs
+        - **Scope Modifications**: Changes in project requirements
+        - **Customer Requests**: Additions or modifications to upgrade requests
+        - **Engineering Review**: Refined specifications or requirements
+        - **Permit Requirements**: Changes due to local code requirements
+
+        **Business Rules:**
+        - Adders attached to finalized projects may have update restrictions
+        - Significant cost changes may require customer approval
+        - Updates may affect project total pricing and financing calculations
+      security:
+        - ApiKey:
+            - update:adders
+        - OAuth:
+            - update:adders
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: "#/components/schemas/AdderUpdate"
+      responses:
+        200:
+          description: The updated adder.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Adder'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested adder could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a project adder
+      description: |-
+        Removes a specific adder from a project permanently.
+
+        **Business Context:**
+        Use this endpoint to remove adders that are no longer needed, were added
+        in error, or when project scope changes eliminate the need for specific
+        upgrades or equipment.
+
+        **Common Deletion Scenarios:**
+        - **Scope Reduction**: Customer decides against certain upgrades
+        - **Budget Constraints**: Removing optional items to meet budget
+        - **Engineering Changes**: Alternative solutions eliminate need for adder
+        - **Permit Issues**: Items that cannot be approved by local authorities
+        - **Data Cleanup**: Removing duplicate or erroneous entries
+
+        **Important Considerations:**
+        - **Permanent Action**: Deletion cannot be undone
+        - **Project Impact**: Removal may affect total project cost and financing
+        - **Dependencies**: Check for related items or dependencies before deletion
+        - **Approval Requirements**: Some deletions may require customer or manager approval
+
+        **Business Rules:**
+        - Cannot delete adders from finalized or completed projects
+        - Deletion may trigger project total recalculation
+        - Associated attachments and comments may also be removed
+        - Audit logs will maintain record of deletion for compliance
+
+        **Alternative Actions:**
+        - Consider updating quantity to 0 instead of deletion for audit trail
+        - Use project status changes to temporarily exclude adders
+      security:
+        - ApiKey:
+            - delete:projects
+        - OAuth:
+            - delete:projects
+      responses:
+        204:
+          description: The adder was deleted successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested adder could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: The adder cannot be deleted due to project status or dependencies.
           content:
             application/ld+json:
               schema:
@@ -671,17 +882,6 @@ paths:
         **Application Metadata:**
         - Agreement and product types
         - Reference IDs and external identifiers
-
-        **Validation Rules:**
-        - All existing application validation rules apply to updated values
-        - Co-applicant fields become required when adding a co-applicant
-        - Address fields follow standard validation patterns
-        - Email and phone number format validation applies
-
-        **Partial Updates:**
-        - Only provided fields will be updated
-        - Missing fields will retain their current values
-        - Set fields to `null` to clear optional values
 
         **Business Rules:**
         - Applications in `submitted` or later status may have restricted update permissions
@@ -977,7 +1177,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create or update external identifier for an application
+      summary: Create or update an external identifier for an application
       description: |
         Creates a new external identifier for the application or updates an existing one
         if the key already exists.
@@ -993,10 +1193,10 @@ paths:
 
         **Common Integration Patterns:**
         - Store your CRM opportunity/lead ID when creating applications
-        - Link to third-party design tools and their project references
-        - Connect workflow management system task IDs
+        - Link to third-party project management and workflow systems
+        - Connect customer portal and tracking system references
         - Maintain audit trails across multiple systems
-        - Support customer portal cross-references
+        - Support multi-platform data synchronization
 
         **Security:**
         - Requires `update:applications` scope
@@ -1010,33 +1210,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
-              type: object
-              required:
-                - externalId
-              properties:
-                externalId:
-                  type: object
-                  description: The external identifier to create or update
-                  required:
-                    - key
-                    - value
-                  properties:
-                    key:
-                      type: string
-                      description: |
-                        Unique identifier key for the external system.
-                        Common patterns: system_name, system_name.entity_type, or custom namespace.
-                      maxLength: 255
-                      example: "salesforce.opportunity"
-                    value:
-                      type: string
-                      description: |
-                        The external system's identifier value.
-                        Should be the primary key or unique reference from your system.
-                      maxLength: 255
-                      example: "006XX000004TMXLYA4"
+              $ref: "#/components/schemas/ExternalIdentifierCreate"
             examples:
               crm_integration:
                 summary: CRM Integration
@@ -1645,17 +1821,6 @@ paths:
         - Primary changes may trigger financing recalculation
         - Customer approval may be required for significant changes
 
-        **Validation Rules:**
-        - All existing design validation rules apply to updated values
-        - System size changes must be realistic and achievable
-        - Production estimates should align with system specifications
-        - ASA values must remain within valid ranges (0-100%)
-
-        **Partial Updates:**
-        - Only provided fields will be updated
-        - Missing fields retain their current values
-        - Set fields to `null` to clear optional values
-
         **Business Rules:**
         - Designs attached to submitted projects may have update restrictions
         - Primary design changes may require customer approval
@@ -1686,6 +1851,253 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Design'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a solar system design
+      description: |-
+        Permanently removes a specific solar system design from a project.
+
+        **Business Context:**
+        Use this endpoint to delete designs that are no longer needed, were created
+        in error, or when project requirements have changed to eliminate specific
+        design versions.
+
+        **Common Deletion Scenarios:**
+        - **Design Iterations**: Removing outdated or superseded design versions
+        - **Error Correction**: Deleting designs created with incorrect data
+        - **Project Changes**: Removing designs that no longer meet requirements
+        - **Storage Management**: Cleaning up unused or duplicate designs
+        - **Workflow Cleanup**: Removing draft designs that won't be developed
+
+        **Important Considerations:**
+        - **Permanent Action**: Design deletion cannot be undone
+        - **Primary Design Protection**: Cannot delete the primary/active design
+        - **Project Impact**: Deletion may affect project documentation and history
+        - **Dependencies**: Check for related attachments or references before deletion
+        - **Approval Requirements**: Some deletions may require manager approval
+
+        **Business Rules:**
+        - Cannot delete primary designs (must promote another design to primary first)
+        - Cannot delete designs from finalized or completed projects
+        - Associated external identifiers and metadata are also removed
+        - Audit logs maintain record of deletion for compliance
+
+        **Alternative Actions:**
+        - Consider updating design status instead of deletion for audit trail
+        - Use design versioning to track evolution rather than deleting old versions
+        - Mark designs as inactive rather than permanent deletion
+      security:
+        - ApiKey:
+            - delete:designs
+        - OAuth:
+            - delete:designs
+      responses:
+        204:
+          description: The design was deleted successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: The design cannot be deleted due to project status, primary design status, or dependencies.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/{designId}/external-identifiers:
+    parameters:
+      - name: designId
+        description: |
+          The unique reference identifier of the design.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+    get:
+      summary: Get external identifiers for a design
+      description: |
+        Retrieves all external identifiers associated with a specific design.
+
+        **Business Context:**
+        External identifiers allow partners to maintain references between their systems
+        and Elios Fund designs. This enables seamless integration and tracking
+        across multiple platforms.
+
+        **Common Use Cases:**
+        - Track designs in your CRM system
+        - Maintain references to third-party design tools
+        - Support multi-system workflows
+        - Enable data synchronization between platforms
+        - Audit trail and relationship mapping
+
+        **Response Information:**
+        - Key-value pairs of external system identifiers
+        - Creation timestamps and source tracking
+        - Support for multiple identifier types per design
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The external identifiers for the design.
+          content:
+            application/ld+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ExternalIdentifierCollection'
+                  - type: object
+                    properties:
+                      "@id":
+                        example: "/designs/550e8400-e29b-41d4-a716-446655440000/external-identifiers"
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create or update an external identifier for a design
+      description: |
+        Creates a new external identifier for the design or updates an existing one
+        if the key already exists.
+
+        **Business Context:**
+        This endpoint supports integration workflows by allowing partners to establish
+        and maintain cross-references between their systems and Elios Fund designs.
+
+        **Update Behavior:**
+        - If an external identifier with the same key exists, it will be updated
+        - If the key is new, a new external identifier will be created
+        - This allows for idempotent operations and easy data synchronization
+
+        **Common Integration Patterns:**
+        - Store your CRM project/design ID when creating designs
+        - Link to third-party design tools and their project references
+        - Connect workflow management system task IDs
+        - Maintain audit trails across multiple systems
+        - Support customer portal cross-references
+
+        **Security:**
+        - Requires `update:designs` scope
+        - External identifiers are scoped to your partner account
+        - Values should not contain sensitive customer information
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/ExternalIdentifierCreate"
+            examples:
+              crm_integration:
+                summary: CRM Integration
+                description: Link design to CRM project
+                value:
+                  externalId:
+                    key: "salesforce.project"
+                    value: "006XX000004TMXLYA4"
+              design_tool:
+                summary: Design Tool Reference
+                description: Link to external design platform
+                value:
+                  externalId:
+                    key: "aurora.project"
+                    value: "proj_abc123xyz"
+              helioscope:
+                summary: Helioscope Integration
+                description: Link to Helioscope design
+                value:
+                  externalId:
+                    key: "helioscope.design"
+                    value: "hs_design_789"
+      responses:
+        201:
+          description: The external identifier was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifier'
+        200:
+          description: The external identifier was updated successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ExternalIdentifier'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -2280,13 +2692,6 @@ paths:
 
         **Lease Projects:** Similar to PPA's with different rate structures
 
-        **Validation Rules:**
-        - `amountFinanced` cannot exceed `totalContractValue`
-        - `downPayment` cannot exceed `amountFinanced`
-        - `term` must be 25 years or less
-        - All rates and fees must be between 0 and 1 (0% to 100%)
-        - Referenced application must exist and be approved
-
         **After Creation:**
         - Project starts in `new` status
         - Initial milestone tracking begins
@@ -2406,17 +2811,6 @@ paths:
         **Project Details:**
         - Proposal information and external references
         - Project timeline and dates
-
-        **Validation Rules:**
-        - All existing project validation rules apply to updated values
-        - `amountFinanced` cannot exceed `totalContractValue`
-        - `downPayment` cannot exceed `amountFinanced`
-        - Agreement-specific fields must be provided if changing agreement type
-
-        **Partial Updates:**
-        - Only provided fields will be updated
-        - Missing fields will retain their current values
-        - Set fields to `null` to clear optional values
 
         **Business Rules:**
         - Projects in certain statuses may have restricted update permissions
@@ -2767,11 +3161,6 @@ paths:
         - Issue reporting and resolution
         - Milestone completion notes
         - Communication between project team members
-
-        **Validation Rules:**
-        - Comment text is required and must not be empty
-        - Maximum comment length is 65,535 characters
-        - Project must exist and be accessible to the requesting user
 
         **After Creation:**
         - Comment is immediately visible to all users with access to the project
@@ -3153,25 +3542,7 @@ paths:
         content:
           application/ld+json:
             schema:
-              type: object
-              required:
-                - externalId
-              properties:
-                externalId:
-                  type: object
-                  required:
-                    - key
-                    - value
-                  properties:
-                    key:
-                      type: string
-                      description: The external system identifier key (e.g., "salesforce_id", "partner_ref")
-                      example: "sunobi_project_id"
-                    value:
-                      type: string
-                      description: The external identifier value in the remote system
-                      example: "proj_987654321"
-                  description: External identifier key-value pair for cross-system reference
+              $ref: "#/components/schemas/ExternalIdentifierCreate"
             examples:
               crm_integration:
                 summary: CRM System Integration
@@ -3642,17 +4013,6 @@ paths:
         - Retry configuration and timeouts
         - Rate limiting parameters
 
-        **Validation Rules:**
-        - All existing webhook validation rules apply to updated values
-        - URL must be valid HTTPS endpoint
-        - Event types must be from supported event list
-        - Security settings must follow platform requirements
-
-        **Partial Updates:**
-        - Only provided fields will be updated
-        - Missing fields will retain their current values
-        - Set fields to `null` to clear optional values
-
         **Business Rules:**
         - URL changes take effect immediately for new events
         - Event subscription changes apply to future events only
@@ -4013,6 +4373,26 @@ components:
           type: integer
         subtotal:
           type: number
+    AdderUpdate:
+      type: object
+      description: Schema for updating an existing adder
+      properties:
+        name:
+          type: string
+          description: The name or description of the adder
+          maxLength: 255
+          example: "Electrical Panel Upgrade"
+        quantity:
+          type: integer
+          description: The quantity of this adder
+          minimum: 0
+          example: 1
+        subtotal:
+          type: number
+          description: The total cost for this adder
+          minimum: 0
+          example: 4145.96
+      additionalProperties: false
     AdderIri:
       description: The unique JSON-LD IRI reference to the adder.
       type: string
@@ -4619,7 +4999,8 @@ components:
             dealer:
               description: |-
                 Create a new dealer record for this application. Use this when the dealer
-                doesn't exist in the system yet. Cannot be used with `dealerId`.
+                doesn't exist in the system yet. Cannot be used with `dealerId`. The user
+                must have the `create:dealer` scope to perform this action.
 
                 **Either `dealer` or `dealerId` must be provided.**
               allOf:
@@ -4639,6 +5020,7 @@ components:
               description: |-
                 Create a new installer record for this application. Use this when the
                 installer doesn't exist in the system yet. Cannot be used with `installerId`.
+                The user must have the `create:installer` scope to perform this action.
 
                 **Either `installer` or `installerId` must be provided.**
               allOf:
@@ -4658,6 +5040,7 @@ components:
               description: |-
                 Create a new sales representative record for this application. Use this
                 when the sales rep doesn't exist in the system yet. Cannot be used with `userId`.
+                The user must have the `create:user` scope to perform this action.
 
                 **Either `user` or `userId` must be provided.**
               allOf:
@@ -5094,6 +5477,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExternalIdentifierCreate'
+          example:
+            - key: "crm_lead_id"
+              value: "LEAD-12345"
     CustomerIri:
       description: The unique JSON-LD IRI reference to the customer.
       type: string
@@ -5386,6 +5772,128 @@ components:
           type: boolean
           nullable: true
           example: true
+        batteries:
+          description: |-
+            Optional battery storage systems to be included with this design.
+
+            **Battery Integration:**
+            - Provides energy storage for backup power and load shifting
+            - Each battery item specifies product, quantity, and size
+            - Size typically represents capacity in kWh or other relevant unit
+            - Must reference valid battery products from the system
+
+            **Common Battery Applications:**
+            - Backup power during outages
+            - Time-of-use cost optimization
+            - Grid independence and reliability
+            - Peak demand reduction
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+              - size
+            properties:
+              productId:
+                type: string
+                format: uuid
+                description: Reference to the battery product ID
+                example: "9ab70ad1-f0c5-32e7-aa90-9385519a1ff4"
+              quantity:
+                type: integer
+                minimum: 1
+                description: Number of battery units
+                example: 1
+              size:
+                type: number
+                description: Battery capacity or size specification
+                example: 123
+        inverters:
+          description: |-
+            Inverter systems to convert DC solar power to AC electricity.
+
+            **Inverter Types:**
+            - String inverters: Central conversion for multiple panels
+            - Power optimizers: Panel-level optimization with central inverter
+            - Microinverters: Individual panel-level conversion
+            - Hybrid inverters: Combined solar and battery management
+
+            **Selection Criteria:**
+            - System size and configuration requirements
+            - Shading conditions and panel layout
+            - Monitoring and safety features
+            - Grid interconnection requirements
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+                description: Reference to the inverter product ID
+                example: "6ae70059-364c-3eb7-a409-1739f7e2373d"
+              quantity:
+                type: integer
+                minimum: 1
+                description: Number of inverter units
+                example: 1
+        racking:
+          description: |-
+            Mounting and racking systems to secure solar panels to the roof or ground.
+
+            **Racking Types:**
+            - Roof-mounted: Ballasted, penetrating, or shared rail systems
+            - Ground-mounted: Fixed tilt or tracking systems
+            - Carports and canopies: Dual-purpose structures
+            - Building-integrated: Architectural integration solutions
+
+            **Selection Factors:**
+            - Roof type and condition
+            - Wind and snow load requirements
+            - Panel configuration and spacing
+            - Installation complexity and cost
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+                description: Reference to the racking product ID
+                example: "0827ceae-c076-3d7e-97fe-c6f528fcc7d1"
+              quantity:
+                type: integer
+                minimum: 1
+                description: Number of racking units or sets
+                example: 1
+        externalId:
+          description: |-
+            External identifiers to link this design with other systems.
+
+            **Integration Use Cases:**
+            - Link to design software project IDs
+            - Connect with CRM opportunity records
+            - Reference proposal or quote numbers
+            - Maintain audit trails across platforms
+
+            **Common Examples:**
+            - Aurora Solar project references
+            - Salesforce opportunity IDs
+            - Internal tracking numbers
+            - Third-party tool integrations
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalIdentifierCreate"
+          example:
+            - key: "design_id"
+              value: "DESIGN-12345"
     DesignUpdate:
       type: object
       description: |-
@@ -6406,6 +6914,8 @@ components:
               description: |-
                 Solar dealer/sales company responsible for the project.
                 Create new dealer record if not already in the system.
+                The user must have the `create:dealer` scope to perform
+                this action.
 
                 **Cannot be used with `dealerId`** - choose one approach.
 
@@ -6437,6 +6947,8 @@ components:
               description: |-
                 Solar installation company responsible for the physical installation.
                 Create new installer record if not already in the system.
+                The user must have the `create:installer` scope to perform
+                this action.
 
                 **Cannot be used with `installerId`** - choose one approach.
 
@@ -6467,6 +6979,8 @@ components:
             distributor:
               description: |-
                 Optional equipment distributor for specialized procurement needs.
+                The user must have the `create:distributor` scope to perform
+                this action.
 
                 **When Used:**
                 - Specific equipment requirements or availability
@@ -6497,6 +7011,8 @@ components:
               description: |-
                 Sales representative responsible for the customer relationship.
                 Create new user record if not already in the system.
+                The user must have the `create:user` scope to perform
+                this action.
 
                 **Cannot be used with `userId`** - choose one approach.
 
