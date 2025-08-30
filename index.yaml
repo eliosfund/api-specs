@@ -441,6 +441,82 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /adders:
+    post:
+      summary: Create a new project adder
+      description: |-
+        Creates a new adder for a specific project.
+
+        **Business Context:**
+        Adders represent additional upgrades, equipment, or work items beyond the base solar
+        installation. Use this endpoint to add upgrades such as electrical work, structural
+        improvements, additional equipment, or site preparation items to a project.
+
+        **Common Adder Types:**
+        - **Electrical Upgrades**: Panel upgrades, sub-panels, electrical work
+        - **Structural Work**: Roof repairs, reinforcement, re-roofing
+        - **Additional Equipment**: EV chargers, energy storage, monitoring systems
+        - **Site Preparation**: Tree removal, trenching, access improvements
+        - **Permits and Fees**: Additional permit costs, utility fees
+
+        **Business Rules:**
+        - Project must be in "new" status to add adders
+        - Adders can only be added to projects you have permission to modify
+        - Cost calculations may trigger project total updates
+        - Customer approval may be required for significant additions
+
+        **Common Use Cases:**
+        - Adding customer-requested upgrades during proposal phase
+        - Including necessary electrical work identified during site survey
+        - Adding equipment discovered during engineering review
+        - Including permit fees and additional costs
+      security:
+        - ApiKey:
+            - update:projects
+        - OAuth:
+            - update:projects
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/AdderCreate"
+      responses:
+        201:
+          description: The adder was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Adder'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /adders/{adderId}:
     parameters:
       - name: adderId
@@ -480,9 +556,9 @@ paths:
         - Project estimation and proposal generation
       security:
         - ApiKey:
-            - view:adders
+            - view:projects
         - OAuth:
-            - view:adders
+            - view:projects
       responses:
         200:
           description: The requested adder.
@@ -542,9 +618,9 @@ paths:
         - Updates may affect project total pricing and financing calculations
       security:
         - ApiKey:
-            - update:adders
+            - update:projects
         - OAuth:
-            - update:adders
+            - update:projects
       requestBody:
         content:
           application/merge-patch+json:
@@ -729,13 +805,6 @@ paths:
         **Next Steps:**
         After creation, applications start in `open` status. You must call the submit endpoint
         before running qualification checks.
-
-        **Validation Notes:**
-        - SSN must be exactly 4 digits (last 4 digits only for security)
-        - Phone numbers validated using E.164 format
-        - State codes must be 2-letter abbreviations
-        - ZIP codes must be exactly 5 digits
-        - Either provide existing team member IDs or create new team members inline
       security:
         - ApiKey:
             - create:applications
@@ -1235,12 +1304,6 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/ExternalIdentifier'
-        200:
-          description: The external identifier was updated successfully.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/ExternalIdentifier'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -1591,7 +1654,7 @@ paths:
             - view:dealers
       responses:
         200:
-          description: The dealers corresponding to the provided `dealerId`.
+          description: The requested dealer.
           content:
             application/ld+json:
               schema:
@@ -2092,12 +2155,6 @@ paths:
             application/ld+json:
               schema:
                 $ref: '#/components/schemas/ExternalIdentifier'
-        200:
-          description: The external identifier was updated successfully.
-          content:
-            application/ld+json:
-              schema:
-                $ref: '#/components/schemas/ExternalIdentifier'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -2118,6 +2175,708 @@ paths:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/batteries:
+    post:
+      summary: Add a battery to a design
+      description: |-
+        Adds a battery product to a specific solar system design.
+
+        **Business Context:**
+        Battery storage systems are increasingly important components of solar installations,
+        providing energy storage, backup power, and grid services capabilities. This endpoint
+        allows partners to specify battery equipment for solar designs.
+
+        **Battery Integration:**
+        - **Energy Storage**: Store excess solar production for later use
+        - **Backup Power**: Provide power during grid outages
+        - **Load Shifting**: Use stored energy during peak rate periods
+        - **Grid Services**: Support grid stability and demand response
+
+        **Optional Configuration:**
+        - **Monitoring Location**: Physical location for monitoring equipment
+        - **Monitoring ID**: Identifier for monitoring system integration
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/DesignStorageCreate"
+      responses:
+        201:
+          description: The battery was added to the design successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignStorageProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/batteries/{itemId}:
+    parameters:
+      - name: itemId
+        description: The unique reference identifier of the battery item.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: "2608684b-74ab-4cef-898c-acdaf88d92b1"
+    get:
+      summary: Get specific battery from a design
+      description: |-
+        Retrieves detailed information about a specific battery attached to a design.
+
+        **Business Context:**
+        Use this endpoint to get complete details about a battery component that has been
+        added to a solar design, including specifications, quantities, and configuration details.
+
+        **Response Information:**
+        - Battery reference ID and type information
+        - Quantity and size specifications
+        - Cost and pricing details (if available)
+        - Monitoring configuration and location
+        - Integration context and relationships
+
+        **Common Use Cases:**
+        - Reviewing battery specifications for engineering approval
+        - Displaying equipment details in customer proposals
+        - Verifying battery configuration for installation planning
+        - Accessing equipment data for procurement and ordering
+        - Integration with monitoring and control systems
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The requested battery item.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignStorageProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove a battery from a design
+      description: |-
+        Permanently removes a specific battery from a solar system design.
+
+        **Business Context:**
+        Use this endpoint to remove battery storage components that are no longer needed,
+        were added in error, or when design requirements have changed to eliminate
+        battery storage from the installation.
+
+        **Common Removal Scenarios:**
+        - **Budget Constraints**: Customer removes battery to reduce system cost
+        - **Design Changes**: Alternative storage solution or no storage needed
+        - **Equipment Availability**: Specified battery not available, removing until replacement found
+        - **Site Limitations**: Installation constraints prevent battery installation
+        - **Regulatory Issues**: Local codes or utility requirements prohibit storage
+
+        **Business Rules:**
+        - Cannot remove batteries from finalized or in-progress projects
+        - Removal may trigger system performance recalculations
+        - Associated monitoring configuration is also removed
+        - Audit logs maintain record of removal for compliance
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      responses:
+        204:
+          description: The battery was removed successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested battery item could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: The battery cannot be removed due to project status or dependencies.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/inverters:
+    post:
+      summary: Add an inverter to a design
+      description: |-
+        Adds an inverter product to a specific solar system design.
+
+        **Business Context:**
+        Inverters are a critical component of solar installations, converting DC electricity from solar panels into usable AC electricity. This endpoint enables partners to specify inverter equipment for solar designs.
+
+        **Inverter Integration:**
+        - **DC to AC Conversion**: Enables energy from solar panels to power household or grid systems
+        - **Monitoring**: Tracks energy production and inverter status
+        - **String Configuration**: Support for multiple MPPTs or string layouts
+        - **Smart Grid Features**: Volt/VAR control, frequency ride-through
+
+        **Optional Configuration:**
+        - **Monitoring Location**: Physical location for monitoring equipment
+        - **Monitoring ID**: Identifier for monitoring system integration
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/DesignInverterCreate"
+      responses:
+        201:
+          description: The inverter was added to the design successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignInverterProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/inverters/{itemId}:
+    parameters:
+      - name: itemId
+        description: The unique reference identifier of the inverter item.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: "9b8e2a3e-b4f7-4c3c-92a2-61fcaab57f19"
+    get:
+      summary: Get specific inverter from a design
+      description: |-
+        Retrieves detailed information about a specific inverter attached to a design.
+
+        **Business Context:**
+        Use this endpoint to get complete details about an inverter component that has been added to a solar design, including specifications, quantities, and configuration details.
+
+        **Response Information:**
+        - Inverter reference ID and type information
+        - Quantity and size specifications
+        - Cost and pricing details (if available)
+        - Monitoring configuration and location
+        - Integration context and relationships
+
+        **Common Use Cases:**
+        - Reviewing inverter specifications for engineering approval
+        - Displaying equipment details in customer proposals
+        - Verifying inverter configuration for installation planning
+        - Accessing equipment data for procurement and ordering
+        - Integration with monitoring and control systems
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The requested inverter item.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignInverterProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove an inverter from a design
+      description: |-
+        Permanently removes a specific inverter from a solar system design.
+
+        **Business Context:**
+        Use this endpoint to remove inverter components that are no longer needed, were added in error, or when design requirements have changed.
+
+        **Common Removal Scenarios:**
+        - **Design Changes**: Switching inverter types or removing due to redesign
+        - **Equipment Availability**: Inverter model discontinued or backordered
+        - **Site Limitations**: Inverter installation impractical due to location or size
+        - **Regulatory Issues**: Inverter model not approved for interconnection
+
+        **Business Rules:**
+        - Cannot remove inverters from finalized or in-progress projects
+        - Removal may trigger system performance recalculations
+        - Associated monitoring configuration is also removed
+        - Audit logs maintain record of removal for compliance
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      responses:
+        204:
+          description: The inverter was removed successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested inverter item could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: The inverter cannot be removed due to project status or dependencies.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/racking:
+    post:
+      summary: Add a racking system to a design
+      description: |-
+        Adds a racking product to a specific solar system design.
+
+        **Business Context:**
+        Racking systems provide the structural foundation for solar panel installations. This endpoint allows partners to specify racking solutions suited to the project's site conditions and design requirements.
+
+        **Racking Integration:**
+        - **Mounting Structure**: Secure solar modules to roofs or ground
+        - **Tilt and Orientation**: Optimize panel angle for sun exposure
+        - **Structural Compliance**: Ensure adherence to local building codes
+        - **Wind and Snow Load Ratings**: Critical for durability and safety
+
+        **Optional Configuration:**
+        - **Monitoring Location**: Physical location for monitoring equipment
+        - **Monitoring ID**: Identifier for monitoring system integration
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        content:
+          application/ld+json:
+            schema:
+              $ref: "#/components/schemas/DesignRackingCreate"
+      responses:
+        201:
+          description: The racking was added to the design successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignRackingProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/products/racking/{itemId}:
+    parameters:
+      - name: itemId
+        description: The unique reference identifier of the racking item.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: "36b19b79-88aa-4d61-91c5-7c70f7b89e11"
+    get:
+      summary: Get specific racking from a design
+      description: |-
+        Retrieves detailed information about a specific racking system attached to a design.
+
+        **Business Context:**
+        Use this endpoint to get complete details about a racking component that has been added to a solar design, including specifications, quantities, and configuration details.
+
+        **Response Information:**
+        - Racking reference ID and type information
+        - Mounting type and material specifications
+        - Cost and pricing details (if available)
+        - Installation method and layout
+        - Compatibility and integration with other components
+
+        **Common Use Cases:**
+        - Engineering validation of racking compatibility
+        - Planning for roof or ground-mount installations
+        - Generating bill of materials and cost estimates
+        - Procurement and supplier coordination
+        - Compliance and permitting review
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The requested racking item.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignRackingProduct'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove racking from a design
+      description: |-
+        Permanently removes a specific racking system from a solar system design.
+
+        **Business Context:**
+        Use this endpoint to remove racking components that are no longer needed, incompatible, or when project constraints have changed.
+
+        **Common Removal Scenarios:**
+        - **Structural Limitations**: Racking system not compatible with site
+        - **Change in Mount Type**: Switching from roof to ground mount (or vice versa)
+        - **Design Simplification**: Reducing complexity for smaller installations
+        - **Supplier Substitution**: Switching to alternate racking vendor
+
+        **Business Rules:**
+        - Cannot remove racking from finalized or in-progress projects
+        - Removal may affect panel layout or installation method
+        - Audit logs maintain record of removal for compliance
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      responses:
+        204:
+          description: The racking was removed successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested racking item could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: The racking cannot be removed due to project status or dependencies.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/segments:
+    post:
+      summary: Create a design segment
+      description: |
+        Creates a new design segment (solar array) within an existing design. A design segment represents a grouping of solar modules configured with specific parameters such as azimuth, tilt, and shading characteristics.
+
+        **Business Context:** Design segments are used to define different arrays within a single solar installation. Each segment can have different orientations, tilt angles, and shading conditions, allowing for accurate modeling of complex roof structures and optimized energy production calculations.
+
+        **Important:** The associated design's project must be in "NEW" status to create segments. Projects in progress require creating a new primary design to update specifications.
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              $ref: '#/components/schemas/DesignSegmentCreate'
+      responses:
+        201:
+          description: The design segment was created successfully.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignSegment'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The specified design could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: The request body contained invalid or missing data, or the project status prevents segment creation.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /designs/segments/{itemId}:
+    parameters:
+      - name: itemId
+        description: The unique reference identifier of the design segment.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a design segment
+      description: |
+        Retrieves detailed information about a specific design segment (solar array) by its unique identifier.
+
+        **Business Context:** Design segments represent individual solar arrays within a larger solar installation. Each segment contains specific configuration parameters including module quantities, orientations, tilt angles, and shading characteristics that are crucial for accurate energy production modeling and system performance calculations.
+
+        **Use Cases:**
+        - Retrieving segment specifications for proposal generation
+        - Accessing array configuration for installation planning
+        - Reviewing segment parameters for performance analysis
+        - Validating design configurations before project approval
+      security:
+        - ApiKey:
+            - view:designs
+        - OAuth:
+            - view:designs
+      responses:
+        200:
+          description: The design segment details.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/DesignSegment'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The design segment could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a design segment
+      description: |
+        Deletes a specific design segment (solar array) from a design. This action permanently removes the segment and all its configuration data.
+
+        **Business Context:** Removing design segments is typically done during the design refinement process when arrays need to be reconfigured, consolidated, or removed due to site constraints, customer preferences, or engineering optimizations.
+
+        **Important:** The associated design's project must be in "NEW" status to delete segments. Projects in progress require creating a new primary design to update specifications.
+
+        **Use Cases:**
+        - Removing arrays that are no longer viable due to site constraints
+        - Consolidating multiple segments into larger arrays
+        - Correcting design errors during the planning phase
+        - Responding to customer change requests
+      security:
+        - ApiKey:
+            - update:designs
+        - OAuth:
+            - update:designs
+      responses:
+        204:
+          description: The design segment was deleted successfully.
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The design segment could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        422:
+          description: The design segment cannot be deleted due to business rules (e.g., project status is not "NEW").
           content:
             application/ld+json:
               schema:
@@ -2181,7 +2940,7 @@ paths:
             - view:distributors
       responses:
         200:
-          description: The distributor corresponding to the provided `distributorId`.
+          description: The requested distributor.
           content:
             application/ld+json:
               schema:
@@ -2263,7 +3022,7 @@ paths:
             - view:installers
       responses:
         200:
-          description: The installer corresponding to the provided `installerId`.
+          description: The requested installer.
           content:
             application/ld+json:
               schema:
@@ -2345,7 +3104,7 @@ paths:
             - view:partners
       responses:
         200:
-          description: The partner corresponding to the provided `partnerId`.
+          description: The requested partner.
           content:
             application/ld+json:
               schema:
@@ -2757,7 +3516,7 @@ paths:
             - view:projects
       responses:
         200:
-          description: The project corresponding to the provided `projectId`.
+          description: The requested project.
           content:
             application/ld+json:
               schema:
@@ -2915,6 +3674,80 @@ paths:
                 $ref: '#/components/schemas/Error'
         422:
           description: There was a validation error with the payload sent.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/adders:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get project adders
+      description: |-
+        Retrieves all adders associated with a specific project.
+
+        **Business Context:**
+        Adders represent additional upgrades, equipment, or work items beyond the base solar
+        installation. Use this endpoint to get complete details about all adders assigned
+        to a project, including pricing, specifications, and reference information.
+
+        **Common Adder Types:**
+        - **Electrical Upgrades**: Panel upgrades, sub-panels, electrical work
+        - **Structural Work**: Roof repairs, reinforcement, re-roofing
+        - **Additional Equipment**: EV chargers, energy storage, monitoring systems
+        - **Site Preparation**: Tree removal, trenching, access improvements
+        - **Permits and Fees**: Additional permit costs, utility fees
+
+        **Response Information:**
+        - Complete adder details (name, reference ID, subtotal)
+        - Pricing and cost breakdown
+        - Integration context and relationships
+        - Project association and scope
+
+        **Common Use Cases:**
+        - Displaying project cost breakdown in interfaces
+        - Cost analysis and pricing calculations
+        - Integration with billing and invoicing systems
+        - Project estimation and proposal generation
+        - Tracking project scope and add-on items
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: All adders for the project.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/AdderCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
           content:
             application/ld+json:
               schema:
@@ -4177,14 +5010,14 @@ components:
         referenceId:
           type: string
           format: uuid
-          description: The unique reference ID for this resource.
+          description: The unique reference identifier.
         fullName:
           type: string
           description: The customer's full name.
         email:
           type: string
           format: email
-          description: The customer's email.
+          description: The customer's email address.
         phoneNumber:
           type: string
           format: tel
@@ -4203,10 +5036,12 @@ components:
         fullName:
           type: string
           description: The customer's full name.
+          maxLength: 255
         email:
           type: string
           format: email
-          description: The customer's email.
+          description: The customer's email address.
+          maxLength: 255
         phoneNumber:
           type: string
           format: tel
@@ -4214,6 +5049,7 @@ components:
         plaidPublicToken:
           type: string
           description: The Plaid public token.
+          maxLength: 255
     AchAuthorizationIri:
       description: The unique JSON-LD IRI reference to the ACH authorization.
       type: string
@@ -4231,15 +5067,15 @@ components:
         referenceId:
           type: string
           format: uuid
-          description: The unique reference ID for this resource.
+          description: The unique reference identifier.
         title:
           type: string
-          description: The title of the action item.
+          description: The action item title.
         description:
           type: string
-          description: The main action item content.
+          description: The action item description.
         priority:
-          description: The action item priority.
+          description: The action item priority level.
           type: string
           enum:
             - low
@@ -4256,34 +5092,19 @@ components:
             - hold
             - complete
         dueAt:
-          description: The action item due date, if applicable.
+          description: The action item due date.
           type: string
           format: date-time
         createdAt:
-          description: The date the action item was created.
+          description: The creation timestamp.
           type: string
           format: date-time
         updatedAt:
-          description: The date the action item was last updated.
+          description: The last update timestamp.
           type: string
           format: date-time
         actionable:
-          description: |-
-            The resource that this action item is about.
-
-            **Business Context:**
-            Action items are always associated with a specific resource in the system,
-            such as a project, application, or other entity that requires attention or action.
-
-            **Common Actionable Resources:**
-            - **Project**: Action items related to solar installation projects
-            - **Application**: Action items for qualification applications
-            - **Customer**: Action items for customer-specific requirements
-            - **Dealer/Installer**: Action items for partner-specific tasks
-
-            **Resource Reference:**
-            Contains the JSON-LD IRI (@id) and type (@type) of the associated resource,
-            allowing clients to easily navigate to the related entity for more context.
+          description: The resource that this action item is about.
           type: object
           properties:
             "@id":
@@ -4369,30 +5190,100 @@ components:
           description: The unique reference ID for this resource.
         name:
           type: string
+          description: The adder name.
         quantity:
-          type: integer
+          type: number
+          description: The adder quantity.
         subtotal:
           type: number
+          format: currency
+          description: The adder subtotal.
+    AdderCreate:
+      type: object
+      description: Schema for creating a new project adder
+      required:
+        - projectId
+        - name
+        - quantity
+        - subtotal
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          description: The unique reference ID of the project this adder belongs to.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: The adder name or description.
+          maxLength: 255
+          example: "Electrical Panel Upgrade"
+        quantity:
+          type: number
+          description: The adder quantity.
+          minimum: 0
+          example: 1
+        subtotal:
+          type: number
+          format: currency
+          description: The adder total cost.
+          example: 4145.96
+      additionalProperties: false
     AdderUpdate:
       type: object
       description: Schema for updating an existing adder
       properties:
         name:
           type: string
-          description: The name or description of the adder
+          description: The adder name or description.
           maxLength: 255
           example: "Electrical Panel Upgrade"
         quantity:
-          type: integer
-          description: The quantity of this adder
+          type: number
+          description: The adder quantity.
           minimum: 0
           example: 1
         subtotal:
           type: number
-          description: The total cost for this adder
-          minimum: 0
+          format: currency
+          description: The adder total cost.
           example: 4145.96
       additionalProperties: false
+    AdderCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              example: "/contexts/Adder"
+            "@id":
+              example: "/adders"
+            totalItems:
+              type: integer
+              description: The total number of adders.
+              example: 3
+            member:
+              type: array
+              description: A list of adders.
+              items:
+                $ref: '#/components/schemas/Adder'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/adders?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/adders?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/adders?page=2"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/adders?page=2"
     AdderIri:
       description: The unique JSON-LD IRI reference to the adder.
       type: string
@@ -4413,14 +5304,19 @@ components:
           description: The unique reference ID for this resource.
         street:
           type: string
+          description: The street address.
         streetExtra:
           type: string
+          description: Additional street address information.
         city:
           type: string
+          description: The city name.
         state:
           type: string
+          description: The state or province.
         postCode:
-          type: integer
+          type: number
+          description: The postal code.
         address:
           description: A formatted address string.
           type: string
@@ -4442,22 +5338,29 @@ components:
       properties:
         streetNumber:
           type: string
+          description: The street number.
         streetName:
           type: string
+          description: The street name.
+          maxLength: 255
         city:
           type: string
+          description: The city name.
           maxLength: 60
           minLength: 3
         state:
           type: string
+          description: The state abbreviation.
           maxLength: 2
           minLength: 2
         postCode:
-          type: integer
+          type: number
+          description: The postal code.
           maxLength: 5
           minLength: 5
         country:
           type: string
+          description: The country code.
           default: USA
           maxLength: 3
           minLength: 3
@@ -4505,61 +5408,61 @@ components:
           description: The team handling the proposed project.
           properties:
             dealer:
-              description: The dealer handling the qualification application.
+              description: The dealer handling the application.
               $ref: '#/components/schemas/Dealer'
             installer:
-              description: The installer handling the qualification application.
+              description: The installer handling the application.
               $ref: '#/components/schemas/Installer'
             user:
-              description: The sales rep handling the qualification application.
+              description: The sales rep handling the application.
               $ref: '#/components/schemas/SalesRep'
         externalIdentifiers:
           type: array
-          description: A list of external identifiers for the qualification application.
+          description: External identifiers for the application.
           items:
             $ref: '#/components/schemas/ExternalIdentifier'
     ApplicationUpdate:
       type: object
-      description: Schema for updating an existing solar financing qualification application.
+      description: Schema for updating an existing application.
       properties:
         primaryApplicant:
           type: object
-          description: Primary applicant information updates.
+          description: Primary applicant information.
           properties:
             firstName:
-              description: Primary applicant first name.
+              description: The first name.
               type: string
               maxLength: 255
             middleName:
-              description: Primary applicant middle name.
+              description: The middle name.
               type: string
               maxLength: 255
               nullable: true
             lastName:
-              description: Primary applicant last name.
+              description: The last name.
               type: string
               maxLength: 255
             email:
-              description: Primary applicant email address.
+              description: The email address.
               type: string
               format: email
               maxLength: 255
             dateOfBirth:
-              description: Primary applicant date of birth.
+              description: The date of birth.
               type: string
               format: date
             ssn:
-              description: Primary applicant last 4 digits of SSN.
+              description: The last 4 digits of SSN.
               type: string
               pattern: '^\d{4}$'
             mobilePhone:
-              description: Primary applicant mobile phone number (10 digits only).
+              description: The mobile phone number.
               type: string
               pattern: '^\d{10}$'
               minLength: 10
               maxLength: 10
             homePhone:
-              description: Primary applicant home phone number (10 digits only).
+              description: The home phone number.
               type: string
               pattern: '^\d{10}$'
               minLength: 10
@@ -4567,37 +5470,37 @@ components:
               nullable: true
             currentAddress:
               type: object
-              description: Primary applicant current residential address.
+              description: The current residential address.
               properties:
                 streetNumber:
-                  description: Street number.
+                  description: The street number.
                   type: number
                 streetName:
-                  description: Street name.
+                  description: The street name.
                   type: string
                   maxLength: 255
                 city:
-                  description: City name.
+                  description: The city name.
                   type: string
                   minLength: 3
                   maxLength: 60
                 state:
-                  description: State abbreviation (2 characters).
+                  description: The state abbreviation.
                   type: string
                   minLength: 2
                   maxLength: 2
                 postCode:
-                  description: ZIP code (5 digits).
+                  description: The ZIP code.
                   type: string
                   pattern: '^\d{5}$'
                 country:
-                  description: Country code (3 characters).
+                  description: The country code.
                   type: string
                   minLength: 3
                   maxLength: 3
         coApplicant:
           type: object
-          description: Co-applicant information updates.
+          description: Co-applicant information.
           nullable: true
           properties:
             firstName:
@@ -4787,18 +5690,18 @@ components:
         achAuthorizationUrl:
           type: string
           format: uri
-          description: A URL to complete the customer ACH authorization process.
+          description: The ACH authorization URL.
         plaidLinkToken:
           type: string
-          description: A token that can be used to initialize Plaid Link.
+          description: The Plaid Link token.
         achAuthorizationConsentHtml:
           type: string
-          description: A consent that should be showed to the customer prior to ACH authorization in HTML.
+          description: The ACH authorization consent in HTML format.
         achAuthorizationConsentMarkdown:
           type: string
-          description: A consent that should be showed to the customer prior to ACH authorization in markdown.
+          description: The ACH authorization consent in markdown format.
     ApplicationAchStatus:
-      description: The customer qualification ACH authorization status.
+      description: The ACH authorization status.
       type: string
       enum:
         - complete
@@ -4816,30 +5719,35 @@ components:
         streetNumber:
           type: string
           format: numeric
+          description: The street number.
         streetName:
           type: string
+          description: The street name.
+          maxLength: 255
         city:
           type: string
-          minimum: 3
-          maximum: 60
+          description: The city name.
+          minLength: 3
+          maxLength: 60
         state:
           type: string
-          minimum: 2
-          maximum: 2
+          description: The state abbreviation.
+          minLength: 2
+          maxLength: 2
         postCode:
           type: string
           format: numeric
-          minimum: 5
-          maximum: 5
+          description: The postal code.
+          minLength: 5
+          maxLength: 5
         country:
           type: string
           format: numeric
-          minimum: 3
-          maximum: 3
+          description: The country code.
+          minLength: 3
+          maxLength: 3
     ApplicationApplicant:
-      description: |-
-        Complete demographic and contact information for a qualification applicant.
-        This information is used for credit checks and identity verification.
+      description: Complete demographic and contact information for an applicant.
       type: object
       required:
         - firstName
@@ -4851,63 +5759,48 @@ components:
         - currentAddress
       properties:
         firstName:
-          description: |-
-            Applicant's legal first name as it appears on government identification.
-            Used for credit bureau matching and identity verification.
+          description: The applicant's first name.
           type: string
           maxLength: 255
-          minLength: 1
           example: "John"
         middleName:
-          description: |-
-            Optional middle name or initial. Can improve credit bureau matching accuracy.
+          description: The applicant's middle name.
           type: string
           maxLength: 255
           nullable: true
           example: "Michael"
         lastName:
-          description: |-
-            Applicant's legal last name as it appears on government identification.
-            Used for credit bureau matching and identity verification.
+          description: The applicant's last name.
           type: string
           maxLength: 255
-          minLength: 1
           example: "Smith"
         email:
-          description: |-
-            Primary email address for account notifications and communications.
-            Must be a valid, deliverable email address.
+          description: The applicant's email address.
           type: string
           format: email
           maxLength: 255
           example: "john.smith@email.com"
         dateOfBirth:
-          description: |-
-            Applicant's date of birth in YYYY-MM-DD format.
-
-            **Requirements:**
-            - Must be at least 18 years old
-            - Used for credit bureau identity verification
-            - Must match government identification
+          description: The applicant's date of birth.
           type: string
           format: date
           example: "1985-06-15"
+        ssn:
+          description: The applicant's last four of their social secutiy number.
+          type: string
+          minLength: 4
+          maxLength: 4
+          example: "1234"
+          writeOnly: true
         mobilePhone:
-          description: |-
-            Primary mobile phone number for contact and verification.
-
-            **Format Requirements:**
-            - Must be a valid US phone number
-            - Must be 10 characters long
+          description: The applicant's mobile phone number.
           type: string
           pattern: '^\d{10}$'
           minLength: 10
           maxLength: 10
           example: "5551234567"
         homePhone:
-          description: |-
-            Optional home/landline phone number for additional contact options.
-            Same format requirements as mobile phone.
+          description: The applicant's home phone number.
           type: string
           pattern: '^\d{10}$'
           minLength: 10
@@ -4915,23 +5808,10 @@ components:
           nullable: true
           example: "5559876543"
         currentAddress:
-          description: |-
-            Current residential address where the applicant has lived.
-
-            **Requirements:**
-            - Must be a valid US address
-            - Used for credit bureau verification
-            - Required for all applicants
+          description: The applicant's current residential address.
           $ref: '#/components/schemas/ApplicationAddress'
         previousAddress:
-          description: |-
-            Previous residential address if applicant has lived at current address
-            for less than 2 years.
-
-            **When Required:**
-            - If current address residency is less than 24 months
-            - Helps with credit bureau identity verification
-            - Can improve qualification odds
+          description: The applicant's previous residential address.
           $ref: '#/components/schemas/ApplicationAddress'
           nullable: true
     ApplicationCollection:
@@ -4986,106 +5866,58 @@ components:
           properties:
             primaryApplicant:
               $ref: "#/components/schemas/ApplicationApplicant"
-              description: |-
-                Primary applicant information. This person will be the main contact
-                and primary responsibility holder for the solar financing.
+              description: Primary applicant information for the solar financing.
             coApplicant:
               $ref: "#/components/schemas/ApplicationApplicant"
-              description: |-
-                Optional co-applicant for joint applications. Adding a co-applicant
-                can improve qualification odds by combining credit profiles.
-                When provided, all co-applicant fields become required.
+              description: Optional co-applicant for joint applications.
               nullable: true
             dealer:
-              description: |-
-                Create a new dealer record for this application. Use this when the dealer
-                doesn't exist in the system yet. Cannot be used with `dealerId`. The user
-                must have the `create:dealer` scope to perform this action.
-
-                **Either `dealer` or `dealerId` must be provided.**
+              description: Create a new dealer record for this application.
               allOf:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: |-
-                Reference to an existing dealer by ID. Use this when working with
-                established dealer partners. Cannot be used with `dealer`.
-
-                **Either `dealer` or `dealerId` must be provided.**
+              description: Reference to an existing dealer by ID.
               type: string
               format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440021"
             installer:
-              description: |-
-                Create a new installer record for this application. Use this when the
-                installer doesn't exist in the system yet. Cannot be used with `installerId`.
-                The user must have the `create:installer` scope to perform this action.
-
-                **Either `installer` or `installerId` must be provided.**
+              description: Create a new installer record for this application.
               allOf:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: |-
-                Reference to an existing installer by ID. Use this when working with
-                established installer partners. Cannot be used with `installer`.
-
-                **Either `installer` or `installerId` must be provided.**
+              description: Reference to an existing installer by ID.
               type: string
               format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440022"
             user:
-              description: |-
-                Create a new sales representative record for this application. Use this
-                when the sales rep doesn't exist in the system yet. Cannot be used with `userId`.
-                The user must have the `create:user` scope to perform this action.
-
-                **Either `user` or `userId` must be provided.**
+              description: Create a new sales representative record for this application.
               allOf:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: |-
-                Reference to an existing sales representative by ID. Use this when working
-                with established sales team members. Cannot be used with `user`.
-
-                **Either `user` or `userId` must be provided.**
+              description: Reference to an existing sales representative by ID.
               type: integer
               minimum: 1
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440026"
             consent1:
-              description: |-
-                Customer consent for credit report authorization. Must be `true`.
-
-                **Legal Requirement**: Customer must explicitly agree to credit checks.
+              description: Customer consent for credit report authorization.
               type: boolean
               enum: [true]
             consent2:
-              description: |-
-                Customer consent for terms and conditions. Must be `true`.
-
-                **Legal Requirement**: Customer must agree to financing terms.
+              description: Customer consent for terms and conditions.
               type: boolean
               enum: [true]
             consent3:
-              description: |-
-                Customer consent for marketing communications. Must be `true`.
-
-                **Legal Requirement**: Customer must agree to contact policies.
+              description: Customer consent for marketing communications.
               type: boolean
               enum: [true]
             externalId:
-              description: |-
-                Optional external identifiers for integration with your systems.
-                Useful for tracking applications across different platforms.
-
-                **Common Use Cases:**
-                - CRM system IDs
-                - Proposal or quote numbers
-                - Lead tracking identifiers
+              description: Optional external identifiers for integration with your systems.
               type: array
               items:
                 $ref: "#/components/schemas/ExternalIdentifierCreate"
@@ -5231,12 +6063,12 @@ components:
           type: string
           description: The attachment mime type.
         size:
-          type: integer
+          type: number
           description: The size of the attachment in bytes.
         url:
           type: string
           format: uri
-          description: A protected URL to download/view the attachment. All URLs will expire after a set amount of time.
+          description: The attachment download URL.
         source:
           type: string
           description: The attachment source.
@@ -5293,10 +6125,8 @@ components:
         file:
           type: string
           format: binary
-          description: 'The file to upload (max 10MB, allowed types: jpg, jpeg, png, heic, gif, pdf, doc, docx, xls, xlsx, ppt, pptx, txt, xml, csv).'
-      description: >
-        Create a single attachment by providing file metadata and upload.
-        Only one file can be uploaded at a time.
+          description: The file to upload.
+      description: Schema for creating a new attachment.
     AttachmentIri:
       description: The unique JSON-LD IRI reference to the attachment.
       type: string
@@ -5414,8 +6244,7 @@ components:
           description: The main comment content.
           maxLength: 65535
           example: "Initial site inspection completed. All electrical connections verified and system is ready for commissioning."
-      description: >
-        Create a new comment by providing the comment text content.
+      description: Create a new comment by providing the comment text content.
     CommentIri:
       description: The unique JSON-LD IRI reference to the comment.
       type: string
@@ -5563,10 +6392,12 @@ components:
         name:
           description: The name of the dealer.
           type: string
+          maxLength: 255
         email:
           description: A contact email for the dealer.
           type: string
           format: email
+          maxLength: 255
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
@@ -5589,7 +6420,7 @@ components:
           description: The name of the design.
           type: string
         systemSize:
-          description: The size of the system is kW.
+          description: The system size in kW.
           type: number
         systemOffset:
           description: The system offset percentage.
@@ -5598,13 +6429,28 @@ components:
           description: The system annular solar access.
           type: number
         annualProduction:
-          description: The system production in kWh.
+          description: The annual production in kWh.
           type: number
         isPrimary:
-          description: Whether or not this design is the primary design.
+          description: Whether this design is the primary design.
           type: boolean
+        batteries:
+          description: The design batteries.
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        inverters:
+          description: The design inverters.
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        racking:
+          description: The design racking.
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
         segments:
-          description: A list of the design segments/arrays.
+          description: The design segments and module arrays.
           type: array
           items:
             $ref: '#/components/schemas/Segment'
@@ -5624,6 +6470,15 @@ components:
         - sub_contractor_hub
         - other
         - manual
+    DesignArrayType:
+      description: The supported design array types.
+      type: string
+      enum:
+        - Fixed - Ground Mounted
+        - Fixed - Roof Mounted
+        - Fixed - Roof and Ground Mounted
+        - Unkown
+      example: "Fixed - Roof Mounted"
     DesignCreate:
       type: object
       description: Schema for creating a new solar system design for a project.
@@ -5636,355 +6491,439 @@ components:
         - annualProduction
       properties:
         projectId:
-          description: |-
-            The unique identifier of the project this design belongs to.
-
-            **Business Context:**
-            - Links the design to a specific solar installation project
-            - Used for project organization and tracking
-            - Required for all design creation operations
-            - Must reference an existing project in the system
-
-            **Validation:**
-            - Must be a valid UUID format
-            - Referenced project must exist
-            - User must have access to the specified project
+          description: The unique identifier of the project this design belongs to.
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440017"
         name:
-          description: |-
-            Human-readable name for this design version.
-
-            **Naming Best Practices:**
-            - Include version number: "Rev 1", "Rev 2", "Final Design"
-            - Reference design source: "Aurora Design v3", "Manual Layout"
-            - Indicate status: "Preliminary", "Final", "Customer Approved"
-
-            **Common Examples:**
-            - "Initial Design Rev 1"
-            - "Customer Approved Final"
-            - "Aurora Import v2.1"
+          description: Human-readable name for this design version.
           type: string
           maxLength: 255
           example: "Customer Approved Final Design"
         source:
-          description: |-
-            The source system or tool used to create this design.
-
-            **Design Sources:**
-            - `scanifly`: Design imported from Scanifly platform
-            - `aurora`: Design imported from Aurora Solar
-            - `manual`: Manually created design
-            - `helioscope`: Design imported from Helioscope
-            - `pv_case`: Design imported from PV*SOL or PVcase
-            - `other`: Design from other tools or sources
+          description: The source system or tool used to create this design.
           allOf:
             - $ref: '#/components/schemas/DesignSource'
           nullable: true
         systemSize:
-          description: |-
-            Total system size in kilowatts (kW) DC rating.
-
-            **Business Context:**
-            - Used for financing calculations and loan sizing
-            - Determines equipment requirements and costs
-            - Affects utility interconnection requirements
-            - Must match equipment specifications in design
-
-            **Validation:**
-            - Must be greater than 0
-            - Should align with customer energy needs
-            - Consider local utility size restrictions
+          description: Total system size in kilowatts.
           type: number
           format: float
-          minimum: 0.01
+          minimum: 1
           example: 8.32
         systemOffset:
-          description: |-
-            Percentage of customer's annual energy usage that this system will offset.
-
-            **Business Impact:**
-            - 100% = Net Zero Energy system
-            - >100% = Net Positive (system produces excess)
-            - <100% = Partial offset (customer still has electric bills)
-
-            **Common Ranges:**
-            - Residential: 80-120% typical
-            - Commercial: 50-100% typical
-            - Utility restrictions may limit to 100%
+          description: Percentage of customer's annual energy usage that this system will offset.
           type: number
           format: float
-          minimum: 0
-          maximum: 200
+          minimum: 1
           example: 95.5
         asa:
-          description: |-
-            Annual Solar Access (ASA) - percentage representing shading analysis results.
-
-            **Solar Access Ranges:**
-            - 90-100%: Excellent, minimal shading
-            - 80-89%: Good, some minor shading
-            - 70-79%: Fair, moderate shading impact
-            - <70%: Poor, significant shading concerns
-
-            **Impact on Performance:**
-            - Higher ASA = better energy production
-            - Lower ASA = reduced system efficiency
-            - Affects financing qualification in some cases
+          description: Annual Solar Access percentage representing shading analysis results.
           type: number
           format: float
-          minimum: 0
-          maximum: 100
+          minimum: 1
           example: 87.3
         annualProduction:
-          description: |-
-            Estimated annual energy production in kilowatt-hours (kWh).
-
-            **Production Factors:**
-            - System size (kW) × Solar irradiance × System efficiency
-            - Accounts for weather, shading, equipment efficiency
-            - Used for customer savings calculations
-            - Basis for performance guarantees
-
-            **Typical Production:**
-            - Varies by location: 1,200-1,800 kWh per kW annually
-            - Arizona/California: Higher production
-            - Northern states: Lower production
+          description: Estimated annual energy production in kilowatt-hours (kWh).
           type: number
           format: float
-          minimum: 0
+          minimum: 1
           example: 12450.75
         isPrimary:
-          description: |-
-            Whether this design should be set as the primary/active design for the project.
-
-            **Primary Design Rules:**
-            - Only one design per project can be primary
-            - Primary design is used for financing calculations
-            - Primary design appears in customer documents
-            - Setting isPrimary=true makes other designs secondary
-
-            **Default Behavior:**
-            - If not specified and no primary exists: becomes primary
-            - If not specified and primary exists: becomes secondary
-            - If true: replaces current primary design
+          description: Whether this design should be set as the primary/active design for the project.
           type: boolean
           nullable: true
           example: true
         batteries:
-          description: |-
-            Optional battery storage systems to be included with this design.
-
-            **Battery Integration:**
-            - Provides energy storage for backup power and load shifting
-            - Each battery item specifies product, quantity, and size
-            - Size typically represents capacity in kWh or other relevant unit
-            - Must reference valid battery products from the system
-
-            **Common Battery Applications:**
-            - Backup power during outages
-            - Time-of-use cost optimization
-            - Grid independence and reliability
-            - Peak demand reduction
+          description: Optional battery storage systems to be included with this design.
           type: array
           items:
-            type: object
-            required:
-              - productId
-              - quantity
-              - size
-            properties:
-              productId:
-                type: string
-                format: uuid
-                description: Reference to the battery product ID
-                example: "9ab70ad1-f0c5-32e7-aa90-9385519a1ff4"
-              quantity:
-                type: integer
-                minimum: 1
-                description: Number of battery units
-                example: 1
-              size:
-                type: number
-                description: Battery capacity or size specification
-                example: 123
+            allOf:
+              - $ref: '#/components/schemas/DesignStorageCreate'
+              - type: object
+                properties:
+                  designId:
+                    readOnly: true
         inverters:
-          description: |-
-            Inverter systems to convert DC solar power to AC electricity.
-
-            **Inverter Types:**
-            - String inverters: Central conversion for multiple panels
-            - Power optimizers: Panel-level optimization with central inverter
-            - Microinverters: Individual panel-level conversion
-            - Hybrid inverters: Combined solar and battery management
-
-            **Selection Criteria:**
-            - System size and configuration requirements
-            - Shading conditions and panel layout
-            - Monitoring and safety features
-            - Grid interconnection requirements
+          description: Inverter systems to convert DC solar power to AC electricity.
           type: array
           items:
-            type: object
-            required:
-              - productId
-              - quantity
-            properties:
-              productId:
-                type: string
-                format: uuid
-                description: Reference to the inverter product ID
-                example: "6ae70059-364c-3eb7-a409-1739f7e2373d"
-              quantity:
-                type: integer
-                minimum: 1
-                description: Number of inverter units
-                example: 1
+            allOf:
+              - $ref: '#/components/schemas/DesignInverterCreate'
+              - type: object
+                properties:
+                  designId:
+                    readOnly: true
         racking:
-          description: |-
-            Mounting and racking systems to secure solar panels to the roof or ground.
-
-            **Racking Types:**
-            - Roof-mounted: Ballasted, penetrating, or shared rail systems
-            - Ground-mounted: Fixed tilt or tracking systems
-            - Carports and canopies: Dual-purpose structures
-            - Building-integrated: Architectural integration solutions
-
-            **Selection Factors:**
-            - Roof type and condition
-            - Wind and snow load requirements
-            - Panel configuration and spacing
-            - Installation complexity and cost
+          description: Mounting and racking systems to secure solar panels.
           type: array
           items:
-            type: object
-            required:
-              - productId
-              - quantity
-            properties:
-              productId:
-                type: string
-                format: uuid
-                description: Reference to the racking product ID
-                example: "0827ceae-c076-3d7e-97fe-c6f528fcc7d1"
-              quantity:
-                type: integer
-                minimum: 1
-                description: Number of racking units or sets
-                example: 1
+            allOf:
+              - $ref: '#/components/schemas/DesignRackingCreate'
+              - type: object
+                properties:
+                  designId:
+                    readOnly: true
+        segments:
+          description: The solar module arrays.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/DesignSegmentCreate'
+              - type: object
+                properties:
+                  designId:
+                    readOnly: true
         externalId:
-          description: |-
-            External identifiers to link this design with other systems.
-
-            **Integration Use Cases:**
-            - Link to design software project IDs
-            - Connect with CRM opportunity records
-            - Reference proposal or quote numbers
-            - Maintain audit trails across platforms
-
-            **Common Examples:**
-            - Aurora Solar project references
-            - Salesforce opportunity IDs
-            - Internal tracking numbers
-            - Third-party tool integrations
+          description: External identifiers to link this design with other systems.
           type: array
           items:
             $ref: "#/components/schemas/ExternalIdentifierCreate"
           example:
             - key: "design_id"
               value: "DESIGN-12345"
+    DesignInverter:
+      type: object
+      properties:
+        "@context":
+          type: string
+          example: "/contexts/DesignInverter"
+        "@id":
+          type: string
+          example: "/designs/products/inverters/2608684b-74ab-4cef-898c-acdaf88d92b1"
+        "@type":
+          type: string
+          example: "DesignInverter"
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference identifier.
+          example: "e4e19ea0-1e80-4e22-b12c-775e086fab66"
+        quantity:
+          type: number
+          description: The inverter quantity.
+          example: 1
+        subtotal:
+          type: number
+          format: currency
+          description: The inverter subtotal.
+          example: 1500
+        monitoringLocation:
+          type: string
+          description: The monitoring location.
+          maxLength: 255
+          nullable: true
+          example: null
+        monitoringId:
+          type: string
+          description: The monitoring identifier.
+          nullable: true
+          example: null
+    DesignInverterCreate:
+      type: object
+      required:
+        - designId
+        - productId
+        - quantity
+      properties:
+        designId:
+          description: The unique identifier of the design this inverter belongs to.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440010"
+        productId:
+          description: The unique identifier of the inverter product.
+          type: string
+          format: uuid
+          example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
+        quantity:
+          type: number
+          minimum: 1
+          description: The inverter quantity.
+          example: 1
+        monitoringLocation:
+          type: string
+          description: The monitoring location.
+          nullable: true
+          example: null
+        monitoringId:
+          type: string
+          description: The monitoring identifier.
+          nullable: true
+          example: null
+    DesignInverterProduct:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/DesignInverter'
+        - type: object
+          properties:
+            product:
+              $ref: '#/components/schemas/Product'
+    DesignRacking:
+      type: object
+      properties:
+        "@context":
+          type: string
+          example: "/contexts/DesignRacking"
+        "@id":
+          $ref: '#/components/schemas/DesignRackingIri'
+        "@type":
+          type: string
+          example: "DesignRacking"
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference identifier.
+          example: "2608684b-74ab-4cef-898c-acdaf88d92b1"
+        quantity:
+          type: number
+          description: The racking quantity.
+          example: 1
+        subtotal:
+          type: number
+          format: currency
+          description: The racking subtotal.
+          example: 5000
+    DesignRackingIri:
+      description: The unique JSON-LD IRI reference to the design racking information.
+      type: string
+      format: iri-reference
+      example: '/designs/products/racking/550e8400-e29b-41d4-a716-446655440010'
+    DesignRackingCreate:
+      type: object
+      required:
+        - designId
+        - productId
+        - quantity
+      properties:
+        designId:
+          description: The unique identifier of the design this racking item belongs to.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440010"
+        productId:
+          description: The unique identifier of the racking product.
+          type: string
+          format: uuid
+          example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
+        quantity:
+          type: number
+          minimum: 1
+          description: The racking quantity.
+          example: 1
+    DesignRackingProduct:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/DesignRacking'
+        - type: object
+          properties:
+            product:
+              $ref: '#/components/schemas/Product'
+    DesignSegment:
+      type: object
+      properties:
+        "@context":
+          type: string
+          example: "/contexts/DesignSegment"
+        "@id":
+          $ref: '#/components/schemas/DesignSegmentIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: DesignSegment
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        segment:
+          $ref: '#/components/schemas/Segment'
+    DesignSegmentCreate:
+      type: object
+      description: Schema for creating a new design segment (solar array) for a design.
+      required:
+        - designId
+        - productId
+        - name
+        - moduleQuantity
+        - arrayType
+        - azimuth
+        - tilt
+        - shading
+      properties:
+        designId:
+          description: The unique identifier of the design this segment belongs to.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440010"
+        productId:
+          description: The unique identifier of the module product for this segment.
+          type: string
+          format: uuid
+          example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
+        name:
+          description: Human-readable name for this segment.
+          type: string
+          maxLength: 255
+          example: "Segment 2"
+        moduleQuantity:
+          description: The number of modules in this segment.
+          type: number
+          minimum: 1
+          example: 5
+        arrayType:
+          $ref: '#/components/schemas/DesignArrayType'
+        azimuth:
+          description: The array azimuth in degrees.
+          type: number
+          minimum: 0
+          maximum: 360
+          example: 10
+        tilt:
+          description: The array tilt in degrees.
+          type: number
+          minimum: 0
+          maximum: 90
+          example: 10
+        shading:
+          description: The array shading percentage.
+          type: number
+          minimum: 0
+          maximum: 100
+          example: 10
+    DesignSegmentIri:
+      description: The unique JSON-LD IRI reference to the design segment.
+      type: string
+      format: iri-reference
+      example: '/designs/segments/550e8400-e29b-41d4-a716-446655440019'
+    DesignStorage:
+      type: object
+      properties:
+        "@context":
+          type: string
+          example: "/contexts/DesignStorage"
+        "@id":
+          type: string
+          example: "/designs/products/batteries/2608684b-74ab-4cef-898c-acdaf88d92b1"
+        "@type":
+          type: string
+          example: "DesignStorage"
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference identifier.
+          example: "2608684b-74ab-4cef-898c-acdaf88d92b1"
+        quantity:
+          type: number
+          description: The battery quantity.
+          example: 1
+        size:
+          type: number
+          description: The battery size.
+          example: 123451234
+        subtotal:
+          type: number
+          format: currency
+          description: The battery subtotal.
+          example: 500
+        monitoringLocation:
+          type: string
+          description: The monitoring location.
+          nullable: true
+          example: null
+        monitoringId:
+          type: string
+          description: The monitoring identifier.
+          nullable: true
+          example: null
+    DesignStorageCreate:
+      type: object
+      required:
+        - designId
+        - productId
+        - quantity
+        - size
+      properties:
+        designId:
+          description: The unique identifier of the design this battery belongs to.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440010"
+        productId:
+          description: The unique identifier of the battery product.
+          type: string
+          format: uuid
+          example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
+        quantity:
+          type: number
+          minimum: 1
+          description: The battery quantity.
+          example: 1
+        size:
+          type: number
+          minimum: 1
+          description: The battery size.
+          example: 123451234
+        monitoringLocation:
+          type: string
+          description: The monitoring location.
+          nullable: true
+          example: null
+          maxLength: 255
+        monitoringId:
+          type: string
+          description: The monitoring identifier.
+          nullable: true
+          example: null
+    DesignStorageProduct:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/DesignStorage'
+        - type: object
+          properties:
+            product:
+              $ref: '#/components/schemas/Product'
     DesignUpdate:
       type: object
-      description: |-
-        Schema for updating an existing solar system design.
-        All fields are optional - only provided fields will be updated.
+      description: Schema for updating an existing design.
       properties:
         name:
-          description: |-
-            Updated human-readable name for this design version.
-
-            **Common Update Scenarios:**
-            - Version increments: "Rev 1" → "Rev 2"
-            - Status changes: "Draft" → "Final"
-            - Approval tracking: "Pending Review" → "Customer Approved"
+          description: Updated human-readable name for this design version.
           type: string
           maxLength: 255
           example: "Customer Approved Final Design v2"
         source:
-          description: |-
-            Updated design source if design was re-imported or modified.
-
-            **Source Change Examples:**
-            - Manual design refined in Aurora: `manual` → `aurora`
-            - Scanifly import updated: `scanifly` (version update)
-            - Design tool migration: `helioscope` → `aurora`
+          description: Updated design source if design was re-imported or modified.
           allOf:
             - $ref: '#/components/schemas/DesignSource'
           nullable: true
         systemSize:
-          description: |-
-            Updated total system size in kilowatts (kW) DC rating.
-
-            **Size Change Impacts:**
-            - May affect financing pre-approval amounts
-            - Could trigger utility interconnection review
-            - Equipment lists and costs will need updates
-            - Customer contracts may require amendments
+          description: Updated total system size in kilowatts (kW) DC rating.
           type: number
           format: float
           minimum: 0.01
           example: 9.28
         systemOffset:
-          description: |-
-            Updated percentage of customer's annual energy usage offset.
-
-            **Offset Change Reasons:**
-            - Updated customer usage data
-            - System size modifications
-            - Refined production estimates
-            - Customer preference changes
+          description: Updated percentage of customer's annual energy usage offset.
           type: number
           format: float
           minimum: 0
           maximum: 200
           example: 105.2
         asa:
-          description: |-
-            Updated Annual Solar Access percentage from refined shading analysis.
-
-            **ASA Update Triggers:**
-            - More detailed shading studies
-            - Seasonal shading analysis
-            - Tree growth/removal considerations
-            - Design layout optimizations
+          description: Updated Annual Solar Access percentage from refined shading analysis.
           type: number
           format: float
           minimum: 0
           maximum: 100
           example: 91.7
         annualProduction:
-          description: |-
-            Updated estimated annual energy production in kWh.
-
-            **Production Update Reasons:**
-            - Equipment changes (higher efficiency panels)
-            - Layout optimizations
-            - Updated weather data
-            - Refined modeling parameters
+          description: Updated estimated annual energy production in kWh.
           type: number
           format: float
           minimum: 0
           example: 13825.50
         isPrimary:
-          description: |-
-            Whether to promote this design to primary status.
-
-            **Primary Status Changes:**
-            - Set to `true` to make this the active design
-            - Other designs automatically become secondary
-            - Triggers recalculation of project financials
-            - May require customer approval for significant changes
+          description: Whether to promote this design to primary status.
           type: boolean
           nullable: true
           example: false
@@ -6066,10 +7005,12 @@ components:
         name:
           description: The name of the distributor.
           type: string
+          maxLength: 255
         email:
           description: A contact email for the distributor.
           type: string
           format: email
+          maxLength: 255
     DistributorIri:
       description: The unique JSON-LD IRI reference to the distributor.
       type: string
@@ -6088,7 +7029,7 @@ components:
           type: string
         status:
           description: The HTTP status code.
-          type: integer
+          type: number
         detail:
           description: More detailed error information.
           type: string
@@ -6120,9 +7061,11 @@ components:
         key:
           type: string
           description: The key of the external identifier.
+          maxLength: 255
         value:
           type: string
           description: The value of the external identifier.
+          maxLength: 255
     ExternalIdentifierCollection:
       type: object
       allOf:
@@ -6274,10 +7217,12 @@ components:
         name:
           description: The name of the installer.
           type: string
+          maxLength: 255
         email:
           description: A contact email for the installer.
           type: string
           format: email
+          maxLength: 255
     InstallerIri:
       description: The unique JSON-LD IRI reference to the installer.
       type: string
@@ -6291,7 +7236,7 @@ components:
         "@type":
           type: string
           description: The JSON-LD resource type.
-          example: Manufacturer
+          example: ProductManufacturer
         referenceId:
           type: string
           format: uuid
@@ -6834,9 +7779,7 @@ components:
                       example: "/projects?page=2"
     ProjectCreate:
       type: object
-      description: |-
-        Schema for creating a new solar installation project with complete financial terms,
-        team assignments, and project specifications.
+      description: Schema for creating a new solar installation project with complete financial terms, team assignments, and project specifications.
       allOf:
         - type: object
           required:
@@ -6852,204 +7795,64 @@ components:
             - proposalDate
           properties:
             applicationId:
-              description: |-
-                Reference to the approved qualification application this project is based on.
-
-                **Requirements:**
-                - Application must exist and be approved
-                - Customer from application will be linked to this project
-                - Credit qualification tier will carry forward
-
-                **Business Rule:** One application can generate multiple projects
-                (e.g., main system + later battery addition)
+              description: Reference to the approved qualification application this project is based on.
               type: string
               format: uuid
               example: "550e8400-e29b-41d4-a716-446655440000"
             address:
-              description: |-
-                Physical address where the solar system will be installed.
-
-                **Important:** This may differ from the customer's home address
-                if installing on a secondary property, rental, or commercial building.
-
-                **Used For:**
-                - Permitting and utility coordination
-                - Installation crew routing and scheduling
-                - System design and shading analysis
-                - Property value assessments
+              description: Physical address where the solar system will be installed.
               allOf:
                 - $ref: "#/components/schemas/AddressCreate"
             customer:
-              description: |-
-                Customer information for the solar installation project.
-
-                **Backend Processing Logic:**
-                1. **Customer Lookup**: System first searches for existing customer by email address
-                2. **Found**: If customer exists, links to project (other fields can update existing record)
-                3. **Not Found**: Creates new customer record with provided information
-
-                **Data Sources:**
-                - **From Application**: Usually copied from the referenced qualification application
-                - **Updated Info**: May include refreshed customer details if information changed
-                - **Different Customer**: For gift installations or third-party ownership
-
-                **Required Information:**
-                All customer fields are required in the API request for data completeness,
-                but the system intelligently handles customer lookup and creation:
-
-                - Legal name (must match contracts and agreements)
-                - Email address (primary lookup key for existing customers)
-                - Contact information for project coordination
-                - SSN last 4 digits for identity verification
-                - Current demographic and address information
-
-                **Business Benefits:**
-                - Prevents duplicate customer records
-                - Maintains data consistency across applications and projects
-                - Supports multiple projects per customer
-                - Allows customer information updates
+              description: Customer information for the solar installation project.
               allOf:
                 - $ref: "#/components/schemas/CustomerCreate"
             dealer:
-              description: |-
-                Solar dealer/sales company responsible for the project.
-                Create new dealer record if not already in the system.
-                The user must have the `create:dealer` scope to perform
-                this action.
-
-                **Cannot be used with `dealerId`** - choose one approach.
-
-                **Either `dealer` or `dealerId` must be provided.**
-
-                **Dealer Responsibilities:**
-                - Customer relationship and sales process
-                - Contract execution and customer service
-                - Sales commission and fee processing
-                - Quality assurance and customer satisfaction
+              description: Solar dealer/sales company responsible for the project.
               allOf:
                 - $ref: "#/components/schemas/DealerCreate"
               nullable: true
             dealerId:
-              description: |-
-                Reference to existing dealer by ID for established partnerships.
-
-                **Cannot be used with `dealer`** - choose one approach.
-
-                **Either `dealer` or `dealerId` must be provided.**
-
-                **When to Use:** Working with existing dealer partners who are
-                already registered in the system with established rates and terms.
+              description: Reference to existing dealer by ID for established partnerships.
               type: integer
               minimum: 1
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440027"
             installer:
-              description: |-
-                Solar installation company responsible for the physical installation.
-                Create new installer record if not already in the system.
-                The user must have the `create:installer` scope to perform
-                this action.
-
-                **Cannot be used with `installerId`** - choose one approach.
-
-                **Either `installer` or `installerId` must be provided.**
-
-                **Installer Responsibilities:**
-                - System design and engineering
-                - Permitting and utility coordination
-                - Physical installation and commissioning
-                - Post-installation support and warranty
+              description: Solar installation company responsible for the physical installation.
               allOf:
                 - $ref: "#/components/schemas/InstallerCreate"
               nullable: true
             installerId:
-              description: |-
-                Reference to existing installer by ID for established partnerships.
-
-                **Cannot be used with `installer`** - choose one approach.
-
-                **Either `installer` or `installerId` must be provided.**
-
-                **When to Use:** Working with certified installer partners who are
-                already registered with verified credentials and service areas.
+              description: Reference to existing installer by ID for established partnerships.
               type: integer
               minimum: 1
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440028"
             distributor:
-              description: |-
-                Optional equipment distributor for specialized procurement needs.
-                The user must have the `create:distributor` scope to perform
-                this action.
-
-                **When Used:**
-                - Specific equipment requirements or availability
-                - Regional distributor relationships
-                - Special pricing or warranty terms
-                - Bulk purchasing coordination
-
-                **Cannot be used with `distributorId`** - choose one approach.
+              description: Optional equipment distributor for specialized procurement needs.
               allOf:
                 - $ref: "#/components/schemas/DistributorCreate"
               nullable: true
             distributorId:
-              description: |-
-                Reference to existing equipment distributor by ID.
-
-                **Cannot be used with `distributor`** - choose one approach.
-
-                **Common Use Cases:**
-                - Regional distributor partnerships
-                - Specialized equipment sourcing
-                - Volume purchasing agreements
-                - Logistics and delivery coordination
+              description: Reference to existing equipment distributor by ID.
               type: string
               format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440023"
             user:
-              description: |-
-                Sales representative responsible for the customer relationship.
-                Create new user record if not already in the system.
-                The user must have the `create:user` scope to perform
-                this action.
-
-                **Cannot be used with `userId`** - choose one approach.
-
-                **Either `user` or `userId` must be provided.**
-
-                **Sales Rep Responsibilities:**
-                - Primary customer contact and relationship
-                - Project coordination and communication
-                - Commission and compensation tracking
-                - Customer service and issue resolution
+              description: Sales representative responsible for the customer relationship.
               allOf:
                 - $ref: "#/components/schemas/UserCreate"
               nullable: true
             userId:
-              description: |-
-                Reference to existing sales representative by ID.
-
-                **Cannot be used with `user`** - choose one approach.
-
-                **Either `user` or `userId` must be provided.**
-
-                **When to Use:** Assigning projects to established sales team
-                members with existing customer relationships and commission structures.
+              description: Reference to existing sales representative by ID.
               type: string
               format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440024"
             externalId:
-              description: |-
-                Optional external system identifiers for integration and tracking.
-
-                **Common Integration Use Cases:**
-                - CRM system project IDs
-                - Proposal and design tool references
-                - ERP system project numbers
-                - Customer portal tracking IDs
-                - Third-party platform connections
+              description: Optional external system identifiers for integration and tracking.
               type: array
               items:
                 $ref: "#/components/schemas/ExternalIdentifierCreate"
@@ -7059,270 +7862,96 @@ components:
                 - key: "proposal_id"
                   value: "PROP-12345"
             agreementType:
-              description: |-
-                Type of solar financing agreement for this project.
-
-                **Agreement Types:**
-                - `ppa`: Power Purchase Agreement - customer buys energy produced
-                - `lease`: Solar lease - customer leases equipment with fixed payments
-                - `loan`: Solar loan - customer finances equipment purchase
-
-                **Required Fields by Type:**
-                - **Loan**: `introductoryTerm`, `introductoryPayment`, `dealerFee`, `interestRate`
-                - **PPA**: `contractRate`, `escalator`
-                - **Lease**: Similar to loan with different rate structures
+              description: Type of solar financing agreement for this project.
               allOf:
                 - $ref: '#/components/schemas/ApplicationAgreementType'
             productType:
-              description: |-
-                Type of solar energy system being installed.
-
-                **Product Types:**
-                - `solar`: Solar panels only
-                - `solar_storage`: Solar panels with battery storage
-                - `solar_storage_other`: Solar + storage + additional products
-                - `solar_other`: Solar panels with other add-ons
-                - `storage`: Battery storage only (rare)
-
-                **Impact:** Affects pricing, rebates, and installation complexity
+              description: Type of solar energy system being installed.
               allOf:
                 - $ref: '#/components/schemas/ApplicationProductType'
             totalContractValue:
-              description: |-
-                Total dollar value of the solar installation contract.
-
-                **Includes:**
-                - Solar equipment (panels, inverters, racking)
-                - Battery storage (if applicable)
-                - Installation labor and materials
-                - Permits, inspections, and utility connections
-                - Equipment add-ons and upgrades
-                - Sales tax and fees
-
-                **Business Rules:**
-                - Must be greater than or equal to `amountFinanced`
-                - Used for pricing calculations ($/watt metrics)
-                - Determines rebate and tax credit amounts
+              description: Total dollar value of the solar installation contract.
               type: number
               format: currency
               minimum: 0
               example: 25000.00
             amountFinanced:
-              description: |-
-                Dollar amount being financed through Elios Fund.
-
-                **Calculation:** `totalContractValue` - `downPayment` = `amountFinanced`
-
-                **Business Rules:**
-                - Cannot exceed `totalContractValue`
-                - Must be greater than or equal to `downPayment`
-                - Determines monthly payment calculations
-                - Subject to qualification limits based on credit tier
-
-                **Common Scenarios:**
-                - 100% financing: `amountFinanced` = `totalContractValue`, `downPayment` = 0
-                - Partial financing: Customer pays down payment, finances remainder
+              description: Dollar amount being financed through Elios Fund.
               type: number
               format: currency
               minimum: 0
               example: 25000.00
             downPayment:
-              description: |-
-                Customer down payment amount paid at contract signing.
-
-                **Business Rules:**
-                - Cannot exceed `amountFinanced`
-                - Reduces total financing amount and monthly payments
-                - Often used to lower monthly payments or improve qualification
-
-                **Common Amounts:**
-                - $0 for 100% financing (most common)
-                - $2,000-$5,000 for payment reduction
-                - 10-20% of total for traditional financing
+              description: Customer down payment amount paid at contract signing.
               type: number
               format: currency
               minimum: 0
               example: 0
             dealerFee:
-              description: |-
-                Dealer fee percentage for loan agreements (decimal format).
-
-                **Required for:** `agreementType: loan`
-
-                **Format:** Decimal (0.05 = 5%)
-
-                **Business Context:**
-                - Compensation paid to dealer for loan origination
-                - Typically 2-8% of financed amount
-                - Built into customer pricing
-                - Affects dealer profitability and customer rates
+              description: Dealer fee percentage for loan agreements (decimal format).
               type: number
               format: percentage
               minimum: 0
               maximum: 1
               example: 0
             interestRate:
-              description: |-
-                Annual interest rate for loan agreements (decimal format).
-
-                **Required for:** `agreementType: loan`
-
-                **Format:** Decimal (0.0599 = 5.99% APR)
-
-                **Business Context:**
-                - Customer's borrowing rate based on credit qualification
-                - Affects monthly payment calculations
-                - May include introductory/promotional periods
-                - Determines total cost of financing over loan term
+              description: Annual interest rate for loan agreements (decimal format).
               type: number
               format: percentage
               minimum: 0
               maximum: 1
               example: 0
             contractRate:
-              description: |-
-                First-year energy rate for PPA products ($/kWh in decimal format).
-
-                **Required for:** `agreementType: ppa`
-
-                **Format:** Decimal dollars per kWh (0.1742 = $0.1742/kWh)
-
-                **Business Context:**
-                - Rate customer pays for solar energy produced
-                - Typically lower than utility rates
-                - Escalates annually based on `escalator` percentage
-                - Determines customer savings and project economics
+              description: First-year energy rate for PPA products ($/kWh in decimal format).
               type: number
               format: rate
               minimum: 0
               maximum: 1
               example: 0.1667
             escalator:
-              description: |-
-                Annual rate increase percentage for PPA/lease products (decimal format).
-
-                **Required for:** `agreementType: ppa`
-
-                **Format:** Decimal (0.0299 = 2.99% annual increase)
-
-                **Business Context:**
-                - Annual increase in energy rate or lease payment
-                - Typically 0-4% per year
-                - Accounts for inflation and operational costs
-                - Lower escalators = better customer value
+              description: Annual rate increase percentage for PPA/lease products (decimal format).
               type: number
               format: percentage
               minimum: 0
               maximum: 1
               example: 0.0299
             term:
-              description: |-
-                Agreement length in years.
-
-                **Common Terms:**
-                - **25 years**: Standard for PPAs and leases
-                - **20 years**: Common for loans
-                - **12-15 years**: Short-term loan options
-
-                **Business Impact:**
-                - Longer terms = lower monthly payments
-                - Affects equipment warranty coverage
-                - Determines total project economics
-                - Must align with equipment design life
-              type: integer
+              description: Agreement length in years.
+              type: number
               minimum: 1
               maximum: 25
               example: 25
             proposalId:
-              description: |-
-                Optional reference to the original sales proposal.
-
-                **Use Cases:**
-                - Link to design and pricing tools
-                - Sales process tracking and reporting
-                - Commission calculations
-                - Customer communication reference
-              type: integer
-              minimum: 1
+              description: Optional reference to the original sales proposal.
+              type: number
+              minimum: 0
               nullable: true
               example: "1234567890"
             proposalDate:
-              description: |-
-                Date when the proposal was presented to the customer.
-
-                **Business Uses:**
-                - Sales cycle tracking and reporting
-                - Pricing validity periods
-                - Commission qualification dates
-                - Customer communication timeline
-
-                **Required Field** for project tracking and reporting.
+              description: Date when the proposal was presented to the customer.
               type: string
               format: date
               example: "1234567890"
             proposalLink:
-              description: |-
-                Optional URL link to the customer proposal document.
-
-                **Common Sources:**
-                - Design tool proposal exports (Aurora, HelioScope)
-                - Sales presentation platforms
-                - Customer portal links
-                - Document management systems
-
-                **Customer Access:** Often shared with customers for reference
+              description: Optional URL link to the customer proposal document.
               type: string
               format: uri
               nullable: true
               example: "https://portal.example.com/proposals/12345"
             introductoryTerm:
-              description: |-
-                Length of introductory/promotional payment period in months.
-
-                **Required for:** `agreementType: loan`
-
-                **Common Terms:**
-                - 18 months (most popular)
-                - 12 months (shorter promotion)
-                - 24-36 months (extended promotions)
-
-                **Business Purpose:**
-                - Lower initial payments to improve qualification
-                - Marketing incentive for customer acquisition
-                - Cash flow management for customers
-              type: integer
+              description: Length of introductory/promotional payment period in months.
+              type: number
               minimum: 0
               maximum: 36
               example: 0
             introductoryPayment:
-              description: |-
-                Monthly payment amount during introductory period.
-
-                **Required for:** `agreementType: loan`
-
-                **Common Values:**
-                - $0 (no-payment promotion)
-                - $89-$149 (reduced payment)
-                - 50% of regular payment (partial reduction)
-
-                **After Intro Period:** Payments increase to regular amortized amount
+              description: Monthly payment amount during introductory period.
               type: number
               format: currency
               minimum: 0
               example: 0
             adders:
-              description: |-
-                Optional equipment add-ons and upgrades beyond the base solar system.
-
-                **Common Adders:**
-                - Electrical panel upgrades
-                - Roof repairs or reinforcements
-                - Trenching and conduit runs
-                - Monitoring system upgrades
-                - Extended warranties
-                - Smart home integrations
-
-                **Pricing Impact:** Adds to total contract value and affects $/watt calculations
+              description: Optional equipment add-ons and upgrades beyond the base solar system.
               type: array
               items:
                 type: object
@@ -7337,7 +7966,7 @@ components:
                     example: "Electrical Panel Upgrade"
                   quantity:
                     description: Number of units being installed
-                    type: integer
+                    type: number
                     minimum: 1
                     example: 1
                   subtotal:
@@ -7392,374 +8021,150 @@ components:
             subtotal: 1500.00
     ProjectUpdate:
       type: object
-      description: |-
-        Schema for updating an existing solar installation project.
-        All fields are optional - only provided fields will be updated.
+      description: Schema for updating an existing solar installation project.
       properties:
         agreementType:
-          description: |-
-            Solar financing agreement type.
-
-            **Agreement Types:**
-            - `loan`: Traditional solar loan with fixed payments
-            - `ppa`: Power Purchase Agreement - customer buys power, not panels
-            - `lease`: Solar lease with fixed monthly payments
-
-            **Impact of Changes:**
-            - Changing agreement type may require updated financial terms
-            - Some fields are only required for specific agreement types
-            - Rate structures and payment calculations will be recalculated
+          description: Solar financing agreement type.
           allOf:
             - $ref: "#/components/schemas/ApplicationAgreementType"
         productType:
-          description: |-
-            Type of solar installation being financed.
-
-            **Product Options:**
-            - `solar`: Solar panels only
-            - `solar_storage`: Solar panels with battery storage
-            - `storage`: Battery storage only (rare, usually for existing solar)
-
-            **Business Impact:**
-            Different product types may have different:
-            - Qualification requirements and credit tiers
-            - Interest rates and financing terms
-            - Equipment warranties and service agreements
-            - Installation complexity and timeline
+          description: Type of solar installation being financed.
           allOf:
             - $ref: "#/components/schemas/ApplicationProductType"
         totalContractValue:
-          description: |-
-            Total value of the solar installation contract including all equipment,
-            installation, permits, and additional services.
-
-            **Important:** Must be greater than or equal to `amountFinanced`
+          description: Total value of the solar installation contract including all equipment, installation, permits, and additional services.
           type: number
           format: float
           minimum: 0
           example: 25000.00
         amountFinanced:
-          description: |-
-            Portion of the total contract value that will be financed through Elios Fund.
-            The difference between total contract value and amount financed represents
-            the customer's out-of-pocket costs (down payment, rebates applied, etc.).
-
-            **Calculation:** `totalContractValue` - `downPayment` - (rebates/incentives)
-            **Important:** Cannot exceed `totalContractValue`
+          description: Portion of the total contract value that will be financed through Elios Fund.
           type: number
           format: float
           minimum: 0
           example: 25000.00
         downPayment:
-          description: |-
-            Customer's upfront payment toward the project.
-
-            **Business Rules:**
-            - Reduces the amount that needs to be financed
-            - Improves loan terms and qualification chances
-            - Must not exceed the amount being financed
-
-            **Important:** Cannot exceed `amountFinanced`
+          description: Customer's upfront payment toward the project.
           type: number
           format: float
           minimum: 0
           example: 0
         introductoryTerm:
-          description: |-
-            Duration in months for special introductory payment terms.
-            **Required for loan agreements only.**
-
-            Common introductory periods:
-            - 18 months: Standard promotional period
-            - 12 months: Short-term promotion
-            - 0 months: No introductory period (standard rates immediately)
-          type: integer
+          description: Duration in months for special introductory payment terms.
+          type: number
           minimum: 0
           maximum: 60
           example: 0
         introductoryPayment:
-          description: |-
-            Monthly payment amount during the introductory period.
-            **Required for loan agreements only.**
-
-            **Typical Strategies:**
-            - $0 payments: Deferred payment start
-            - Reduced payments: Lower initial burden
-            - Interest-only: Principal payments deferred
+          description: Monthly payment amount during the introductory period.
           type: number
           format: float
           minimum: 0
           example: 0
         dealerFee:
-          description: |-
-            Dealer commission as a percentage of the financed amount.
-            **Required for loan agreements only.**
-
-            **Range:** Typically 0% to 15% depending on:
-            - Dealer partnership level and volume
-            - Loan terms and customer credit tier
-            - Promotional campaigns and incentives
-
-            **Business Impact:**
-            - Paid to dealer upon project completion
-            - Built into customer's financing terms
-            - Affects final APR calculations
+          description: Dealer commission as a percentage of the financed amount.
           type: number
           format: float
           minimum: 0
           maximum: 1
           example: 0
         interestRate:
-          description: |-
-            Annual interest rate for loan agreements.
-            **Required for loan agreements only.**
-
-            **Rate Determination:**
-            - Based on customer credit tier from qualification
-            - Market rates and Elios Fund's cost of capital
-            - Loan term length and risk factors
-
-            **Representation:** Decimal format (0.0649 = 6.49% APR)
+          description: Annual interest rate for loan agreements.
           type: number
           format: float
           minimum: 0
           maximum: 1
           example: 0
         contractRate:
-          description: |-
-            Price per kWh for power purchased under PPA agreements.
-            **Required for PPA or lease agreements only.**
-
-            **Rate Setting:**
-            - Based on local utility rates and solar production estimates
-            - Typically 10-20% below utility rates for customer savings
-            - Fixed for the contract term or subject to escalation
-
-            **Customer Benefit:** Immediate savings with no upfront costs
+          description: Price per kWh for power purchased under PPA agreements.
           type: number
           format: float
           minimum: 0
           maximum: 1
           example: 0.1667
         escalator:
-          description: |-
-            Annual rate increase for PPA/lease payments.
-            **Required for PPA or lease agreements only.**
-
-            **Purpose:**
-            - Accounts for inflation and rising utility costs
-            - Keeps customer savings consistent over time
-            - Industry standard: 0.5% to 3.5% annually
-
-            **Representation:** Decimal format (0.025 = 2.5% annual increase)
+          description: Annual rate increase for PPA/lease payments.
           type: number
           format: float
           minimum: 0
           maximum: 1
           example: 0.0299
         term:
-          description: |-
-            Contract duration in years.
-
-            **Typical Terms:**
-            - **Loans:** 10-25 years (most common: 20 years)
-            - **PPA/Lease:** 20-25 years (matches equipment warranties)
-
-            **Considerations:**
-            - Longer terms = lower payments, more total interest
-            - Must not exceed equipment warranty periods
-            - Some jurisdictions have maximum term limits
-          type: integer
+          description: Contract duration in years.
+          type: number
           minimum: 1
           maximum: 25
           example: 25
         proposalId:
-          description: |-
-            Reference number from the solar design/proposal system.
-
-            **Integration Points:**
-            - Links to design software (Aurora, Helioscope, etc.)
-            - Connects to CRM proposal records
-            - References sales team quote numbers
-
-            **Optional but Recommended:** Helps track proposals through sales-to-installation lifecycle
-          type: integer
+          description: Reference number from the solar design or proposal system.
+          type: number
           minimum: 1
           example: "1234567890"
           nullable: true
         proposalLink:
-          description: |-
-            Direct URL to the customer's solar proposal or design.
-
-            **Common Sources:**
-            - Design platform sharing links
-            - Sales presentation URLs
-            - Customer portal proposal access
-
-            **Customer Experience:** Provides easy access to view their system design and savings projections
+          description: Direct URL to the customer's solar proposal or design.
           type: string
           format: uri
           maxLength: 255
           example: "https://share.aurorasolar.com/designs/abc123"
           nullable: true
         proposalDate:
-          description: |-
-            Date when the customer's solar proposal was presented or finalized.
-
-            **Business Uses:**
-            - Sales cycle tracking and analytics
-            - Proposal validity periods (pricing may expire)
-            - Timeline coordination between sales and project teams
-
-            **Format:** ISO 8601 date format (YYYY-MM-DD)
+          description: Date when the customer's solar proposal was presented or finalized.
           type: string
           format: date
           example: "2024-03-15"
         userId:
-          description: |-
-            Reference to existing sales representative by internal user ID.
-
-            **Cannot be used with `user`** - choose one approach.
-            **Cannot be used together:** Specify either `userId` (existing) or `user` (new/inline)
-
-            **Sales Rep Responsibilities:**
-            - Customer relationship and ongoing support
-            - Commission tracking and payment
-            - Project coordination and updates
-            - Customer service and issue resolution
+          description: Reference to existing sales representative by internal user ID.
           type: integer
           minimum: 1
           example: "550e8400-e29b-41d4-a716-446655440031"
           nullable: true
         user:
-          description: |-
-            Create new sales representative record if not already in the system.
-            **Cannot be used with `userId`** - choose one approach.
-
-            **Use Cases:**
-            - Onboarding new sales team members
-            - Third-party sales partnerships
-            - Customer referrals with commission splits
-
-            **Backend Processing:**
-            System will check if user exists by email before creating new record.
+          description: Create new sales representative record if not already in the system.
           allOf:
             - $ref: "#/components/schemas/UserCreate"
           nullable: true
         dealerId:
-          description: |-
-            Reference to existing dealer by ID for established partnerships.
-            **Cannot be used with `dealer`** - choose one approach.
-
-            **Dealer Responsibilities:**
-            - Customer relationship and sales process
-            - Contract execution and customer service
-            - Sales commission and fee processing
-            - Quality assurance and customer satisfaction
+          description: Reference to existing dealer by ID for established partnerships.
           type: integer
           minimum: 1
           example: "550e8400-e29b-41d4-a716-446655440032"
           nullable: true
         dealer:
-          description: |-
-            Create new dealer record if not already in the system.
-            **Cannot be used with `dealerId`** - choose one approach.
-
-            **Use Cases:**
-            - Onboarding new dealer partnerships
-            - Regional expansion with local dealers
-            - Referral partnerships
+          description: Create new dealer record if not already in the system.
           allOf:
             - $ref: "#/components/schemas/DealerCreate"
           nullable: true
         installerId:
-          description: |-
-            Reference to existing installer by ID for established partnerships.
-            **Cannot be used with `installer`** - choose one approach.
-
-            **Installer Responsibilities:**
-            - Physical system installation and commissioning
-            - Permit applications and approvals
-            - Safety compliance and quality control
-            - Warranty service and maintenance coordination
+          description: Reference to existing installer by ID for established partnerships.
           type: integer
           minimum: 1
           example: "550e8400-e29b-41d4-a716-446655440033"
           nullable: true
         installer:
-          description: |-
-            Create new installer record if not already in the system.
-            **Cannot be used with `installerId`** - choose one approach.
-
-            **Use Cases:**
-            - Expanding installer network
-            - Regional coverage requirements
-            - Specialized installation capabilities
+          description: Create new installer record if not already in the system.
           allOf:
             - $ref: "#/components/schemas/InstallerCreate"
           nullable: true
         distributorId:
-          description: |-
-            Reference to existing distributor by ID (optional).
-            **Cannot be used with `distributor`** - choose one approach.
-
-            **Distributor Role:**
-            - Equipment procurement and logistics
-            - Regional market coordination
-            - Volume pricing and inventory management
-            - Technical support and training
+          description: Reference to existing distributor by ID.
           type: integer
           minimum: 1
           example: "550e8400-e29b-41d4-a716-446655440034"
           nullable: true
         distributor:
-          description: |-
-            Create new distributor record if not already in the system (optional).
-            **Cannot be used with `distributorId`** - choose one approach.
-
-            **Optional Role:** Not all projects require distributor involvement
+          description: Create new distributor record if not already in the system.
           allOf:
             - $ref: "#/components/schemas/DistributorCreate"
           nullable: true
         externalId:
-          description: |-
-            Array of external system identifiers for integration tracking.
-
-            **Integration Examples:**
-            - CRM system: `{"key": "salesforce_opportunity", "value": "006xx000004TmiQAAS"}`
-            - Design platform: `{"key": "aurora_design", "value": "design_abc123"}`
-            - ERP system: `{"key": "sap_project", "value": "PRJ-2024-001"}`
-            - Proposal tool: `{"key": "proposal_builder", "value": "prop_xyz789"}`
-
-            **Benefits:**
-            - Seamless data flow between systems
-            - Reduced manual data entry and errors
-            - Comprehensive project tracking across platforms
-            - Audit trail for compliance and reporting
+          description: Array of external system identifiers for integration tracking.
           type: array
           items:
             $ref: "#/components/schemas/ExternalIdentifierCreate"
           nullable: true
         adders:
-          description: |-
-            Optional equipment add-ons and customizations beyond the base solar system.
-
-            **Common Add-Ons:**
-            - **Electrical:** Main panel upgrades, sub-panels, EV chargers
-            - **Structural:** Roof repairs, reinforcements, trenching
-            - **Aesthetic:** Premium racking, hidden conduit, landscaping
-            - **Technology:** Monitoring systems, smart home integration
-            - **Services:** Extended warranties, maintenance plans
-
-            **Pricing Impact:**
-            - Increases total contract value
-            - May affect financing terms and rates
-            - Can improve project margins for installers
-
-            **Customer Value:**
-            - One-stop shopping for complete solution
-            - Coordinated installation and warranties
-            - Financing covers entire project scope
+          description: Optional equipment add-ons and customizations beyond the base solar system.
           type: array
           items:
             $ref: "#/components/schemas/Adder"
@@ -7842,13 +8247,9 @@ components:
           type: string
         moduleQuantity:
           description: The number of modules in the segment.
-          type: integer
+          type: number
         arrayType:
-          description: The type of array.
-          type: string
-          enum:
-            - Fixed - Ground Mounted
-            - Fixed - Roof Mounted
+          $ref: '#/components/schemas/DesignArrayType'
         azimuth:
           description: The array azimuth.
           type: number
@@ -7877,7 +8278,7 @@ components:
           example: SystemPricingFactorYear
         year:
           description: The pricing year.
-          type: integer
+          type: number
         productionKWh:
           description: The annual system production for the year.
           type: number
@@ -8047,9 +8448,11 @@ components:
         firstName:
           description: The user's first name.
           type: string
+          maxLength: 255
         lastName:
           description: The user's last name.
           type: string
+          maxLength: 255
         email:
           description: The users's email.
           type: string
@@ -8151,25 +8554,30 @@ components:
         description:
           description: A human-readable description of the webhook's purpose.
           type: string
-          maxLength: 4000
+          maxLength: 65535
           example: "Webhook for application status updates"
+          nullable: true
         secret:
           description: The webhook secret used for HMAC signature validation.
           type: string
           maxLength: 255
           example: "your-webhook-secret-key"
+          nullable: true
         caPath:
           description: The path to the CA certificate for SSL verification.
           type: string
-          maxLength: 4000
+          maxLength: 255
+          nullable: true
         keyPath:
           description: The path to the private key for client certificate authentication.
           type: string
-          maxLength: 4000
+          maxLength: 255
+          nullable: true
         certPath:
           description: The path to the client certificate for SSL authentication.
           type: string
-          maxLength: 4000
+          maxLength: 255
+          nullable: true
     WebhookUpdate:
       type: object
       properties:
@@ -8292,6 +8700,7 @@ components:
             create:comments: Can create comments
             create:designs: Can create designs
             create:projects: Can create projects
+            delete:designs: Can delete designs
             manage:webhooks: Can manage webhooks
             qualify:applications: Can submit an application for qualification
             update:applications: Can update a qualification application
@@ -8318,6 +8727,7 @@ components:
             create:comments: Can create comments
             create:designs: Can create designs
             create:projects: Can create projects
+            delete:designs: Can delete designs
             manage:webhooks: Can manage webhooks
             qualify:applications: Can submit an application for qualification
             update:applications: Can update a qualification application
