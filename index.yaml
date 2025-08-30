@@ -4092,18 +4092,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                type: object
-                properties:
-                  "@context":
-                    example: "/contexts/Design"
-                  "@id":
-                    example: "/projects/123/designs"
-                  "@type":
-                    example: "hydra:Collection"
-                  "hydra:member":
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Design'
+                $ref: '#/components/schemas/DesignCollection'
         401:
           description: There was no API key provided with the request or the API key was invalid.
           content:
@@ -4425,6 +4414,175 @@ paths:
                 $ref: '#/components/schemas/Error'
         422:
           description: Validation error in request data.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/pricing:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get project pricing over contract term
+      description: |-
+        Retrieves the customer pricing over the full contract term for a specific project.
+
+        **Business Context:**
+        This endpoint provides comprehensive pricing information for the entire duration
+        of a solar financing contract, typically 25 years. The pricing data includes
+        photovoltaic (PV) and energy storage production values, electricity rates,
+        and payment calculations for each year of the contract.
+
+        **Pricing Structure:**
+        - **PV Production**: Annual kilowatt-hour (kWh) generation from solar panels
+        - **Storage Production**: Annual kWh generation from battery storage systems
+        - **Electricity Rates**: Rate per kWh for each contract year
+        - **Payment Calculations**: Monthly and annual payment amounts
+
+        **Use Cases:**
+        - Contract review and customer communication
+        - Financial analysis and payment projections
+        - Performance tracking over contract duration
+        - Payment schedule planning and budgeting
+        - Customer service and account management
+
+        **Response Information:**
+        - Collection of pricing data for each year (1-25) of the contract
+        - Production forecasts accounting for system degradation
+        - Escalating electricity rates based on market projections
+        - Calculated payment amounts reflecting financing terms
+
+        **Integration Patterns:**
+        - **Customer Portals**: Display long-term savings projections
+        - **Payment Processing**: Reference for billing calculations
+        - **Performance Monitoring**: Compare actual vs. projected production
+        - **Contract Management**: Support contract amendments and reviews
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: A collection of pricing data for each year of the contract term.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/SystemPricingFactorYearCollection'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project could not be found.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: There was an unexpected server error.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}/pricing/{year}:
+    parameters:
+      - name: projectId
+        description: The unique reference identifier of the project.
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: year
+        description: The contract year (1-25) for which to retrieve pricing data.
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 25
+          example: 1
+    get:
+      summary: Get project pricing for specific year
+      description: |-
+        Retrieves the customer pricing for a specific year of the contract term.
+
+        **Business Context:**
+        This endpoint provides detailed pricing information for a single year within
+        a solar financing contract. This is useful for year-over-year analysis,
+        payment verification, and specific year calculations.
+
+        **Pricing Details for Year:**
+        - **PV Production**: Expected kWh generation from solar panels for the year
+        - **Storage Production**: Expected kWh generation from battery storage for the year
+        - **Electricity Rate**: Rate per kWh applicable for the specific year
+        - **Monthly Payment**: Fixed monthly payment amount for the year
+        - **Annual Payment**: Total payment amount for the full year
+
+        **Year Calculation:**
+        - Year 1 represents the first year of the contract after installation
+        - Production values account for system degradation over time
+        - Electricity rates typically escalate annually based on market projections
+        - Payment amounts may vary based on contract structure
+
+        **Use Cases:**
+        - Annual payment verification and customer inquiries
+        - Year-over-year performance analysis
+        - Budget planning for specific contract years
+        - Customer service support for billing questions
+        - Financial analysis and reporting
+
+        **Response Information:**
+        - Single pricing record for the requested contract year
+        - Production forecasts specific to that year
+        - Applicable electricity rate for the year
+        - Calculated payment amounts for monthly and annual periods
+      security:
+        - ApiKey:
+            - view:projects
+        - OAuth:
+            - view:projects
+      responses:
+        200:
+          description: Pricing data for the requested contract year.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/SystemPricingFactorYear'
+        401:
+          description: There was no API key provided with the request or the API key was invalid.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: The API key provided does not contain the proper scopes for the current request.
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: The requested project or year could not be found.
           content:
             application/ld+json:
               schema:
@@ -5000,6 +5158,8 @@ components:
       type: object
       properties:
         "@context":
+          type: string
+          description: The JSON-LD context.
           example: "/contexts/AchAuthorization"
         "@id":
           $ref: '#/components/schemas/AchAuthorizationIri'
@@ -5141,6 +5301,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/ActionItem"
             "@id":
               example: "/action-items"
@@ -5192,62 +5354,12 @@ components:
           type: string
           description: The adder name.
         quantity:
-          type: number
+          type: integer
           description: The adder quantity.
         subtotal:
           type: number
-          format: currency
+          format: float
           description: The adder subtotal.
-    AdderCreate:
-      type: object
-      description: Schema for creating a new project adder
-      required:
-        - projectId
-        - name
-        - quantity
-        - subtotal
-      properties:
-        projectId:
-          type: string
-          format: uuid
-          description: The unique reference ID of the project this adder belongs to.
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        name:
-          type: string
-          description: The adder name or description.
-          maxLength: 255
-          example: "Electrical Panel Upgrade"
-        quantity:
-          type: number
-          description: The adder quantity.
-          minimum: 0
-          example: 1
-        subtotal:
-          type: number
-          format: currency
-          description: The adder total cost.
-          example: 4145.96
-      additionalProperties: false
-    AdderUpdate:
-      type: object
-      description: Schema for updating an existing adder
-      properties:
-        name:
-          type: string
-          description: The adder name or description.
-          maxLength: 255
-          example: "Electrical Panel Upgrade"
-        quantity:
-          type: number
-          description: The adder quantity.
-          minimum: 0
-          example: 1
-        subtotal:
-          type: number
-          format: currency
-          description: The adder total cost.
-          example: 4145.96
-      additionalProperties: false
     AdderCollection:
       type: object
       allOf:
@@ -5255,6 +5367,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Adder"
             "@id":
               example: "/adders"
@@ -5284,11 +5398,61 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/adders?page=2"
+    AdderCreate:
+      type: object
+      description: Schema for creating a new project adder
+      required:
+        - projectId
+        - name
+        - quantity
+        - subtotal
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          description: The unique reference ID of the project this adder belongs to.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: The adder name or description.
+          maxLength: 255
+          example: "Electrical Panel Upgrade"
+        quantity:
+          type: integer
+          description: The adder quantity.
+          minimum: 1
+          example: 1
+        subtotal:
+          type: number
+          format: float
+          description: The adder total cost.
+          example: 4145.96
+      additionalProperties: false
     AdderIri:
       description: The unique JSON-LD IRI reference to the adder.
       type: string
       format: iri-reference
       example: '/adders/550e8400-e29b-41d4-a716-446655440003'
+    AdderUpdate:
+      type: object
+      description: Schema for updating an existing adder
+      properties:
+        name:
+          type: string
+          description: The adder name or description.
+          maxLength: 255
+          example: "Electrical Panel Upgrade"
+        quantity:
+          type: integer
+          description: The adder quantity.
+          minimum: 1
+          example: 1
+        subtotal:
+          type: number
+          format: float
+          description: The adder total cost.
+          example: 4145.96
+      additionalProperties: false
     Address:
       type: object
       properties:
@@ -5356,8 +5520,8 @@ components:
         postCode:
           type: number
           description: The postal code.
-          maxLength: 5
-          minLength: 5
+          minimum: 5
+          maximum: 5
         country:
           type: string
           description: The country code.
@@ -5375,6 +5539,8 @@ components:
         - $ref: '#/components/schemas/ApplicationDetails'
       properties:
         "@context":
+          type: string
+          description: The JSON-LD context.
           example: "/contexts/Application"
         "@id":
           $ref: '#/components/schemas/ApplicationIri'
@@ -5421,6 +5587,380 @@ components:
           description: External identifiers for the application.
           items:
             $ref: '#/components/schemas/ExternalIdentifier'
+    ApplicationAch:
+      type: object
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        achAuthorizationStatus:
+          $ref: '#/components/schemas/ApplicationAchStatus'
+        achAuthorizationUrl:
+          type: string
+          format: uri
+          description: The ACH authorization URL.
+        plaidLinkToken:
+          type: string
+          description: The Plaid Link token.
+        achAuthorizationConsentHtml:
+          type: string
+          description: The ACH authorization consent in HTML format.
+        achAuthorizationConsentMarkdown:
+          type: string
+          description: The ACH authorization consent in markdown format.
+    ApplicationAchStatus:
+      description: The ACH authorization status.
+      type: string
+      enum:
+        - complete
+        - incomplete
+    ApplicationAddress:
+      type: object
+      properties:
+        streetNumber:
+          type: string
+          format: numeric
+          description: The street number.
+        streetName:
+          type: string
+          description: The street name.
+          maxLength: 255
+        city:
+          type: string
+          description: The city name.
+          minLength: 3
+          maxLength: 60
+        state:
+          type: string
+          description: The state abbreviation.
+          minLength: 2
+          maxLength: 2
+        postCode:
+          type: number
+          description: The postal code.
+          minimum: 5
+          maximum: 5
+        country:
+          type: string
+          format: numeric
+          description: The country code.
+          minLength: 3
+          maxLength: 3
+    ApplicationAgreementType:
+      description: The type of agreement being used.
+      type: string
+      enum:
+        - ppa
+        - lease
+        - loan
+    ApplicationApplicant:
+      description: Complete demographic and contact information for an applicant.
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - dateOfBirth
+        - ssn
+        - mobilePhone
+        - currentAddress
+      properties:
+        firstName:
+          description: The applicant's first name.
+          type: string
+          maxLength: 255
+          example: "John"
+        middleName:
+          description: The applicant's middle name.
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "Michael"
+        lastName:
+          description: The applicant's last name.
+          type: string
+          maxLength: 255
+          example: "Smith"
+        email:
+          description: The applicant's email address.
+          type: string
+          format: email
+          maxLength: 255
+          example: "john.smith@email.com"
+        dateOfBirth:
+          description: The applicant's date of birth.
+          type: string
+          format: date
+          example: "1985-06-15"
+        ssn:
+          description: The applicant's last four of their social secutiy number.
+          type: string
+          minLength: 4
+          maxLength: 4
+          example: "1234"
+          writeOnly: true
+        mobilePhone:
+          description: The applicant's mobile phone number.
+          type: string
+          pattern: '^\d{10}$'
+          minLength: 10
+          maxLength: 10
+          example: "5551234567"
+        homePhone:
+          description: The applicant's home phone number.
+          type: string
+          pattern: '^\d{10}$'
+          minLength: 10
+          maxLength: 10
+          nullable: true
+          example: "5559876543"
+        currentAddress:
+          description: The applicant's current residential address.
+          $ref: '#/components/schemas/ApplicationAddress'
+        previousAddress:
+          description: The applicant's previous residential address.
+          $ref: '#/components/schemas/ApplicationAddress'
+          nullable: true
+    ApplicationCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              type: string
+              description: The JSON-LD context.
+              example: "/contexts/Application"
+            "@id":
+              example: "/applications"
+            totalItems:
+              type: integer
+              description: The total number of qualification applications.
+              example: 5
+            member:
+              type: array
+              description: A list of qualification applications.
+              items:
+                $ref: '#/components/schemas/Application'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/applications?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/applications?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/applications?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/applications?page=2"
+    ApplicationCreate:
+      type: object
+      description: Schema for creating a new solar financing qualification application.
+      allOf:
+        - $ref: '#/components/schemas/ApplicationDetails'
+        - type: object
+          required:
+            - primaryApplicant
+            - agreementType
+            - productType
+            - consent1
+            - consent2
+            - consent3
+          properties:
+            primaryApplicant:
+              $ref: "#/components/schemas/ApplicationApplicant"
+              description: Primary applicant information for the solar financing.
+            coApplicant:
+              $ref: "#/components/schemas/ApplicationApplicant"
+              description: Optional co-applicant for joint applications.
+              nullable: true
+            dealer:
+              description: Create a new dealer record for this application.
+              allOf:
+                - $ref: "#/components/schemas/DealerCreate"
+              nullable: true
+            dealerId:
+              description: Reference to an existing dealer by ID.
+              type: string
+              format: uuid
+              nullable: true
+              example: "550e8400-e29b-41d4-a716-446655440021"
+            installer:
+              description: Create a new installer record for this application.
+              allOf:
+                - $ref: "#/components/schemas/InstallerCreate"
+              nullable: true
+            installerId:
+              description: Reference to an existing installer by ID.
+              type: string
+              format: uuid
+              nullable: true
+              example: "550e8400-e29b-41d4-a716-446655440022"
+            user:
+              description: Create a new sales representative record for this application.
+              allOf:
+                - $ref: "#/components/schemas/UserCreate"
+              nullable: true
+            userId:
+              description: Reference to an existing sales representative by ID.
+              type: integer
+              minimum: 1
+              nullable: true
+              example: "550e8400-e29b-41d4-a716-446655440026"
+            consent1:
+              description: Customer consent for credit report authorization.
+              type: boolean
+              enum: [true]
+            consent2:
+              description: Customer consent for terms and conditions.
+              type: boolean
+              enum: [true]
+            consent3:
+              description: Customer consent for marketing communications.
+              type: boolean
+              enum: [true]
+            externalId:
+              description: Optional external identifiers for integration with your systems.
+              type: array
+              items:
+                $ref: "#/components/schemas/ExternalIdentifierCreate"
+              example:
+                - key: "crm_lead_id"
+                  value: "LEAD-12345"
+                - key: "proposal_number"
+                  value: "PROP-2024-001"
+      example:
+        agreementType: "ppa"
+        productType: "solar_storage"
+        primaryApplicant:
+          firstName: "John"
+          lastName: "Smith"
+          email: "john.smith@email.com"
+          dateOfBirth: "1985-06-15"
+          ssn: "1234"
+          mobilePhone: "5551234567"
+          currentAddress:
+            streetNumber: "123"
+            streetName: "Main Street"
+            city: "Phoenix"
+            state: "AZ"
+            postCode: "85001"
+            country: "USA"
+        dealerId: "550e8400-e29b-41d4-a716-446655440021"
+        installerId: "550e8400-e29b-41d4-a716-446655440022"
+        userId: "550e8400-e29b-41d4-a716-446655440035"
+        consent1: true
+        consent2: true
+        consent3: true
+    ApplicationDetails:
+      type: object
+      properties:
+        referenceId:
+          description: An optional application reference ID such as the proposal ID.
+          type: string
+          nullable: true
+        agreementType:
+          $ref: '#/components/schemas/ApplicationAgreementType'
+        productType:
+          $ref: '#/components/schemas/ApplicationProductType'
+    ApplicationIri:
+      description: The unique JSON-LD IRI reference to the qualification application.
+      type: string
+      format: iri-reference
+      example: '/applications/550e8400-e29b-41d4-a716-446655440005'
+    ApplicationOpen:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/Application"
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+          default: open
+    ApplicationProductType:
+      description: The type of product the customer is receiving.
+      type: string
+      enum:
+        - solar
+        - solar_storage
+        - solar_storage_other
+        - solar_other
+        - storage
+    ApplicationQualify:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/Application"
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+          default: in_progress
+    ApplicationStatus:
+      description: The customer qualification application status.
+      type: string
+      enum:
+        - open
+        - in_progress
+        - submitted
+        - approved
+        - declined
+        - none
+        - onhold
+        - cancelled
+    ApplicationSubmit:
+      type: object
+      properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/Application"
+        "@id":
+          $ref: '#/components/schemas/ApplicationIri'
+        "@type":
+          type: string
+          description: The JSON-LD resource type.
+          example: Application
+        referenceId:
+          type: string
+          format: uuid
+          description: The unique reference ID for this resource.
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
     ApplicationUpdate:
       type: object
       description: Schema for updating an existing application.
@@ -5672,373 +6212,6 @@ components:
                   value:
                     description: External identifier value.
                     type: string
-    ApplicationAch:
-      type: object
-      properties:
-        "@id":
-          $ref: '#/components/schemas/ApplicationIri'
-        "@type":
-          type: string
-          description: The JSON-LD resource type.
-          example: Application
-        referenceId:
-          type: string
-          format: uuid
-          description: The unique reference ID for this resource.
-        achAuthorizationStatus:
-          $ref: '#/components/schemas/ApplicationAchStatus'
-        achAuthorizationUrl:
-          type: string
-          format: uri
-          description: The ACH authorization URL.
-        plaidLinkToken:
-          type: string
-          description: The Plaid Link token.
-        achAuthorizationConsentHtml:
-          type: string
-          description: The ACH authorization consent in HTML format.
-        achAuthorizationConsentMarkdown:
-          type: string
-          description: The ACH authorization consent in markdown format.
-    ApplicationAchStatus:
-      description: The ACH authorization status.
-      type: string
-      enum:
-        - complete
-        - incomplete
-    ApplicationAgreementType:
-      description: The type of agreement being used.
-      type: string
-      enum:
-        - ppa
-        - lease
-        - loan
-    ApplicationAddress:
-      type: object
-      properties:
-        streetNumber:
-          type: string
-          format: numeric
-          description: The street number.
-        streetName:
-          type: string
-          description: The street name.
-          maxLength: 255
-        city:
-          type: string
-          description: The city name.
-          minLength: 3
-          maxLength: 60
-        state:
-          type: string
-          description: The state abbreviation.
-          minLength: 2
-          maxLength: 2
-        postCode:
-          type: string
-          format: numeric
-          description: The postal code.
-          minLength: 5
-          maxLength: 5
-        country:
-          type: string
-          format: numeric
-          description: The country code.
-          minLength: 3
-          maxLength: 3
-    ApplicationApplicant:
-      description: Complete demographic and contact information for an applicant.
-      type: object
-      required:
-        - firstName
-        - lastName
-        - email
-        - dateOfBirth
-        - ssn
-        - mobilePhone
-        - currentAddress
-      properties:
-        firstName:
-          description: The applicant's first name.
-          type: string
-          maxLength: 255
-          example: "John"
-        middleName:
-          description: The applicant's middle name.
-          type: string
-          maxLength: 255
-          nullable: true
-          example: "Michael"
-        lastName:
-          description: The applicant's last name.
-          type: string
-          maxLength: 255
-          example: "Smith"
-        email:
-          description: The applicant's email address.
-          type: string
-          format: email
-          maxLength: 255
-          example: "john.smith@email.com"
-        dateOfBirth:
-          description: The applicant's date of birth.
-          type: string
-          format: date
-          example: "1985-06-15"
-        ssn:
-          description: The applicant's last four of their social secutiy number.
-          type: string
-          minLength: 4
-          maxLength: 4
-          example: "1234"
-          writeOnly: true
-        mobilePhone:
-          description: The applicant's mobile phone number.
-          type: string
-          pattern: '^\d{10}$'
-          minLength: 10
-          maxLength: 10
-          example: "5551234567"
-        homePhone:
-          description: The applicant's home phone number.
-          type: string
-          pattern: '^\d{10}$'
-          minLength: 10
-          maxLength: 10
-          nullable: true
-          example: "5559876543"
-        currentAddress:
-          description: The applicant's current residential address.
-          $ref: '#/components/schemas/ApplicationAddress'
-        previousAddress:
-          description: The applicant's previous residential address.
-          $ref: '#/components/schemas/ApplicationAddress'
-          nullable: true
-    ApplicationCollection:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/HydraCollectionMetadata'
-        - type: object
-          properties:
-            "@context":
-              example: "/contexts/Application"
-            "@id":
-              example: "/applications"
-            totalItems:
-              type: integer
-              description: The total number of qualification applications.
-              example: 5
-            member:
-              type: array
-              description: A list of qualification applications.
-              items:
-                $ref: '#/components/schemas/Application'
-            view:
-              allOf:
-                - $ref: '#/components/schemas/HydraView'
-                - type: object
-                  properties:
-                    "@id":
-                      description: The identifier of the paginated view.
-                      example: "/applications?page=1"
-                    first:
-                      description: The first page of the collection.
-                      example: "/applications?page=1"
-                    last:
-                      description: The last page of the collection.
-                      example: "/applications?page=5"
-                    next:
-                      description: The next page of the collection (if available).
-                      example: "/applications?page=2"
-    ApplicationCreate:
-      type: object
-      description: Schema for creating a new solar financing qualification application.
-      allOf:
-        - $ref: '#/components/schemas/ApplicationDetails'
-        - type: object
-          required:
-            - primaryApplicant
-            - agreementType
-            - productType
-            - consent1
-            - consent2
-            - consent3
-          properties:
-            primaryApplicant:
-              $ref: "#/components/schemas/ApplicationApplicant"
-              description: Primary applicant information for the solar financing.
-            coApplicant:
-              $ref: "#/components/schemas/ApplicationApplicant"
-              description: Optional co-applicant for joint applications.
-              nullable: true
-            dealer:
-              description: Create a new dealer record for this application.
-              allOf:
-                - $ref: "#/components/schemas/DealerCreate"
-              nullable: true
-            dealerId:
-              description: Reference to an existing dealer by ID.
-              type: string
-              format: uuid
-              nullable: true
-              example: "550e8400-e29b-41d4-a716-446655440021"
-            installer:
-              description: Create a new installer record for this application.
-              allOf:
-                - $ref: "#/components/schemas/InstallerCreate"
-              nullable: true
-            installerId:
-              description: Reference to an existing installer by ID.
-              type: string
-              format: uuid
-              nullable: true
-              example: "550e8400-e29b-41d4-a716-446655440022"
-            user:
-              description: Create a new sales representative record for this application.
-              allOf:
-                - $ref: "#/components/schemas/UserCreate"
-              nullable: true
-            userId:
-              description: Reference to an existing sales representative by ID.
-              type: integer
-              minimum: 1
-              nullable: true
-              example: "550e8400-e29b-41d4-a716-446655440026"
-            consent1:
-              description: Customer consent for credit report authorization.
-              type: boolean
-              enum: [true]
-            consent2:
-              description: Customer consent for terms and conditions.
-              type: boolean
-              enum: [true]
-            consent3:
-              description: Customer consent for marketing communications.
-              type: boolean
-              enum: [true]
-            externalId:
-              description: Optional external identifiers for integration with your systems.
-              type: array
-              items:
-                $ref: "#/components/schemas/ExternalIdentifierCreate"
-              example:
-                - key: "crm_lead_id"
-                  value: "LEAD-12345"
-                - key: "proposal_number"
-                  value: "PROP-2024-001"
-      example:
-        agreementType: "ppa"
-        productType: "solar_storage"
-        primaryApplicant:
-          firstName: "John"
-          lastName: "Smith"
-          email: "john.smith@email.com"
-          dateOfBirth: "1985-06-15"
-          ssn: "1234"
-          mobilePhone: "5551234567"
-          currentAddress:
-            streetNumber: "123"
-            streetName: "Main Street"
-            city: "Phoenix"
-            state: "AZ"
-            postCode: "85001"
-            country: "USA"
-        dealerId: "550e8400-e29b-41d4-a716-446655440021"
-        installerId: "550e8400-e29b-41d4-a716-446655440022"
-        userId: "550e8400-e29b-41d4-a716-446655440035"
-        consent1: true
-        consent2: true
-        consent3: true
-    ApplicationDetails:
-      type: object
-      properties:
-        referenceId:
-          description: An optional application reference ID such as the proposal ID.
-          type: string
-          nullable: true
-        agreementType:
-          $ref: '#/components/schemas/ApplicationAgreementType'
-        productType:
-          $ref: '#/components/schemas/ApplicationProductType'
-    ApplicationIri:
-      description: The unique JSON-LD IRI reference to the qualification application.
-      type: string
-      format: iri-reference
-      example: '/applications/550e8400-e29b-41d4-a716-446655440005'
-    ApplicationOpen:
-      type: object
-      properties:
-        "@context":
-          example: "/contexts/Application"
-        "@id":
-          $ref: '#/components/schemas/ApplicationIri'
-        "@type":
-          type: string
-          description: The JSON-LD resource type.
-          example: Application
-        referenceId:
-          type: string
-          format: uuid
-          description: The unique reference ID for this resource.
-        status:
-          $ref: "#/components/schemas/ApplicationStatus"
-          default: open
-    ApplicationProductType:
-      description: The type of product the customer is receiving.
-      type: string
-      enum:
-        - solar
-        - solar_storage
-        - solar_storage_other
-        - solar_other
-        - storage
-    ApplicationStatus:
-      description: The customer qualification application status.
-      type: string
-      enum:
-        - open
-        - in_progress
-        - submitted
-        - approved
-        - declined
-        - none
-        - onhold
-        - cancelled
-    ApplicationSubmit:
-      type: object
-      properties:
-        "@context":
-          example: "/contexts/Application"
-        "@id":
-          $ref: '#/components/schemas/ApplicationIri'
-        "@type":
-          type: string
-          description: The JSON-LD resource type.
-          example: Application
-        referenceId:
-          type: string
-          format: uuid
-          description: The unique reference ID for this resource.
-        status:
-          $ref: "#/components/schemas/ApplicationStatus"
-    ApplicationQualify:
-      type: object
-      properties:
-        "@context":
-          example: "/contexts/Application"
-        "@id":
-          $ref: '#/components/schemas/ApplicationIri'
-        "@type":
-          type: string
-          description: The JSON-LD resource type.
-          example: Application
-        referenceId:
-          type: string
-          format: uuid
-          description: The unique reference ID for this resource.
-        status:
-          $ref: "#/components/schemas/ApplicationStatus"
-          default: in_progress
     Attachment:
       type: object
       properties:
@@ -6080,6 +6253,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Attachment"
             "@id":
               example: "/attachments"
@@ -6205,6 +6380,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Comment"
             "@id":
               example: "/comments"
@@ -6252,8 +6429,6 @@ components:
       example: '/comments/550e8400-e29b-41d4-a716-446655440007'
     Customer:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/UserDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/UserIri'
@@ -6265,8 +6440,18 @@ components:
           type: string
           format: uuid
           description: The unique reference ID for this resource.
+        firstName:
+          description: The customer's first name.
+          type: string
+        lastName:
+          description: The customer's last name.
+          type: string
+        email:
+          description: The customer's email.
+          type: string
+          format: email
         name:
-          description: The user's full name.
+          description: The customer's full name.
           type: string
     CustomerCreate:
       type: object
@@ -6277,32 +6462,45 @@ components:
         - ssn
         - dateOfBirth
         - mobilePhone
-      allOf:
-        - $ref: '#/components/schemas/UserDetails'
       properties:
+        firstName:
+          description: The customer's first name.
+          type: string
+          maxLength: 255
+        lastName:
+          description: The customer's last name.
+          type: string
+          maxLength: 255
         middleName:
-          description: The user's middle name.
+          description: The customer's middle name.
           nullable: true
           type: string
+        email:
+          description: The customer's email.
+          type: string
+          format: email
+          maxLength: 255
         ssn:
-          description: The user's last four of their SSN.
+          description: The customer's last four of their SSN.
           type: string
           format: numeric
+          minimum: 4
+          maximum: 4
         dateOfBirth:
-          description: The user's date of birth.
+          description: The customer's date of birth.
           type: string
           format: date
         mobilePhone:
-          description: The user's mobile phone number.
+          description: The customer's mobile phone number.
           type: string
           format: tel
         homePhone:
-          description: The user's home phone number.
+          description: The customer's home phone number.
           nullable: true
           type: string
           format: tel
         externalId:
-          description: Optional external identifiers to add to the user.
+          description: Optional external identifiers to add to the customer.
           type: array
           items:
             $ref: '#/components/schemas/ExternalIdentifierCreate'
@@ -6316,8 +6514,6 @@ components:
       example: '/customers/550e8400-e29b-41d4-a716-446655440008'
     Dealer:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/DealerDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/DealerIri'
@@ -6329,14 +6525,23 @@ components:
           type: string
           format: uuid
           description: The unique reference ID for this resource.
+        name:
+          description: The name of the dealer.
+          type: string
+        email:
+          description: A contact email for the dealer.
+          type: string
+          format: email
         website:
           description: The dealer's website.
           type: string
           format: uri
+          nullable: true
         logoUrl:
           description: The dealer's logo.
           type: string
           format: uri
+          nullable: true
     DealerCollection:
       type: object
       allOf:
@@ -6344,6 +6549,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Dealer"
             "@id":
               example: "/dealers"
@@ -6378,16 +6585,6 @@ components:
       required:
         - name
         - email
-      allOf:
-        - $ref: '#/components/schemas/DealerDetails'
-      properties:
-        externalId:
-          description: Optional external identifiers to add to the dealer.
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalIdentifierCreate'
-    DealerDetails:
-      type: object
       properties:
         name:
           description: The name of the dealer.
@@ -6398,6 +6595,11 @@ components:
           type: string
           format: email
           maxLength: 255
+        externalId:
+          description: Optional external identifiers to add to the dealer.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
     DealerIri:
       description: The unique JSON-LD IRI reference to the dealer.
       type: string
@@ -6454,22 +6656,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Segment'
-    DesignIri:
-      description: The unique JSON-LD IRI reference to the design.
-      type: string
-      format: iri-reference
-      example: '/designs/550e8400-e29b-41d4-a716-446655440010'
-    DesignSource:
-      description: The source system or tool used to create the design.
-      type: string
-      enum:
-        - api
-        - aurora
-        - sunobi
-        - scanifly
-        - sub_contractor_hub
-        - other
-        - manual
     DesignArrayType:
       description: The supported design array types.
       type: string
@@ -6478,7 +6664,44 @@ components:
         - Fixed - Roof Mounted
         - Fixed - Roof and Ground Mounted
         - Unkown
-      example: "Fixed - Roof Mounted"
+    DesignCollection:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/HydraCollectionMetadata'
+        - type: object
+          properties:
+            "@context":
+              type: string
+              description: The JSON-LD context.
+              example: "/contexts/Design"
+            "@id":
+              example: "/designs"
+            totalItems:
+              type: integer
+              description: The total number of designs.
+              example: 5
+            member:
+              type: array
+              description: A list of design.
+              items:
+                $ref: '#/components/schemas/Design'
+            view:
+              allOf:
+                - $ref: '#/components/schemas/HydraView'
+                - type: object
+                  properties:
+                    "@id":
+                      description: The identifier of the paginated view.
+                      example: "/designs?page=1"
+                    first:
+                      description: The first page of the collection.
+                      example: "/designs?page=1"
+                    last:
+                      description: The last page of the collection.
+                      example: "/designs?page=5"
+                    next:
+                      description: The next page of the collection (if available).
+                      example: "/designs?page=2"
     DesignCreate:
       type: object
       description: Schema for creating a new solar system design for a project.
@@ -6532,7 +6755,6 @@ components:
         isPrimary:
           description: Whether this design should be set as the primary/active design for the project.
           type: boolean
-          nullable: true
           example: true
         batteries:
           description: Optional battery storage systems to be included with this design.
@@ -6587,6 +6809,7 @@ components:
       properties:
         "@context":
           type: string
+          description: The JSON-LD context.
           example: "/contexts/DesignInverter"
         "@id":
           type: string
@@ -6600,12 +6823,13 @@ components:
           description: The unique reference identifier.
           example: "e4e19ea0-1e80-4e22-b12c-775e086fab66"
         quantity:
-          type: number
+          type: integer
           description: The inverter quantity.
+          minimum: 1
           example: 1
         subtotal:
           type: number
-          format: currency
+          format: float
           description: The inverter subtotal.
           example: 1500
         monitoringLocation:
@@ -6637,9 +6861,9 @@ components:
           format: uuid
           example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
         quantity:
-          type: number
-          minimum: 1
           description: The inverter quantity.
+          type: integer
+          minimum: 1
           example: 1
         monitoringLocation:
           type: string
@@ -6659,11 +6883,17 @@ components:
           properties:
             product:
               $ref: '#/components/schemas/Product'
+    DesignIri:
+      description: The unique JSON-LD IRI reference to the design.
+      type: string
+      format: iri-reference
+      example: '/designs/550e8400-e29b-41d4-a716-446655440010'
     DesignRacking:
       type: object
       properties:
         "@context":
           type: string
+          description: The JSON-LD context.
           example: "/contexts/DesignRacking"
         "@id":
           $ref: '#/components/schemas/DesignRackingIri'
@@ -6676,12 +6906,13 @@ components:
           description: The unique reference identifier.
           example: "2608684b-74ab-4cef-898c-acdaf88d92b1"
         quantity:
-          type: number
+          type: integer
           description: The racking quantity.
           example: 1
+          minimum: 1
         subtotal:
           type: number
-          format: currency
+          format: float
           description: The racking subtotal.
           example: 5000
     DesignRackingIri:
@@ -6707,9 +6938,9 @@ components:
           format: uuid
           example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
         quantity:
-          type: number
-          minimum: 1
           description: The racking quantity.
+          type: integer
+          minimum: 1
           example: 1
     DesignRackingProduct:
       type: object
@@ -6724,6 +6955,7 @@ components:
       properties:
         "@context":
           type: string
+          description: The JSON-LD context.
           example: "/contexts/DesignSegment"
         "@id":
           $ref: '#/components/schemas/DesignSegmentIri'
@@ -6767,7 +6999,7 @@ components:
           example: "Segment 2"
         moduleQuantity:
           description: The number of modules in this segment.
-          type: number
+          type: integer
           minimum: 1
           example: 5
         arrayType:
@@ -6775,18 +7007,21 @@ components:
         azimuth:
           description: The array azimuth in degrees.
           type: number
+          format: float
           minimum: 0
           maximum: 360
           example: 10
         tilt:
           description: The array tilt in degrees.
           type: number
+          format: float
           minimum: 0
           maximum: 90
           example: 10
         shading:
           description: The array shading percentage.
           type: number
+          format: float
           minimum: 0
           maximum: 100
           example: 10
@@ -6795,11 +7030,25 @@ components:
       type: string
       format: iri-reference
       example: '/designs/segments/550e8400-e29b-41d4-a716-446655440019'
+    DesignSource:
+      description: The source system or tool used to create the design.
+      type: string
+      enum:
+        - api
+        - aurora
+        - sunobi
+        - scanifly
+        - sub_contractor_hub
+        - other
+        - manual
+      default: api
+      example: "Fixed - Roof Mounted"
     DesignStorage:
       type: object
       properties:
         "@context":
           type: string
+          description: The JSON-LD context.
           example: "/contexts/DesignStorage"
         "@id":
           type: string
@@ -6813,16 +7062,18 @@ components:
           description: The unique reference identifier.
           example: "2608684b-74ab-4cef-898c-acdaf88d92b1"
         quantity:
-          type: number
+          type: integer
           description: The battery quantity.
           example: 1
+          minimum: 1
         size:
           type: number
+          format: float
           description: The battery size.
           example: 123451234
         subtotal:
           type: number
-          format: currency
+          format: float
           description: The battery subtotal.
           example: 500
         monitoringLocation:
@@ -6854,12 +7105,13 @@ components:
           format: uuid
           example: "d7f94f29-aec9-3d49-8337-23895cd5ecb0"
         quantity:
-          type: number
-          minimum: 1
           description: The battery quantity.
+          type: integer
+          minimum: 1
           example: 1
         size:
           type: number
+          format: float
           minimum: 1
           description: The battery size.
           example: 123451234
@@ -6925,12 +7177,9 @@ components:
         isPrimary:
           description: Whether to promote this design to primary status.
           type: boolean
-          nullable: true
           example: false
     Distributor:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/DistributorDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/DistributorIri'
@@ -6942,14 +7191,23 @@ components:
           type: string
           format: uuid
           description: The unique reference ID for this resource.
+        name:
+          description: The name of the distributor.
+          type: string
+        email:
+          description: A contact email for the distributor.
+          type: string
+          format: email
         website:
           description: The distributor's website.
           type: string
           format: uri
+          nullable: true
         logoUrl:
           description: The distributor's logo.
           type: string
           format: uri
+          nullable: true
     DistributorCollection:
       type: object
       allOf:
@@ -6957,6 +7215,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Distributor"
             "@id":
               example: "/distributors"
@@ -6991,16 +7251,6 @@ components:
       required:
         - name
         - email
-      allOf:
-        - $ref: '#/components/schemas/DistributorDetails'
-      properties:
-        externalId:
-          description: Optional external identifiers to add to the distributor.
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalIdentifierCreate'
-    DistributorDetails:
-      type: object
       properties:
         name:
           description: The name of the distributor.
@@ -7011,6 +7261,11 @@ components:
           type: string
           format: email
           maxLength: 255
+        externalId:
+          description: Optional external identifiers to add to the distributor.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
     DistributorIri:
       description: The unique JSON-LD IRI reference to the distributor.
       type: string
@@ -7055,17 +7310,6 @@ components:
       required:
         - key
         - value
-    ExternalIdentifierDetails:
-      type: object
-      properties:
-        key:
-          type: string
-          description: The key of the external identifier.
-          maxLength: 255
-        value:
-          type: string
-          description: The value of the external identifier.
-          maxLength: 255
     ExternalIdentifierCollection:
       type: object
       allOf:
@@ -7073,6 +7317,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/ExternalIdentifier"
             "@id":
               example: "/external-identifiers"
@@ -7102,6 +7348,17 @@ components:
                     next:
                       description: The next page of the collection (if available).
                       example: "/external-identifiers?page=2"
+    ExternalIdentifierDetails:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the external identifier.
+          maxLength: 255
+        value:
+          type: string
+          description: The value of the external identifier.
+          maxLength: 255
     ExternalIdentifierIri:
       description: The unique JSON-LD IRI reference to the external identifier.
       type: string
@@ -7141,8 +7398,6 @@ components:
           description: The next page of the collection (if available).
     Installer:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/InstallerDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/InstallerIri'
@@ -7150,6 +7405,13 @@ components:
           type: string
           description: The JSON-LD resource type.
           example: Installer
+        name:
+          description: The name of the installer.
+          type: string
+        email:
+          description: A contact email for the installer.
+          type: string
+          format: email
         referenceId:
           type: string
           format: uuid
@@ -7158,10 +7420,12 @@ components:
           description: The installer's website.
           type: string
           format: uri
+          nullable: true
         logoUrl:
           description: The installer's logo.
           type: string
           format: uri
+          nullable: true
     InstallerCollection:
       type: object
       allOf:
@@ -7169,6 +7433,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Installer"
             "@id":
               example: "/installers"
@@ -7203,16 +7469,6 @@ components:
       required:
         - name
         - email
-      allOf:
-        - $ref: '#/components/schemas/InstallerDetails'
-      properties:
-        externalId:
-          description: Optional external identifiers to add to the installer.
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalIdentifierCreate'
-    InstallerDetails:
-      type: object
       properties:
         name:
           description: The name of the installer.
@@ -7223,6 +7479,11 @@ components:
           type: string
           format: email
           maxLength: 255
+        externalId:
+          description: Optional external identifiers to add to the installer.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
     InstallerIri:
       description: The unique JSON-LD IRI reference to the installer.
       type: string
@@ -7273,6 +7534,7 @@ components:
           description: The partner's website.
           type: string
           format: uri
+          nullable: true
     PartnerCollection:
       type: object
       allOf:
@@ -7280,6 +7542,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Partner"
             "@id":
               example: "/partners"
@@ -7367,6 +7631,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Product"
             "@id":
               example: "/products"
@@ -7710,6 +7976,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Project"
             "@id":
               example: "/projects"
@@ -7814,8 +8082,8 @@ components:
               nullable: true
             dealerId:
               description: Reference to existing dealer by ID for established partnerships.
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440027"
             installer:
@@ -7825,8 +8093,8 @@ components:
               nullable: true
             installerId:
               description: Reference to existing installer by ID for established partnerships.
-              type: integer
-              minimum: 1
+              type: string
+              format: uuid
               nullable: true
               example: "550e8400-e29b-41d4-a716-446655440028"
             distributor:
@@ -7872,52 +8140,52 @@ components:
             totalContractValue:
               description: Total dollar value of the solar installation contract.
               type: number
-              format: currency
+              format: float
               minimum: 0
               example: 25000.00
             amountFinanced:
               description: Dollar amount being financed through Elios Fund.
               type: number
-              format: currency
+              format: float
               minimum: 0
               example: 25000.00
             downPayment:
               description: Customer down payment amount paid at contract signing.
               type: number
-              format: currency
+              format: float
               minimum: 0
               example: 0
             dealerFee:
               description: Dealer fee percentage for loan agreements (decimal format).
               type: number
-              format: percentage
+              format: float
               minimum: 0
               maximum: 1
               example: 0
             interestRate:
               description: Annual interest rate for loan agreements (decimal format).
               type: number
-              format: percentage
+              format: float
               minimum: 0
               maximum: 1
               example: 0
             contractRate:
               description: First-year energy rate for PPA products ($/kWh in decimal format).
               type: number
-              format: rate
+              format: float
               minimum: 0
               maximum: 1
               example: 0.1667
             escalator:
               description: Annual rate increase percentage for PPA/lease products (decimal format).
               type: number
-              format: percentage
+              format: float
               minimum: 0
               maximum: 1
               example: 0.0299
             term:
               description: Agreement length in years.
-              type: number
+              type: integer
               minimum: 1
               maximum: 25
               example: 25
@@ -7940,14 +8208,14 @@ components:
               example: "https://portal.example.com/proposals/12345"
             introductoryTerm:
               description: Length of introductory/promotional payment period in months.
-              type: number
+              type: integer
               minimum: 0
-              maximum: 36
+              maximum: 60
               example: 0
             introductoryPayment:
               description: Monthly payment amount during introductory period.
               type: number
-              format: currency
+              format: float
               minimum: 0
               example: 0
             adders:
@@ -7966,13 +8234,13 @@ components:
                     example: "Electrical Panel Upgrade"
                   quantity:
                     description: Number of units being installed
-                    type: number
+                    type: integer
                     minimum: 1
                     example: 1
                   subtotal:
                     description: Total cost for this add-on (quantity × unit price)
                     type: number
-                    format: currency
+                    format: float
                     minimum: 0
                     example: 2500.00
       example:
@@ -8019,156 +8287,6 @@ components:
           - name: "Roof Reinforcement"
             quantity: 1
             subtotal: 1500.00
-    ProjectUpdate:
-      type: object
-      description: Schema for updating an existing solar installation project.
-      properties:
-        agreementType:
-          description: Solar financing agreement type.
-          allOf:
-            - $ref: "#/components/schemas/ApplicationAgreementType"
-        productType:
-          description: Type of solar installation being financed.
-          allOf:
-            - $ref: "#/components/schemas/ApplicationProductType"
-        totalContractValue:
-          description: Total value of the solar installation contract including all equipment, installation, permits, and additional services.
-          type: number
-          format: float
-          minimum: 0
-          example: 25000.00
-        amountFinanced:
-          description: Portion of the total contract value that will be financed through Elios Fund.
-          type: number
-          format: float
-          minimum: 0
-          example: 25000.00
-        downPayment:
-          description: Customer's upfront payment toward the project.
-          type: number
-          format: float
-          minimum: 0
-          example: 0
-        introductoryTerm:
-          description: Duration in months for special introductory payment terms.
-          type: number
-          minimum: 0
-          maximum: 60
-          example: 0
-        introductoryPayment:
-          description: Monthly payment amount during the introductory period.
-          type: number
-          format: float
-          minimum: 0
-          example: 0
-        dealerFee:
-          description: Dealer commission as a percentage of the financed amount.
-          type: number
-          format: float
-          minimum: 0
-          maximum: 1
-          example: 0
-        interestRate:
-          description: Annual interest rate for loan agreements.
-          type: number
-          format: float
-          minimum: 0
-          maximum: 1
-          example: 0
-        contractRate:
-          description: Price per kWh for power purchased under PPA agreements.
-          type: number
-          format: float
-          minimum: 0
-          maximum: 1
-          example: 0.1667
-        escalator:
-          description: Annual rate increase for PPA/lease payments.
-          type: number
-          format: float
-          minimum: 0
-          maximum: 1
-          example: 0.0299
-        term:
-          description: Contract duration in years.
-          type: number
-          minimum: 1
-          maximum: 25
-          example: 25
-        proposalId:
-          description: Reference number from the solar design or proposal system.
-          type: number
-          minimum: 1
-          example: "1234567890"
-          nullable: true
-        proposalLink:
-          description: Direct URL to the customer's solar proposal or design.
-          type: string
-          format: uri
-          maxLength: 255
-          example: "https://share.aurorasolar.com/designs/abc123"
-          nullable: true
-        proposalDate:
-          description: Date when the customer's solar proposal was presented or finalized.
-          type: string
-          format: date
-          example: "2024-03-15"
-        userId:
-          description: Reference to existing sales representative by internal user ID.
-          type: integer
-          minimum: 1
-          example: "550e8400-e29b-41d4-a716-446655440031"
-          nullable: true
-        user:
-          description: Create new sales representative record if not already in the system.
-          allOf:
-            - $ref: "#/components/schemas/UserCreate"
-          nullable: true
-        dealerId:
-          description: Reference to existing dealer by ID for established partnerships.
-          type: integer
-          minimum: 1
-          example: "550e8400-e29b-41d4-a716-446655440032"
-          nullable: true
-        dealer:
-          description: Create new dealer record if not already in the system.
-          allOf:
-            - $ref: "#/components/schemas/DealerCreate"
-          nullable: true
-        installerId:
-          description: Reference to existing installer by ID for established partnerships.
-          type: integer
-          minimum: 1
-          example: "550e8400-e29b-41d4-a716-446655440033"
-          nullable: true
-        installer:
-          description: Create new installer record if not already in the system.
-          allOf:
-            - $ref: "#/components/schemas/InstallerCreate"
-          nullable: true
-        distributorId:
-          description: Reference to existing distributor by ID.
-          type: integer
-          minimum: 1
-          example: "550e8400-e29b-41d4-a716-446655440034"
-          nullable: true
-        distributor:
-          description: Create new distributor record if not already in the system.
-          allOf:
-            - $ref: "#/components/schemas/DistributorCreate"
-          nullable: true
-        externalId:
-          description: Array of external system identifiers for integration tracking.
-          type: array
-          items:
-            $ref: "#/components/schemas/ExternalIdentifierCreate"
-          nullable: true
-        adders:
-          description: Optional equipment add-ons and customizations beyond the base solar system.
-          type: array
-          items:
-            $ref: "#/components/schemas/Adder"
-          nullable: true
     ProjectIri:
       description: The unique JSON-LD IRI reference to the project.
       type: string
@@ -8212,10 +8330,146 @@ components:
         - complete
         - cancelled
         - stale
+    ProjectUpdate:
+      type: object
+      description: Schema for updating an existing solar installation project.
+      properties:
+        agreementType:
+          description: Solar financing agreement type.
+          allOf:
+            - $ref: "#/components/schemas/ApplicationAgreementType"
+        productType:
+          description: Type of solar installation being financed.
+          allOf:
+            - $ref: "#/components/schemas/ApplicationProductType"
+        totalContractValue:
+          description: Total value of the solar installation contract including all equipment, installation, permits, and additional services.
+          type: number
+          format: float
+          minimum: 0
+          example: 25000.00
+        amountFinanced:
+          description: Portion of the total contract value that will be financed through Elios Fund.
+          type: number
+          format: float
+          minimum: 0
+          example: 25000.00
+        downPayment:
+          description: Customer's upfront payment toward the project.
+          type: number
+          format: float
+          minimum: 0
+          example: 0
+        introductoryTerm:
+          description: Duration in months for special introductory payment terms.
+          type: integer
+          minimum: 0
+          maximum: 60
+          example: 0
+        introductoryPayment:
+          description: Monthly payment amount during the introductory period.
+          type: number
+          format: float
+          minimum: 0
+          example: 0
+        dealerFee:
+          description: Dealer commission as a percentage of the financed amount.
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0
+        interestRate:
+          description: Annual interest rate for loan agreements.
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0
+        contractRate:
+          description: Price per kWh for power purchased under PPA agreements.
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.1667
+        escalator:
+          description: Annual rate increase for PPA/lease payments.
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.0299
+        term:
+          description: Contract duration in years.
+          type: integer
+          minimum: 1
+          maximum: 25
+          example: 25
+        proposalId:
+          description: Reference number from the solar design or proposal system.
+          type: number
+          minimum: 1
+          example: "1234567890"
+          nullable: true
+        proposalLink:
+          description: Direct URL to the customer's solar proposal or design.
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://share.aurorasolar.com/designs/abc123"
+          nullable: true
+        proposalDate:
+          description: Date when the customer's solar proposal was presented or finalized.
+          type: string
+          format: date
+          example: "2024-03-15"
+        userId:
+          description: Reference to existing sales representative by internal user ID.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440031"
+          nullable: true
+        user:
+          description: Create new sales representative record if not already in the system.
+          allOf:
+            - $ref: "#/components/schemas/UserCreate"
+          nullable: true
+        dealerId:
+          description: Reference to existing dealer by ID for established partnerships.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440032"
+          nullable: true
+        dealer:
+          description: Create new dealer record if not already in the system.
+          allOf:
+            - $ref: "#/components/schemas/DealerCreate"
+          nullable: true
+        installerId:
+          description: Reference to existing installer by ID for established partnerships.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440033"
+          nullable: true
+        installer:
+          description: Create new installer record if not already in the system.
+          allOf:
+            - $ref: "#/components/schemas/InstallerCreate"
+          nullable: true
+        distributorId:
+          description: Reference to existing distributor by ID.
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440034"
+          nullable: true
+        distributor:
+          description: Create new distributor record if not already in the system.
+          allOf:
+            - $ref: "#/components/schemas/DistributorCreate"
+          nullable: true
     SalesRep:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/UserDetails'
       properties:
         "@id":
           $ref: '#/components/schemas/UserIri'
@@ -8227,7 +8481,18 @@ components:
           type: string
           format: uuid
           description: The unique reference ID for this resource.
+        firstName:
+          description: The sales rep's first name.
+          type: string
+        lastName:
+          description: The sales rep's last name.
+          type: string
+        email:
+          description: The sales rep's email.
+          type: string
+          format: email
         name:
+          description: The sales rep's full name.
           type: string
     Segment:
       type: object
@@ -8247,7 +8512,7 @@ components:
           type: string
         moduleQuantity:
           description: The number of modules in the segment.
-          type: number
+          type: integer
         arrayType:
           $ref: '#/components/schemas/DesignArrayType'
         azimuth:
@@ -8272,37 +8537,70 @@ components:
     SystemPricingFactorYear:
       type: object
       properties:
+        "@context":
+          type: string
+          description: The JSON-LD context.
+          example: "/contexts/SystemPricingFactorYear"
+        "@id":
+          type: string
+          format: iri-reference
+          description: The unique JSON-LD IRI reference.
+          example: "/projects/20b336c2-90d3-36af-8a4f-8dbbba2794ed/pricing/1"
         "@type":
           type: string
           description: The JSON-LD resource type.
           example: SystemPricingFactorYear
         year:
-          description: The pricing year.
+          description: The pricing year (1-25).
+          type: integer
+          minimum: 1
+          maximum: 25
+          example: 1
+        pvProductionKWh:
+          description: The annual PV system production for the year in kWh.
           type: number
-        productionKWh:
-          description: The annual system production for the year.
+          format: float
+          example: 19070.81
+        storageProductionKWh:
+          description: The annual storage system production for the year in kWh.
           type: number
+          format: float
+          example: 13.5
         ratePerKWh:
-          description: The electric rate for the year.
+          description: The electric rate per kWh for the year.
           type: number
+          format: float
+          example: 0.184
         pvMonthlyPayment:
           description: The monthly payment for just the PV system.
           type: number
+          format: float
+          example: 292.42
         storageMonthlyPayment:
           description: The monthly payment for just the storage system.
           type: number
+          format: float
+          example: 64
         totalMonthlyPayment:
           description: The total combined monthly payment.
           type: number
+          format: float
+          example: 356.42
         pvAnnualPayment:
           description: The annual cost for just the PV system.
           type: number
+          format: float
+          example: 3509.03
         storageAnnualPayment:
           description: The annual cost for just the storage system.
           type: number
+          format: float
+          example: 768
         totalAnnualPayment:
           description: The total combined annual cost.
           type: number
+          format: float
+          example: 4277.03
     SystemPricingFactorYearCollection:
       type: object
       allOf:
@@ -8310,6 +8608,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/SystemPricingFactorYear"
             "@id":
               example: "/pricing"
@@ -8322,41 +8622,6 @@ components:
               description: The pricing for a system over the duration of the contract.
               items:
                 $ref: '#/components/schemas/SystemPricingFactorYear'
-    SystemPricingFactorYearCreate:
-      type: object
-      required:
-        - systemSize
-        - annualProduction
-        - degradationRate
-        - escalator
-        - contractRate
-      properties:
-        systemSize:
-          type: number
-          description: The system size in kW.
-          example: 10.25
-        annualProduction:
-          type: number
-          description: The annual system production in kWh.
-          example: 16245
-        degradationRate:
-          type: number
-          description: The degradation rate of the module being used. Typically around 0.5%.
-          example: 0.005
-          maximum: 1
-          minimum: 0
-        escalator:
-          type: number
-          description: The contract escalator.
-          example: 0.0299
-          maximum: 1
-          minimum: 0
-        contractRate:
-          description: The first year $/kWh price.
-          example: 0.1742
-          type: number
-          maximum: 1
-          minimum: 0
     User:
       type: object
       properties:
@@ -8399,6 +8664,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/User"
             "@id":
               example: "/products"
@@ -8434,16 +8701,6 @@ components:
         - firstName
         - lastName
         - email
-      allOf:
-        - $ref: '#/components/schemas/UserDetails'
-      properties:
-        externalId:
-          description: Optional external identifiers to add to the user.
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalIdentifierCreate'
-    UserDetails:
-      type: object
       properties:
         firstName:
           description: The user's first name.
@@ -8457,11 +8714,27 @@ components:
           description: The users's email.
           type: string
           format: email
+          maxLength: 255
+        externalId:
+          description: Optional external identifiers to add to the user.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierCreate'
     UserIri:
       description: The unique JSON-LD IRI reference to the user.
       type: string
       format: iri-reference
       example: '/users/550e8400-e29b-41d4-a716-446655440019'
+    UserType:
+      type: string
+      enum:
+        - internal
+        - customer
+        - sales_rep
+        - partner_admin
+        - investor_admin
+        - account_manager
+        - user
     Webhook:
       type: object
       properties:
@@ -8482,7 +8755,6 @@ components:
         enabled:
           description: Whether or not the webhook is enabled.
           type: boolean
-          default: true
         method:
           description: The HTTP method that will be used.
           type: string
@@ -8497,33 +8769,23 @@ components:
         description:
           description: A human-readable description of the webhook's purpose.
           type: string
-          maxLength: 4000
+          nullable: true
         secret:
           description: The webhook secret used for HMAC signature validation.
           type: string
-          maxLength: 255
+          nullable: true
         caPath:
           description: The path to the CA certificate for SSL verification.
           type: string
-          maxLength: 4000
+          nullable: true
         keyPath:
           description: The path to the private key for client certificate authentication.
           type: string
-          maxLength: 4000
+          nullable: true
         certPath:
           description: The path to the client certificate for SSL authentication.
           type: string
-          maxLength: 4000
-    UserType:
-      type: string
-      enum:
-        - internal
-        - customer
-        - sales_rep
-        - partner_admin
-        - investor_admin
-        - account_manager
-        - user
+          nullable: true
     WebhookCreate:
       type: object
       required:
@@ -8578,54 +8840,6 @@ components:
           type: string
           maxLength: 255
           nullable: true
-    WebhookUpdate:
-      type: object
-      properties:
-        url:
-          description: The URL the webhook request will be sent to. Must be HTTPS.
-          type: string
-          format: uri
-          maxLength: 255
-          example: "https://api.example.com/webhooks/elios"
-        method:
-          description: The HTTP method that will be used for webhook delivery.
-          type: string
-          enum:
-            - get
-            - post
-          example: "post"
-        events:
-          description: The events that will trigger the webhook to send.
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEvent'
-          example: ["application.approved", "project.created"]
-        description:
-          description: A human-readable description of the webhook's purpose.
-          type: string
-          maxLength: 4000
-          example: "Webhook for application status updates"
-        enabled:
-          description: Whether or not the webhook is enabled.
-          type: boolean
-          example: true
-        secret:
-          description: The webhook secret used for HMAC signature validation.
-          type: string
-          maxLength: 255
-          example: "your-webhook-secret-key"
-        caPath:
-          description: The path to the CA certificate for SSL verification.
-          type: string
-          maxLength: 4000
-        keyPath:
-          description: The path to the private key for client certificate authentication.
-          type: string
-          maxLength: 4000
-        certPath:
-          description: The path to the client certificate for SSL authentication.
-          type: string
-          maxLength: 4000
     WebhookCollection:
       type: object
       allOf:
@@ -8633,6 +8847,8 @@ components:
         - type: object
           properties:
             "@context":
+              type: string
+              description: The JSON-LD context.
               example: "/contexts/Webhook"
             "@id":
               example: "/webhooks"
@@ -8682,6 +8898,60 @@ components:
       type: string
       format: iri-reference
       example: '/webhooks/550e8400-e29b-41d4-a716-446655440020'
+    WebhookUpdate:
+      type: object
+      properties:
+        url:
+          description: The URL the webhook request will be sent to. Must be HTTPS.
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://api.example.com/webhooks/elios"
+        method:
+          description: The HTTP method that will be used for webhook delivery.
+          type: string
+          enum:
+            - get
+            - post
+          example: "post"
+        events:
+          description: The events that will trigger the webhook to send.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/WebhookEvent'
+          example: ["application.approved", "project.created"]
+        description:
+          description: A human-readable description of the webhook's purpose.
+          type: string
+          maxLength: 65535
+          example: "Webhook for application status updates"
+          nullable: true
+        enabled:
+          description: Whether or not the webhook is enabled.
+          type: boolean
+          example: true
+        secret:
+          description: The webhook secret used for HMAC signature validation.
+          type: string
+          maxLength: 255
+          example: "your-webhook-secret-key"
+          nullable: true
+        caPath:
+          description: The path to the CA certificate for SSL verification.
+          type: string
+          maxLength: 255
+          nullable: true
+        keyPath:
+          description: The path to the private key for client certificate authentication.
+          type: string
+          maxLength: 255
+          nullable: true
+        certPath:
+          description: The path to the client certificate for SSL authentication.
+          type: string
+          maxLength: 255
+          nullable: true
   securitySchemes:
     ApiKey:
       type: http
